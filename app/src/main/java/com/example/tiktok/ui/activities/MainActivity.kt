@@ -1,7 +1,8 @@
-package com.example.tiktok
+package com.example.tiktok.ui.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.tiktok.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
