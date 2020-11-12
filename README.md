@@ -2,7 +2,7 @@
 - spolu max **50 bodov** ( min. 25 bodov na zapocet )
 - deadline do 11. cvičenia **(3.12. 6:00)**
 
-##Contributors :
+### Contributors :
 - Matej Krč
 - Michal Roháček
 - Daniel Vaník
