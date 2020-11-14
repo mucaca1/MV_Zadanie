@@ -1,5 +1,5 @@
 ![License MIT](https://img.shields.io/badge/License-MIT-green)
-![Kotlin](https://img.shields.io/badge/Kotlin-blue)
+![Kotlin](https://img.shields.io/badge/Kotlin-1.4.10-blue)
 # MOBV Tik Tok assignment
 - spolu max **50 bodov** ( min. 25 bodov na zapocet )
 - deadline do 11. cvičenia **(3.12. 6:00)**
