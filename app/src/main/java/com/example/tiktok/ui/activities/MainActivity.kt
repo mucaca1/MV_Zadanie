@@ -3,6 +3,7 @@ package com.example.tiktok.ui.activities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.example.tiktok.R
 import kotlinx.android.synthetic.main.activity_main.*
@@ -18,6 +19,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_host_fragment
             )
         )
+
+        val navController = this.findNavController(R.id.nav_host_fragment)
+        NavigationUI.setupActionBarWithNavController(this,navController)
     }
 
     override fun onSupportNavigateUp(): Boolean {

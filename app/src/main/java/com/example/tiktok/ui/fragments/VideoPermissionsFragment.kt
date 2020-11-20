@@ -2,6 +2,7 @@ package com.example.tiktok.ui.fragments
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,7 +33,7 @@ class VideoPermissionsFragment : Fragment() {
 
         binding.model = loginViewModel
 
-
+        Log.i("VideoPermissions", "Init constructor")
         return binding.root
     }
 }

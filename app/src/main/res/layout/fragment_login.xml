@@ -41,14 +41,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="sign up"
-            app:layout_constraintBottom_toTopOf="@+id/loginFragment"
+            app:layout_constraintBottom_toTopOf="@+id/goToRegistrationFragmentButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/password" />
 
         <Button
-            android:id="@+id/loginFragment"
+            android:id="@+id/goToRegistrationFragmentButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Don't have an account yet? Create it"
