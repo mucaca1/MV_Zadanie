@@ -13,6 +13,7 @@ import androidx.navigation.findNavController
 import com.example.tiktok.R
 import com.example.tiktok.databinding.FragmentLoginBinding
 import com.example.tiktok.ui.viewModels.LoginViewModel
+import com.example.tiktok.utils.PasswordUtils
 import com.opinyour.android.app.data.utils.Injection
 
 
