@@ -10,11 +10,15 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.tiktok.R
 import com.example.tiktok.databinding.FragmentLoginBinding
+import com.example.tiktok.ui.activities.MainActivity
 import com.example.tiktok.ui.viewModels.LoginViewModel
-import com.example.tiktok.utils.PasswordUtils
 import com.opinyour.android.app.data.utils.Injection
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 
 class LoginFragment : Fragment() {
@@ -39,7 +43,25 @@ class LoginFragment : Fragment() {
             view.findNavController()
                 .navigate(R.id.action_login_to_registration)
         }
+        binding.loginButton.setOnClickListener {
+            login()
+        }
 
         return binding.root
+    }
+
+    private fun login() {
+        runBlocking {
+            withContext(Dispatchers.IO) {
+                if (loginViewModel.login()) {
+                    (activity as MainActivity).sessionManager.createLoginSession(
+                        loginViewModel.login.value,
+                        loginViewModel.user.value?.email
+                    )
+                    findNavController()
+                        .navigate(R.id.action_login_to_home)
+                }
+            }
+        }
     }
 }

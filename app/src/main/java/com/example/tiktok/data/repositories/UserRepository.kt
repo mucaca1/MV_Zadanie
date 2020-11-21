@@ -22,7 +22,7 @@ class UserRepository private constructor(
 
     suspend fun getUsers(): List<UserItem> = cache.getAll()
 
-    suspend fun insertWord(wordItem: UserItem) {
+    suspend fun insertUser(wordItem: UserItem) {
         cache.insertAll(wordItem)
     }
 

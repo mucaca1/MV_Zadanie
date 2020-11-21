@@ -9,11 +9,10 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.NavigationUI
 import com.example.tiktok.R
 import com.example.tiktok.databinding.FragmentLoginBinding
+import com.example.tiktok.ui.activities.MainActivity
 import com.example.tiktok.ui.viewModels.LoginViewModel
 import com.opinyour.android.app.data.utils.Injection
 
@@ -33,11 +32,17 @@ class HomeFragment : Fragment() {
         loginViewModel =
             ViewModelProvider(this, Injection.provideViewModelFactory(requireContext()))
                 .get(LoginViewModel::class.java)
-
-//        binding.model = loginViewModel
         Log.i("Home", "Init constructor")
-        findNavController()
-            .navigate(R.id.action_home_to_login)
+
+        if (!(activity as MainActivity).sessionManager.isLoggedIn()) {
+            Log.i("Home", "No user logged")
+            findNavController()
+                .navigate(R.id.action_home_to_login)
+        } else {
+            Log.i("Home", "User " + ((activity as MainActivity).sessionManager.getUserDetails()?.get((activity as MainActivity).sessionManager.KEY_NAME)
+                ?: "unknown") + " is logged")
+        }
+
         return binding.root
     }
 }

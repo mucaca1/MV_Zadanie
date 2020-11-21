@@ -9,11 +9,14 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.tiktok.R
 import com.example.tiktok.databinding.FragmentRegistrationBinding
 import com.example.tiktok.ui.viewModels.RegistrationViewModel
 import com.opinyour.android.app.data.utils.Injection
-
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 
 class RegistrationFragment : Fragment() {
@@ -39,6 +42,23 @@ class RegistrationFragment : Fragment() {
         binding.goToLoginFragmentButton.setOnClickListener { view: View ->
             view.findNavController().navigate(R.id.action_registration_to_login)
         }
+
+        binding.registrationButton.setOnClickListener {
+            register()
+        }
+
         return binding.root
+    }
+
+    fun register() {
+        runBlocking {
+            withContext(Dispatchers.IO) {
+                if (registrationViewModel.registration()) {
+                    findNavController().navigate(R.id.action_registration_to_login)
+                } else {
+                    // pop up ?
+                }
+            }
+        }
     }
 }
