@@ -4,7 +4,7 @@
 
     <data>
         <variable
-            name="loginViewModel"
+            name="model"
             type="com.example.tiktok.ui.viewModels.LoginViewModel" />
     </data>
 
@@ -17,7 +17,7 @@
             android:layout_width="300dp"
             android:layout_height="60dp"
             android:inputType="textEmailAddress"
-            android:text="@{loginViewModel.login}"
+            android:text="@={model.login}"
             app:layout_constraintBottom_toTopOf="@+id/password"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -30,7 +30,7 @@
             android:layout_width="300dp"
             android:layout_height="60dp"
             android:inputType="textPassword"
-            android:text="@{loginViewModel.password}"
+            android:text="@={model.password}"
             app:layout_constraintBottom_toTopOf="@+id/loginButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -47,7 +47,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            android:onClick="@{() -> loginViewModel.login()}"
+            android:onClick="@{() -> model.login()}"
             app:layout_constraintTop_toBottomOf="@+id/password" />
 
         <Button

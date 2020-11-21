@@ -34,7 +34,7 @@ class HomeFragment : Fragment() {
             ViewModelProvider(this, Injection.provideViewModelFactory(requireContext()))
                 .get(LoginViewModel::class.java)
 
-        binding.model = loginViewModel
+//        binding.model = loginViewModel
         Log.i("Home", "Init constructor")
         findNavController()
             .navigate(R.id.action_home_to_login)

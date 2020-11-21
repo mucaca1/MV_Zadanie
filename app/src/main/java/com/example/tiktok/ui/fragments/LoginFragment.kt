@@ -40,7 +40,6 @@ class LoginFragment : Fragment() {
                 .navigate(R.id.action_login_to_registration)
         }
 
-
         return binding.root
     }
 }

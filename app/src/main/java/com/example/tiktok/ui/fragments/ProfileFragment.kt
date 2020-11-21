@@ -31,7 +31,7 @@ class ProfileFragment : Fragment() {
             ViewModelProvider(this, Injection.provideViewModelFactory(requireContext()))
                 .get(LoginViewModel::class.java)
 
-        binding.model = loginViewModel
+//        binding.model = loginViewModel
         Log.i("Profile", "Init constructor")
 
         return binding.root

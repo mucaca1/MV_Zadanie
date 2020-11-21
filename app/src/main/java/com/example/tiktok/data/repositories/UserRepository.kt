@@ -27,7 +27,7 @@ class UserRepository private constructor(
     }
 
     suspend fun isPasswordValid(login: String, pwd: String): Boolean {
-        return (cache.findByLogin(login).password == pwd)
+        return (cache.findByLogin(login)?.password == pwd)
     }
 
     suspend fun findByLogin(login: String): UserItem {

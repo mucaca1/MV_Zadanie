@@ -9,10 +9,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.tiktok.R
 import com.example.tiktok.databinding.FragmentRegistrationBinding
+import com.example.tiktok.ui.viewModels.LoginViewModel
+import com.example.tiktok.ui.viewModels.RegistrationViewModel
+import com.opinyour.android.app.data.utils.Injection
 
 //import com.example.viewmodel.R
 //import com.example.viewmodel.databinding.FragmentHomeBinding
@@ -20,7 +25,7 @@ import com.example.tiktok.databinding.FragmentRegistrationBinding
 
 
 class RegistrationFragment : Fragment() {
-//    private val homeViewModel: HomeViewModel by viewModels()
+    private lateinit var registrationViewModel: RegistrationViewModel
     private lateinit var binding: FragmentRegistrationBinding
 
     override fun onCreateView(
@@ -32,7 +37,11 @@ class RegistrationFragment : Fragment() {
             inflater, R.layout.fragment_registration, container, false
         )
         binding.lifecycleOwner = this
-//        binding.model = homeViewModel
+        registrationViewModel =
+            ViewModelProvider(this, Injection.provideViewModelFactory(requireContext()))
+                .get(RegistrationViewModel::class.java)
+        binding.model = registrationViewModel
+
         Log.i("Registration", "Init constructor")
 
         binding.goToLoginFragmentButton.setOnClickListener {view: View ->

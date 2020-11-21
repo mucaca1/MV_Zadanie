@@ -7,33 +7,38 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.tiktok.data.repositories.UserRepository
 import com.example.tiktok.utils.PasswordUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
 
-    private val _login: MutableLiveData<String> = MutableLiveData()
-    val login: LiveData<String>
-        get() = _login
-
-    private val _password: MutableLiveData<String> = MutableLiveData()
-    val password: LiveData<String>
-        get() = _password
+    val login: MutableLiveData<String> = MutableLiveData()
 
 
-    lateinit var passwordUtils: PasswordUtils
+    val password: MutableLiveData<String> = MutableLiveData()
 
-    suspend fun login() {
-        if (login.value != null && password.value != null) {
-            if (userRepository.isPasswordValid(
-                    login.toString(),
-                    passwordUtils.hash(password.toString())
-                )
-            ) {
-                // login success
-                Log.i("Log", "Login OK")
-            } else {
-                // error
-                Log.i("Log", "Bad login")
+
+    var passwordUtils: PasswordUtils = PasswordUtils
+
+    fun login() {
+        runBlocking {
+            withContext(Dispatchers.IO) {
+                if (login.value != null && password.value != null) {
+                    if (userRepository.isPasswordValid(
+                            login.value.toString(),
+                            passwordUtils.hash(password.value.toString())
+                        )
+                    ) {
+                        // login success
+                        Log.i("Log", "Login OK")
+                    } else {
+                        // error
+                        Log.i("Log", "Bad login")
+                    }
+                }
             }
         }
+
     }
 }

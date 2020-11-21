@@ -7,38 +7,41 @@ import androidx.lifecycle.ViewModel
 import com.example.tiktok.data.repositories.UserRepository
 import com.example.tiktok.data.repositories.model.UserItem
 import com.example.tiktok.utils.PasswordUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 class RegistrationViewModel(private val userRepository: UserRepository) : ViewModel() {
 
-    private val _login: MutableLiveData<String> = MutableLiveData()
-    val login: LiveData<String>
-        get() = _login
+    val login: MutableLiveData<String> = MutableLiveData()
 
-    private val _email: MutableLiveData<String> = MutableLiveData()
-    val email: LiveData<String>
-        get() = _email
+    val email: MutableLiveData<String> = MutableLiveData()
 
-    private val _password: MutableLiveData<String> = MutableLiveData()
-    val password: LiveData<String>
-        get() = _password
-
-    private val _retypePassword: MutableLiveData<String> = MutableLiveData()
-    val retypePassword: LiveData<String>
-        get() = _retypePassword
-
-    lateinit var passwordUtils: PasswordUtils
+    val password: MutableLiveData<String> = MutableLiveData()
 
 
-    suspend fun registration() {
-        if (userRepository.findByLogin(login.toString()) == null) {
-            // new user
-            Log.i("Registration", "Registracia plata")
-            var user: UserItem = UserItem(login.toString(), email.toString(),  passwordUtils.hash(password.toString()))
-            userRepository.insertWord(user)
-        } else {
-            // login existuje
-            Log.i("Registration", "login uz existuje")
+    val retypePassword: MutableLiveData<String> = MutableLiveData()
+
+
+    val passwordUtils: PasswordUtils = PasswordUtils
+
+
+    fun registration() {
+        runBlocking {
+            withContext(Dispatchers.IO) {
+                var user: UserItem = userRepository.findByLogin(login.value.toString())
+                if (user == null) {
+                    // new user
+                    Log.i("Registration", "Registracia plata")
+                    var user: UserItem = UserItem(login.toString(), email.toString(),  passwordUtils.hash(password.toString()))
+                    userRepository.insertWord(user)
+                } else {
+                    // login existuje
+                    Log.i("Registration", "login uz existuje")
+                }
+            }
         }
+
     }
 
     fun isUsernameUnique() {

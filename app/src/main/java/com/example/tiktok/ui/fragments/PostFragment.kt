@@ -31,7 +31,7 @@ class PostFragment : Fragment() {
             ViewModelProvider(this, Injection.provideViewModelFactory(requireContext()))
                 .get(LoginViewModel::class.java)
 
-        binding.model = loginViewModel
+//        binding.model = loginViewModel
         Log.i("Post", "Init constructor")
 
         return binding.root
