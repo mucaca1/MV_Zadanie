@@ -20,7 +20,7 @@ class ViewModelFactory(private val userRepository: UserRepository) : ViewModelPr
 
         if (modelClass.isAssignableFrom(RegistrationViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return LoginViewModel(userRepository) as T
+            return RegistrationViewModel(userRepository) as T
         }
 
         throw IllegalArgumentException("Unknown ViewModel class")

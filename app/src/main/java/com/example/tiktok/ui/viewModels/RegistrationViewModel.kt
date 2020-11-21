@@ -1,7 +1,6 @@
 package com.example.tiktok.ui.viewModels
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.tiktok.data.repositories.UserRepository
@@ -19,11 +18,9 @@ class RegistrationViewModel(private val userRepository: UserRepository) : ViewMo
 
     val password: MutableLiveData<String> = MutableLiveData()
 
-
     val retypePassword: MutableLiveData<String> = MutableLiveData()
 
-
-    val passwordUtils: PasswordUtils = PasswordUtils
+    val passwordUtils: PasswordUtils = PasswordUtils()
 
 
     fun registration() {
@@ -32,8 +29,12 @@ class RegistrationViewModel(private val userRepository: UserRepository) : ViewMo
                 var user: UserItem = userRepository.findByLogin(login.value.toString())
                 if (user == null) {
                     // new user
-                    Log.i("Registration", "Registracia plata")
-                    var user: UserItem = UserItem(login.toString(), email.toString(),  passwordUtils.hash(password.toString()))
+                    Log.i("Registration", "Registracia platna")
+                    var user: UserItem = UserItem(
+                        login.value.toString(),
+                        email.value.toString(),
+                        passwordUtils.hash(password.value.toString())
+                    )
                     userRepository.insertWord(user)
                 } else {
                     // login existuje
@@ -41,10 +42,5 @@ class RegistrationViewModel(private val userRepository: UserRepository) : ViewMo
                 }
             }
         }
-
-    }
-
-    fun isUsernameUnique() {
-
     }
 }
