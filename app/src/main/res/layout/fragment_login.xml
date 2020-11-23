@@ -13,10 +13,12 @@
         android:layout_height="match_parent">
 
         <EditText
-            android:id="@+id/emailAddress"
+            android:id="@+id/login"
             android:layout_width="300dp"
             android:layout_height="60dp"
             android:inputType="textEmailAddress"
+            android:hint="Login"
+            android:text="@={model.login}"
             app:layout_constraintBottom_toTopOf="@+id/password"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -29,11 +31,13 @@
             android:layout_width="300dp"
             android:layout_height="60dp"
             android:inputType="textPassword"
+            android:hint="password"
+            android:text="@={model.password}"
             app:layout_constraintBottom_toTopOf="@+id/loginButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/emailAddress"
+            app:layout_constraintTop_toBottomOf="@+id/login"
             android:importantForAutofill="no" />
 
         <Button
@@ -41,14 +45,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="sign up"
-            app:layout_constraintBottom_toTopOf="@+id/loginFragment"
+            app:layout_constraintBottom_toTopOf="@+id/goToRegistrationFragmentButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/password" />
 
         <Button
-            android:id="@+id/loginFragment"
+            android:id="@+id/goToRegistrationFragmentButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Don't have an account yet? Create it"

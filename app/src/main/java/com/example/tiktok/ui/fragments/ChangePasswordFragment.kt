@@ -2,6 +2,7 @@ package com.example.tiktok.ui.fragments
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,8 +31,8 @@ class ChangePasswordFragment : Fragment() {
             ViewModelProvider(this, Injection.provideViewModelFactory(requireContext()))
                 .get(LoginViewModel::class.java)
 
-        binding.model = loginViewModel
-
+//        binding.model = loginViewModel
+        Log.i("ChangePassword", "Init constructor")
 
         return binding.root
     }
