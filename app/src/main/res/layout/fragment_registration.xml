@@ -5,7 +5,7 @@
     <data>
         <variable
             name="model"
-            type="com.example.tiktok.ui.viewModels.RegistrationViewModel" />
+            type="com.example.madam.ui.viewModels.RegistrationViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

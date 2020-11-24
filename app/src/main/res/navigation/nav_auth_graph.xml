@@ -5,7 +5,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.tiktok.ui.fragments.HomeFragment"
+        android:name="com.example.madam.ui.fragments.HomeFragment"
         android:label="HomeFragment">
         <action
             android:id="@+id/action_home_to_login"
@@ -20,7 +20,7 @@
 
     <fragment
         android:id="@+id/postFragment"
-        android:name="com.example.tiktok.ui.fragments.PostFragment"
+        android:name="com.example.madam.ui.fragments.PostFragment"
         android:label="PostFragment">
         <action
             android:id="@+id/action_post_to_home"
@@ -29,7 +29,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.tiktok.ui.fragments.LoginFragment"
+        android:name="com.example.madam.ui.fragments.LoginFragment"
         android:label="LoginFragment">
         <action
             android:id="@+id/action_login_to_registration"
@@ -41,7 +41,7 @@
 
     <fragment
         android:id="@+id/registrationFragment"
-        android:name="com.example.tiktok.ui.fragments.RegistrationFragment"
+        android:name="com.example.madam.ui.fragments.RegistrationFragment"
         android:label="RegistrationFragment">
         <action
             android:id="@+id/action_registration_to_login"
@@ -53,7 +53,7 @@
 
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.tiktok.ui.fragments.ProfileFragment"
+        android:name="com.example.madam.ui.fragments.ProfileFragment"
         android:label="ProfileFragment">
         <action
             android:id="@+id/action_profile_to_home"
@@ -68,7 +68,7 @@
 
     <fragment
         android:id="@+id/changePasswordFragment"
-        android:name="com.example.tiktok.ui.fragments.ChangePasswordFragment"
+        android:name="com.example.madam.ui.fragments.ChangePasswordFragment"
         android:label="ChangePasswordFragment">
         <action
             android:id="@+id/action_changePassword_to_profile"
@@ -77,7 +77,7 @@
 
     <fragment
         android:id="@+id/videoPermissionsFragment"
-        android:name="com.example.tiktok.ui.fragments.VideoPermissionsFragment"
+        android:name="com.example.madam.ui.fragments.VideoPermissionsFragment"
         android:label="VideoPermissionsFragment">
         <action
             android:id="@+id/action_permissions_to_home"
@@ -89,7 +89,7 @@
 
     <fragment
         android:id="@+id/videoRecordFragment"
-        android:name="com.example.tiktok.ui.fragments.VideoRecordFragment"
+        android:name="com.example.madam.ui.fragments.VideoRecordFragment"
         android:label="VideoRecordFragment">
         <action
             android:id="@+id/action_record_to_home"

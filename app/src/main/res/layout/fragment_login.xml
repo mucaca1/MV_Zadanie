@@ -5,7 +5,7 @@
     <data>
         <variable
             name="model"
-            type="com.example.tiktok.ui.viewModels.LoginViewModel" />
+            type="com.example.madam.ui.viewModels.LoginViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,6 +17,8 @@
             android:layout_width="300dp"
             android:layout_height="60dp"
             android:inputType="textEmailAddress"
+            style="@style/H2RobotoFont"
+            android:backgroundTint="@color/primary"
             android:hint="Login"
             android:text="@={model.login}"
             app:layout_constraintBottom_toTopOf="@+id/password"
@@ -31,7 +33,9 @@
             android:layout_width="300dp"
             android:layout_height="60dp"
             android:inputType="textPassword"
-            android:hint="password"
+            style="@style/H2RobotoFont"
+            android:hint="Password"
+            android:backgroundTint="@color/primary"
             android:text="@={model.password}"
             app:layout_constraintBottom_toTopOf="@+id/loginButton"
             app:layout_constraintEnd_toEndOf="parent"
@@ -44,7 +48,7 @@
             android:id="@+id/loginButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="sign up"
+            android:text="Sign up"
             app:layout_constraintBottom_toTopOf="@+id/goToRegistrationFragmentButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
