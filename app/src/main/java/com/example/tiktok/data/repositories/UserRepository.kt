@@ -22,16 +22,20 @@ class UserRepository private constructor(
 
     suspend fun getUsers(): List<UserItem> = cache.getAll()
 
-    suspend fun insertUser(wordItem: UserItem) {
-        cache.insertAll(wordItem)
+    suspend fun insertUser(userItem: UserItem) {
+        cache.insertAll(userItem)
     }
 
     suspend fun isPasswordValid(login: String, pwd: String): Boolean {
-        return (cache.findByLogin(login).password == pwd)
+        return (cache.findByLogin(login)?.password == pwd)
     }
 
     suspend fun findByLogin(login: String): UserItem {
         return cache.findByLogin(login)
+    }
+
+    suspend fun removeUser(userItem: UserItem) {
+        cache.delete(userItem)
     }
 
 }

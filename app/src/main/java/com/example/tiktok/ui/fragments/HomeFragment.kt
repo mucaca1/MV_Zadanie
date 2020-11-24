@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.tiktok.R
+import com.example.tiktok.databinding.FragmentHomeBinding
 import com.example.tiktok.databinding.FragmentLoginBinding
 import com.example.tiktok.ui.activities.MainActivity
 import com.example.tiktok.ui.viewModels.LoginViewModel
@@ -19,19 +20,19 @@ import com.opinyour.android.app.data.utils.Injection
 
 class HomeFragment : Fragment() {
     private lateinit var loginViewModel: LoginViewModel
-    private lateinit var binding: FragmentLoginBinding
+    private lateinit var binding: FragmentHomeBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(
-            inflater, R.layout.fragment_login, container, false
+            inflater, R.layout.fragment_home, container, false
         )
         binding.lifecycleOwner = this
-        loginViewModel =
+        /*loginViewModel =
             ViewModelProvider(this, Injection.provideViewModelFactory(requireContext()))
-                .get(LoginViewModel::class.java)
+                .get(LoginViewModel::class.java)*/
         Log.i("Home", "Init constructor")
 
         if (!(activity as MainActivity).sessionManager.isLoggedIn()) {
@@ -43,6 +44,15 @@ class HomeFragment : Fragment() {
                 ?: "unknown") + " is logged")
         }
 
+        binding.accountButton.setOnClickListener{
+            goToAccountSettings()
+        }
+
         return binding.root
+    }
+
+    fun goToAccountSettings() {
+        findNavController()
+            .navigate(R.id.action_home_to_profile)
     }
 }

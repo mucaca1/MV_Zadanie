@@ -3,6 +3,7 @@ package com.opinyour.android.app.data.utils
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.tiktok.data.repositories.UserRepository
+import com.example.tiktok.ui.viewModels.ChangePasswordViewModel
 import com.example.tiktok.ui.viewModels.LoginViewModel
 import com.example.tiktok.ui.viewModels.RegistrationViewModel
 
@@ -21,6 +22,11 @@ class ViewModelFactory(private val userRepository: UserRepository) : ViewModelPr
         if (modelClass.isAssignableFrom(RegistrationViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
             return RegistrationViewModel(userRepository) as T
+        }
+
+        if (modelClass.isAssignableFrom(ChangePasswordViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return ChangePasswordViewModel(userRepository) as T
         }
 
         throw IllegalArgumentException("Unknown ViewModel class")

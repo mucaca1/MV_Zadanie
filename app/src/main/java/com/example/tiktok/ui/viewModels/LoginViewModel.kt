@@ -1,7 +1,9 @@
 package com.example.tiktok.ui.viewModels
 
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,6 +13,8 @@ import com.example.tiktok.utils.PasswordUtils
 import com.example.tiktok.utils.SessionManager
 
 class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
+
+    var message: String = ""
 
     private val _loginStatus: MutableLiveData<Boolean> = MutableLiveData()
     val loginStatus: LiveData<Boolean>
@@ -28,7 +32,7 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
 
     lateinit var sessionManager: SessionManager
 
-    suspend fun login(): Boolean {
+    suspend fun login(): UserItem? {
         if (login.value != null && password.value != null) {
 
             if (userRepository.isPasswordValid(
@@ -38,16 +42,18 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
             ) {
                 // login success
                 Log.i("Log", "Login OK")
+                message = ""
                 _user.postValue(userRepository.findByLogin(login.value.toString()))
                 _loginStatus.postValue(true)
-                return true
+                return userRepository.findByLogin(login.value.toString())
             } else {
                 // error
                 Log.i("Log", "Bad login")
+                message = "Zlé prihlasovacie údaje"
                 _loginStatus.postValue(false)
-                return false
+                return null
             }
         }
-        return false
+        return null
     }
 }
