@@ -5,23 +5,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.example.madam.R
-import com.example.madam.data.api.model.UserResponse
 import com.example.madam.databinding.FragmentRegistrationBinding
 import com.example.madam.ui.viewModels.RegistrationViewModel
-import com.opinyour.android.app.data.api.WebUserApi
 import com.opinyour.android.app.data.utils.Injection
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
-import org.json.JSONException
-import org.json.JSONObject
 
 
 class RegistrationFragment : Fragment() {
@@ -59,6 +50,8 @@ class RegistrationFragment : Fragment() {
     }
 
     fun register() {
+        registrationViewModel.register()
+
 //        userApi.login(registrationViewModel.email.value.toString(), registrationViewModel.login.value.toString(), registrationViewModel.passwordUtils.hash(registrationViewModel.password.value.toString()))
         /*runBlocking {
             withContext(Dispatchers.IO) {

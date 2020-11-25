@@ -17,12 +17,10 @@ import com.example.madam.data.db.repositories.model.UserItem
 import com.example.madam.databinding.FragmentLoginBinding
 import com.example.madam.ui.activities.MainActivity
 import com.example.madam.ui.viewModels.LoginViewModel
-import com.opinyour.android.app.data.api.WebUserApi
 import com.opinyour.android.app.data.utils.Injection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import kotlin.math.log
 
 
 class LoginFragment : Fragment() {
