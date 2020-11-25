@@ -5,8 +5,9 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.madam.data.repositories.UserRepository
-import com.example.madam.data.repositories.model.UserItem
+import com.example.madam.data.db.repositories.UserRepository
+import com.example.madam.data.db.repositories.model.UserItem
+
 import com.example.madam.utils.PasswordUtils
 
 class ChangePasswordViewModel(private val userRepository: UserRepository) : ViewModel() {

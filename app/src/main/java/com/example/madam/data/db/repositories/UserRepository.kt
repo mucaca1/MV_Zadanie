@@ -1,11 +1,7 @@
 package com.example.madam.data.db.repositories
 
-import com.example.madam.data.api.model.UserResponse
-import com.example.madam.data.repositories.model.UserItem
-import com.opinyour.android.app.data.api.WebUserApi
-import java.net.ConnectException
-import com.example.madam.data.localCaches.UserLocalCache
 import com.example.madam.data.db.repositories.model.UserItem
+import com.example.madam.data.localCaches.UserLocalCache
 
 class UserRepository private constructor(
     private val cache: UserLocalCache

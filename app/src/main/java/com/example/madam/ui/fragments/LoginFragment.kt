@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.madam.R
+import com.example.madam.data.db.repositories.model.UserItem
 import com.example.madam.databinding.FragmentLoginBinding
 import com.example.madam.ui.activities.MainActivity
 import com.example.madam.ui.viewModels.LoginViewModel
