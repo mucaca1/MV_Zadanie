@@ -2,9 +2,12 @@ package com.example.tiktok.data.repositories
 
 import androidx.lifecycle.MutableLiveData
 import com.example.tiktok.data.UserLocalCache
+import com.example.tiktok.data.api.WebUserApi
 import com.example.tiktok.data.repositories.model.UserItem
+import java.net.ConnectException
 
 class UserRepository private constructor(
+    private val api: WebUserApi,
     private val cache: UserLocalCache
 ) {
 
@@ -13,10 +16,10 @@ class UserRepository private constructor(
         @Volatile
         private var INSTANCE: UserRepository? = null
 
-        fun getInstance(cache: UserLocalCache): UserRepository =
+        fun getInstance(api: WebUserApi, cache: UserLocalCache): UserRepository =
             INSTANCE ?: synchronized(this) {
                 INSTANCE
-                    ?: UserRepository(cache).also { INSTANCE = it }
+                    ?: UserRepository(api, cache).also { INSTANCE = it }
             }
     }
 
@@ -36,6 +39,32 @@ class UserRepository private constructor(
 
     suspend fun removeUser(userItem: UserItem) {
         cache.delete(userItem)
+    }
+
+    suspend fun register(onError: (error: String) -> Unit) {
+        try {
+            val response = api.login()
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    return cache.addVideos(it.map { item ->
+                        VideoItem(
+                            item.id,
+                            item.src
+                        )
+                    })
+                }
+            }
+
+            onError("Load videos failed. Try again later please.")
+        } catch (ex: ConnectException) {
+            onError("Off-line. Check internet connection.")
+            ex.printStackTrace()
+            return
+        } catch (ex: Exception) {
+            onError("Oops...Change failed. Try again later please.")
+            ex.printStackTrace()
+            return
+        }
     }
 
 }

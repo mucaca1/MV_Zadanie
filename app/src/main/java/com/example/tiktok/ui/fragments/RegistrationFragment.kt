@@ -11,18 +11,27 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.example.tiktok.R
+import com.example.tiktok.data.api.WebUserApi
+import com.example.tiktok.data.api.model.UserResponse
 import com.example.tiktok.databinding.FragmentRegistrationBinding
 import com.example.tiktok.ui.viewModels.RegistrationViewModel
 import com.opinyour.android.app.data.utils.Injection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import org.json.JSONException
+import org.json.JSONObject
 
 
 class RegistrationFragment : Fragment() {
     private lateinit var registrationViewModel: RegistrationViewModel
     private lateinit var binding: FragmentRegistrationBinding
+    private lateinit var userApi: WebUserApi
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,11 +57,14 @@ class RegistrationFragment : Fragment() {
             register()
         }
 
+        userApi = WebUserApi(context)
+
         return binding.root
     }
 
     fun register() {
-        runBlocking {
+        userApi.login(registrationViewModel.email.value.toString(), registrationViewModel.login.value.toString(), registrationViewModel.passwordUtils.hash(registrationViewModel.password.value.toString()))
+        /*runBlocking {
             withContext(Dispatchers.IO) {
                 if (registrationViewModel.registration()) {
                     findNavController().navigate(R.id.action_registration_to_login)
@@ -61,6 +73,6 @@ class RegistrationFragment : Fragment() {
         }
         if (registrationViewModel.message != "") {
             Toast.makeText(context, registrationViewModel.message, Toast.LENGTH_SHORT).show()
-        }
+        }*/
     }
 }

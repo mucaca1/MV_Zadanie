@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.tiktok.R
+import com.example.tiktok.data.api.WebUserApi
 import com.example.tiktok.data.repositories.model.UserItem
 import com.example.tiktok.databinding.FragmentLoginBinding
 import com.example.tiktok.ui.activities.MainActivity
@@ -27,6 +28,7 @@ import kotlin.math.log
 class LoginFragment : Fragment() {
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var binding: FragmentLoginBinding
+    private lateinit var userApi: WebUserApi
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,6 +52,8 @@ class LoginFragment : Fragment() {
             login()
         }
 
+        userApi = WebUserApi(context)
+
         return binding.root
     }
 
@@ -70,5 +74,10 @@ class LoginFragment : Fragment() {
         if (loginViewModel.message != "") {
             Toast.makeText(context, loginViewModel.message, Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+//        requestQueue?.cancelAll(TAG)
     }
 }
