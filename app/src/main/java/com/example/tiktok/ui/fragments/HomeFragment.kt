@@ -1,4 +1,4 @@
-package com.example.tiktok.ui.fragments
+package com.example.madam.ui.fragments
 
 
 import android.os.Bundle
@@ -10,11 +10,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.tiktok.R
-import com.example.tiktok.databinding.FragmentHomeBinding
-import com.example.tiktok.databinding.FragmentLoginBinding
-import com.example.tiktok.ui.activities.MainActivity
-import com.example.tiktok.ui.viewModels.LoginViewModel
+import com.example.madam.R
+import com.example.madam.databinding.FragmentHomeBinding
+import com.example.madam.databinding.FragmentLoginBinding
+import com.example.madam.ui.activities.MainActivity
+import com.example.madam.ui.viewModels.LoginViewModel
 import com.opinyour.android.app.data.utils.Injection
 
 
