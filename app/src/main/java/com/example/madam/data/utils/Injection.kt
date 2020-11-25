@@ -25,7 +25,7 @@ object Injection {
         return VideoLocalCache(database.appVideoDao())
     }
 
-    fun provideVideoRepository(context: Context): VideoRepository {+-
+    fun provideVideoRepository(context: Context): VideoRepository {
         return VideoRepository.getInstance(WebApi.create(), provideVideoCache(context))
     }
 
