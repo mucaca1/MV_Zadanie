@@ -45,13 +45,8 @@ class UserRepository private constructor(
         try {
             val response = api.login()
             if (response.isSuccessful) {
-                response.body()?.let {
-                    return cache.addVideos(it.map { item ->
-                        VideoItem(
-                            item.id,
-                            item.src
-                        )
-                    })
+                response.body()?.let { it: UserItem ->
+                    cache.insertAll(it)
                 }
             }
 
