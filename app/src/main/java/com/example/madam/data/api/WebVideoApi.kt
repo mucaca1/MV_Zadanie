@@ -9,12 +9,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.POST
 
 interface WebVideoApi {
-    @POST("realestate")
+    @POST("upload")
     suspend fun getVideos(): Response<List<VideoResponse>>
 
     companion object {
         private const val BASE_URL =
-            "http://api.mcomputing.eu/mobv/service.php"
+            "http://api.mcomputing.eu/mobv/"
 
         fun create(context: Context): WebVideoApi {
 
