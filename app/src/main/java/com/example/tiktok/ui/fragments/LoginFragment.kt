@@ -13,11 +13,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.tiktok.R
-import com.example.tiktok.data.api.WebUserApi
 import com.example.tiktok.data.repositories.model.UserItem
 import com.example.tiktok.databinding.FragmentLoginBinding
 import com.example.tiktok.ui.activities.MainActivity
 import com.example.tiktok.ui.viewModels.LoginViewModel
+import com.opinyour.android.app.data.api.WebUserApi
 import com.opinyour.android.app.data.utils.Injection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -52,7 +52,7 @@ class LoginFragment : Fragment() {
             login()
         }
 
-        userApi = WebUserApi(context)
+//        userApi = com.opinyour.android.app.data.api.WebUserApi(context)
 
         return binding.root
     }

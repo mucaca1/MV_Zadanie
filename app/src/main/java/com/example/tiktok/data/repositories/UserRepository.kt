@@ -1,13 +1,12 @@
 package com.example.tiktok.data.repositories
 
-import androidx.lifecycle.MutableLiveData
 import com.example.tiktok.data.UserLocalCache
-import com.example.tiktok.data.api.WebUserApi
+import com.example.tiktok.data.api.model.UserResponse
 import com.example.tiktok.data.repositories.model.UserItem
+import com.opinyour.android.app.data.api.WebUserApi
 import java.net.ConnectException
 
 class UserRepository private constructor(
-    private val api: WebUserApi,
     private val cache: UserLocalCache
 ) {
 
@@ -16,10 +15,10 @@ class UserRepository private constructor(
         @Volatile
         private var INSTANCE: UserRepository? = null
 
-        fun getInstance(api: WebUserApi, cache: UserLocalCache): UserRepository =
+        fun getInstance(cache: UserLocalCache): UserRepository =
             INSTANCE ?: synchronized(this) {
                 INSTANCE
-                    ?: UserRepository(api, cache).also { INSTANCE = it }
+                    ?: UserRepository(cache).also { INSTANCE = it }
             }
     }
 
@@ -42,24 +41,25 @@ class UserRepository private constructor(
     }
 
     suspend fun register(onError: (error: String) -> Unit) {
-        try {
-            val response = api.login()
-            if (response.isSuccessful) {
-                response.body()?.let { it: UserItem ->
-                    cache.insertAll(it)
-                }
-            }
-
-            onError("Load videos failed. Try again later please.")
-        } catch (ex: ConnectException) {
-            onError("Off-line. Check internet connection.")
-            ex.printStackTrace()
-            return
-        } catch (ex: Exception) {
-            onError("Oops...Change failed. Try again later please.")
-            ex.printStackTrace()
-            return
-        }
+//        try {
+//            val response = api.register()
+//            if (response.isSuccessful) {
+//                response.body()?.let { it: UserResponse ->
+//                    // TODO cast tu user
+////                    cache.insertAll(it)
+//                }
+//            }
+//
+//            onError("Load videos failed. Try again later please.")
+//        } catch (ex: ConnectException) {
+//            onError("Off-line. Check internet connection.")
+//            ex.printStackTrace()
+//            return
+//        } catch (ex: Exception) {
+//            onError("Oops...Change failed. Try again later please.")
+//            ex.printStackTrace()
+//            return
+//        }
     }
 
 }
