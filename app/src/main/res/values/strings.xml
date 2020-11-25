@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Madam</string>
+    <string name="sign_up">Sign up</string>
+    <string name="register"><u>Don\'t have an account yet? Create it</u></string>
 </resources>

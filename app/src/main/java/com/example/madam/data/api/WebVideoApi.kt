@@ -9,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.POST
 
 interface WebVideoApi {
-    @POST("upload")
+    @POST("upload.php")
     suspend fun getVideos(): Response<List<VideoResponse>>
 
     companion object {
