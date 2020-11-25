@@ -26,7 +26,6 @@ import kotlinx.coroutines.withContext
 class LoginFragment : Fragment() {
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var binding: FragmentLoginBinding
-    private lateinit var userApi: WebUserApi
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

@@ -18,7 +18,6 @@ import com.opinyour.android.app.data.utils.Injection
 class RegistrationFragment : Fragment() {
     private lateinit var registrationViewModel: RegistrationViewModel
     private lateinit var binding: FragmentRegistrationBinding
-    private lateinit var userApi: WebUserApi
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,29 +38,9 @@ class RegistrationFragment : Fragment() {
         binding.goToLoginFragmentButton.setOnClickListener { view: View ->
             view.findNavController().navigate(R.id.action_registration_to_login)
         }
-
-        binding.registrationButton.setOnClickListener {
-            register()
-        }
-
 //        userApi = WebUserApi(context)
 
         return binding.root
     }
 
-    fun register() {
-        registrationViewModel.register()
-
-//        userApi.login(registrationViewModel.email.value.toString(), registrationViewModel.login.value.toString(), registrationViewModel.passwordUtils.hash(registrationViewModel.password.value.toString()))
-        /*runBlocking {
-            withContext(Dispatchers.IO) {
-                if (registrationViewModel.registration()) {
-                    findNavController().navigate(R.id.action_registration_to_login)
-                }
-            }
-        }
-        if (registrationViewModel.message != "") {
-            Toast.makeText(context, registrationViewModel.message, Toast.LENGTH_SHORT).show()
-        }*/
-    }
 }

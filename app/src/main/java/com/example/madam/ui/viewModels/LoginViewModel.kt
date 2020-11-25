@@ -7,10 +7,18 @@ import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.madam.data.api.model.UserRegisterResponse
 import com.example.madam.data.db.repositories.UserRepository
 import com.example.madam.data.db.repositories.model.UserItem
 import com.example.madam.utils.PasswordUtils
 import com.example.madam.utils.SessionManager
+import com.opinyour.android.app.data.api.WebApi
+import okhttp3.MediaType
+import okhttp3.RequestBody
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
 
@@ -31,6 +39,34 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
     var passwordUtils: PasswordUtils = PasswordUtils()
 
     lateinit var sessionManager: SessionManager
+
+    fun newLogin() {
+        val jsonObject = JSONObject()
+        jsonObject.put("action", "login")
+        jsonObject.put("apikey", WebApi.API_KEY)
+        jsonObject.put("username", login.value.toString())
+        jsonObject.put("password", passwordUtils.hash(password.value.toString()))
+        val body = jsonObject.toString()
+        val data = RequestBody.create(MediaType.parse("application/json"), body)
+
+        var registerResponse: Call<UserRegisterResponse> = WebApi.create().register(data)
+        registerResponse.enqueue(object : Callback<UserRegisterResponse> {
+            override fun onFailure(call: Call<UserRegisterResponse>, t: Throwable) {
+                Log.i("fail", t.message.toString())
+            }
+
+            override fun onResponse(
+                call: Call<UserRegisterResponse>,
+                registerResponse: Response<UserRegisterResponse>
+            ) {
+                if (registerResponse?.code() == 200) {
+                    Log.i("success", registerResponse.body()?.id.toString())
+                } else {
+                    Log.i("success", "Bad login params")
+                }
+            }
+        })
+    }
 
     suspend fun login(): UserItem? {
         if (login.value != null && password.value != null) {

@@ -1,6 +1,7 @@
 package com.example.madam.ui.viewModels
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -60,7 +61,6 @@ class RegistrationViewModel(private val userRepository: UserRepository) : ViewMo
                     Log.i("success", "Username exists")
                 }
             }
-
         })
 
     }
