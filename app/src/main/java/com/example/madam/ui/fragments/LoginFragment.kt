@@ -6,19 +6,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.madam.R
+import com.example.madam.data.db.repositories.model.UserItem
 import com.example.madam.databinding.FragmentLoginBinding
 import com.example.madam.ui.activities.MainActivity
 import com.example.madam.ui.viewModels.LoginViewModel
 import com.opinyour.android.app.data.utils.Injection
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 
 
 class LoginFragment : Fragment() {
@@ -43,27 +43,21 @@ class LoginFragment : Fragment() {
             view.findNavController()
                 .navigate(R.id.action_login_to_registration)
         }
-        binding.loginButton.setOnClickListener {
-            login()
-        }
+
+//        userApi = com.opinyour.android.app.data.api.WebUserApi(context)
+
+        loginViewModel.message.observe(viewLifecycleOwner, Observer {
+            if (it.equals("Login")) {
+                (activity as MainActivity).pagerAdapter.addAfterSignFragments()
+                (activity as MainActivity).pagerAdapter.notifyDataSetChanged()
+                findNavController()
+                    .navigate(R.id.action_login_to_home)
+            }
+            else if (!it.equals("")) {
+                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            }
+        })
 
         return binding.root
-    }
-
-    private fun login() {
-        runBlocking {
-            withContext(Dispatchers.IO) {
-                if (loginViewModel.login()) {
-                    (activity as MainActivity).sessionManager.createLoginSession(
-                        loginViewModel.login.value,
-                        loginViewModel.user.value?.email
-                    )
-                    (activity as MainActivity).pagerAdapter.addAfterSignFragments()
-                    (activity as MainActivity).pagerAdapter.notifyDataSetChanged()
-                    findNavController()
-                        .navigate(R.id.action_login_to_home)
-                }
-            }
-        }
     }
 }

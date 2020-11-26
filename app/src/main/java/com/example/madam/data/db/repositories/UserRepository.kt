@@ -1,7 +1,7 @@
 package com.example.madam.data.db.repositories
 
-import com.example.madam.data.localCaches.UserLocalCache
 import com.example.madam.data.db.repositories.model.UserItem
+import com.example.madam.data.localCaches.UserLocalCache
 
 class UserRepository private constructor(
     private val cache: UserLocalCache
@@ -9,6 +9,7 @@ class UserRepository private constructor(
 
     companion object {
         const val TAG = "UserRepository"
+
         @Volatile
         private var INSTANCE: UserRepository? = null
 
@@ -21,16 +22,19 @@ class UserRepository private constructor(
 
     suspend fun getUsers(): List<UserItem> = cache.getAll()
 
-    suspend fun insertUser(wordItem: UserItem) {
-        cache.insertAll(wordItem)
+    suspend fun loginUser(userItem: UserItem) {
+        cache.insertAll(userItem)
     }
 
-    suspend fun isPasswordValid(login: String, pwd: String): Boolean {
-        return (cache.findByLogin(login)?.password == pwd)
+    suspend fun getLoggedUser(): UserItem? {
+        return cache.getFirstUser()
     }
 
-    suspend fun findByLogin(login: String): UserItem {
-        return cache.findByLogin(login)
+    suspend fun logOutUser(userItem: UserItem) {
+        cache.delete(userItem)
     }
 
+    suspend fun update(userItem: UserItem) {
+        cache.update(userItem)
+    }
 }

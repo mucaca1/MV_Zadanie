@@ -3,11 +3,11 @@ package com.example.madam.data.db.repositories
 import androidx.lifecycle.LiveData
 import com.example.madam.data.db.repositories.model.VideoItem
 import com.example.madam.data.localCaches.VideoLocalCache
-import com.opinyour.android.app.data.api.WebVideoApi
+import com.opinyour.android.app.data.api.WebApi
 import java.net.ConnectException
 
 class VideoRepository private constructor(
-    private val api: WebVideoApi,
+    private val api: WebApi,
     private val cache: VideoLocalCache
 ) {
 
@@ -17,7 +17,7 @@ class VideoRepository private constructor(
         @Volatile
         private var INSTANCE: VideoRepository? = null
 
-        fun getInstance(api: WebVideoApi, cache: VideoLocalCache): VideoRepository =
+        fun getInstance(api: WebApi, cache: VideoLocalCache): VideoRepository =
             INSTANCE ?: synchronized(this) {
                 INSTANCE
                     ?: VideoRepository(api, cache).also { INSTANCE = it }

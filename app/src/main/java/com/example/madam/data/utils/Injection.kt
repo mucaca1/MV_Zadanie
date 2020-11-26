@@ -7,7 +7,7 @@ import com.example.madam.data.db.repositories.AppDatabase
 import com.example.madam.data.db.repositories.UserRepository
 import com.example.madam.data.db.repositories.VideoRepository
 import com.example.madam.data.localCaches.VideoLocalCache
-import com.opinyour.android.app.data.api.WebVideoApi
+import com.opinyour.android.app.data.api.WebApi
 
 object Injection {
 
@@ -26,7 +26,7 @@ object Injection {
     }
 
     fun provideVideoRepository(context: Context): VideoRepository {
-        return VideoRepository.getInstance(WebVideoApi.create(context), provideVideoCache(context))
+        return VideoRepository.getInstance(WebApi.create(), provideVideoCache(context))
     }
 
     fun provideViewModelFactory(context: Context): ViewModelProvider.Factory {
