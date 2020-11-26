@@ -40,6 +40,12 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
 
     var passwordUtils: PasswordUtils = PasswordUtils()
 
+    suspend fun isLogged(): Boolean {
+        var user: UserItem? = userRepository.getLoggedUser()
+        Log.i("User", user?.email.toString() + " " + user?.profile.toString())
+        return user != null
+    }
+
     fun login() {
         val jsonObject = JSONObject()
         jsonObject.put("action", "login")

@@ -11,7 +11,7 @@ import com.example.madam.data.db.repositories.model.VideoItem
 
 @Database(
     entities = [UserItem::class, VideoItem::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

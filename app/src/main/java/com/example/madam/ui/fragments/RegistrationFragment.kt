@@ -10,12 +10,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
-import androidx.navigation.findNavController
 import com.example.madam.R
 import com.example.madam.databinding.FragmentRegistrationBinding
+import com.example.madam.ui.activities.LoginActivity
 import com.example.madam.ui.viewModels.RegistrationViewModel
 import com.opinyour.android.app.data.utils.Injection
+import kotlinx.android.synthetic.main.activity_login.*
 
 
 class RegistrationFragment : Fragment() {
@@ -38,13 +38,12 @@ class RegistrationFragment : Fragment() {
 
         Log.i("Registration", "Init constructor")
 
-        binding.goToLoginFragmentButton.setOnClickListener { view: View ->
-            view.findNavController().navigate(R.id.action_registration_to_login)
+        binding.goToLoginFragmentButton.setOnClickListener {
+            (activity as LoginActivity).view_login_pager.currentItem = 0
         }
-//        userApi = WebUserApi(context)
 
         registrationViewModel.message.observe(viewLifecycleOwner, Observer {
-            if (!it.equals("")) {
+            if (it != "") {
                 Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
             }
         })

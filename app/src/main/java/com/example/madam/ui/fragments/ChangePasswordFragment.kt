@@ -63,14 +63,16 @@ class ChangePasswordFragment : Fragment() {
         return binding.root
     }
 
-    fun goToAccountSettings() {
-        findNavController()
-            .navigate(R.id.action_changePassword_to_profile)
+    private fun goToAccountSettings() {
     }
 
-    fun changePassword() {
+    private fun changePassword() {
         viewLifecycleOwner.lifecycleScope.launch {
             changePasswordViewModel.changePassword()
         }
+    }
+
+    companion object {
+        fun newInstance() = ChangePasswordFragment()
     }
 }

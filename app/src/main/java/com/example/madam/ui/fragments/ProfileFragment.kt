@@ -10,10 +10,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import com.example.madam.R
 import com.example.madam.data.db.repositories.model.UserItem
 import com.example.madam.databinding.FragmentProfileBinding
+import com.example.madam.ui.activities.ChangePasswordActivity
+import com.example.madam.ui.activities.MainActivity
 import com.example.madam.ui.viewModels.ProfileViewModel
 import com.opinyour.android.app.data.utils.Injection
 import kotlinx.coroutines.launch
@@ -41,10 +42,6 @@ class ProfileFragment : Fragment() {
             changePassword()
         }
 
-        binding.back.setOnClickListener {
-            goToMenu()
-        }
-
         binding.logOut.setOnClickListener {
             logOut()
         }
@@ -62,28 +59,19 @@ class ProfileFragment : Fragment() {
             }
         }
 
-
-
         return binding.root
     }
 
-    fun goToMenu() {
-        findNavController()
-            .navigate(R.id.action_profile_to_home)
+    private fun changePassword() {
+        (activity as MainActivity).goToActivity(ChangePasswordActivity::class.java)
     }
 
-    fun changePassword() {
-        findNavController()
-            .navigate(R.id.action_profile_to_changePassword)
-    }
-
-    fun logOut() {
+    private fun logOut() {
         viewLifecycleOwner.lifecycleScope.launch {
             var user: UserItem? = profileViewModel.getLoggedUser()
             if (user != null) {
                 profileViewModel.logOut(user)
-                findNavController()
-                    .navigate(R.id.action_profile_to_home)
+                (activity as MainActivity).isLogged.value = false
             }
         }
     }
