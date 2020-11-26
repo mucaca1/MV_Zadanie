@@ -58,6 +58,8 @@ class LoginFragment : Fragment() {
                         loginViewModel.login.value,
                         loginViewModel.user.value?.email
                     )
+                    (activity as MainActivity).pagerAdapter.addAfterSignFragments()
+                    (activity as MainActivity).pagerAdapter.notifyDataSetChanged()
                     findNavController()
                         .navigate(R.id.action_login_to_home)
                 }

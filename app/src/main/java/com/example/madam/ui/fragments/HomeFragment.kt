@@ -39,8 +39,12 @@ class HomeFragment : Fragment() {
 
         if (!(activity as MainActivity).sessionManager.isLoggedIn()) {
             Log.i("Home", "No user logged")
-            findNavController()
-                .navigate(R.id.action_home_to_login)
+            if (findNavController().currentDestination?.id == R.id.homeFragment) {
+                (activity as MainActivity).pagerAdapter.removeAllFragments()
+                (activity as MainActivity).pagerAdapter.notifyDataSetChanged()
+                findNavController()
+                    .navigate(R.id.action_home_to_login)
+            }
         } else {
             Log.i(
                 "Home",

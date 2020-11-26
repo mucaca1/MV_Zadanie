@@ -8,30 +8,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.example.madam.R
-import com.example.madam.databinding.FragmentLoginBinding
-import com.example.madam.ui.viewModels.LoginViewModel
-import com.opinyour.android.app.data.utils.Injection
+import com.example.madam.databinding.FragmentProfileBinding
 
 
 class ProfileFragment : Fragment() {
-    private lateinit var loginViewModel: LoginViewModel
-    private lateinit var binding: FragmentLoginBinding
+    private lateinit var binding: FragmentProfileBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(
-            inflater, R.layout.fragment_login, container, false
+            inflater, R.layout.fragment_profile, container, false
         )
         binding.lifecycleOwner = this
-        loginViewModel =
-            ViewModelProvider(this, Injection.provideViewModelFactory(requireContext()))
-                .get(LoginViewModel::class.java)
-
-//        binding.model = loginViewModel
         Log.i("Profile", "Init constructor")
 
         return binding.root
