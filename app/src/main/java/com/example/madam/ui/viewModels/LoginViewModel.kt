@@ -1,18 +1,20 @@
 package com.example.madam.ui.viewModels
 
 
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.madam.data.api.model.UserRegisterResponse
+import androidx.navigation.findNavController
+import com.example.madam.R
+import com.example.madam.data.api.model.UserResponse
 import com.example.madam.data.db.repositories.UserRepository
 import com.example.madam.data.db.repositories.model.UserItem
 import com.example.madam.utils.PasswordUtils
-import com.example.madam.utils.SessionManager
 import com.opinyour.android.app.data.api.WebApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.json.JSONObject
@@ -22,7 +24,7 @@ import retrofit2.Response
 
 class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
 
-    var message: String = ""
+    var message: MutableLiveData<String> = MutableLiveData()
 
     private val _loginStatus: MutableLiveData<Boolean> = MutableLiveData()
     val loginStatus: LiveData<Boolean>
@@ -38,9 +40,7 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
 
     var passwordUtils: PasswordUtils = PasswordUtils()
 
-    lateinit var sessionManager: SessionManager
-
-    fun newLogin() {
+    fun login() {
         val jsonObject = JSONObject()
         jsonObject.put("action", "login")
         jsonObject.put("apikey", WebApi.API_KEY)
@@ -49,47 +49,37 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
         val body = jsonObject.toString()
         val data = RequestBody.create(MediaType.parse("application/json"), body)
 
-        var registerResponse: Call<UserRegisterResponse> = WebApi.create().register(data)
-        registerResponse.enqueue(object : Callback<UserRegisterResponse> {
-            override fun onFailure(call: Call<UserRegisterResponse>, t: Throwable) {
+        var response: Call<UserResponse> = WebApi.create().register(data)
+        response.enqueue(object : Callback<UserResponse> {
+            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
                 Log.i("fail", t.message.toString())
             }
 
             override fun onResponse(
-                call: Call<UserRegisterResponse>,
-                registerResponse: Response<UserRegisterResponse>
+                call: Call<UserResponse>,
+                response: Response<UserResponse>
             ) {
-                if (registerResponse?.code() == 200) {
-                    Log.i("success", registerResponse.body()?.id.toString())
+                if (response.code() == 200) {
+                    runBlocking {
+                        withContext(Dispatchers.IO) {
+                            userRepository.loginUser(
+                                UserItem(
+                                    response.body()?.username.toString(),
+                                    response.body()?.email.toString(),
+                                    response.body()?.token.toString(),
+                                    response.body()?.refresh.toString(),
+                                    response.body()?.profile.toString()
+                                )
+                            )
+                            message.postValue("Login")
+                        }
+                    }
+                    Log.i("success", response.body()?.id.toString())
                 } else {
                     Log.i("success", "Bad login params")
+                    message.postValue("Nesprávne prihlasovacie údaje")
                 }
             }
         })
-    }
-
-    suspend fun login(): UserItem? {
-        if (login.value != null && password.value != null) {
-
-            if (userRepository.isPasswordValid(
-                    login.value.toString(),
-                    passwordUtils.hash(password.value.toString())
-                )
-            ) {
-                // login success
-                Log.i("Log", "Login OK")
-                message = ""
-                _user.postValue(userRepository.findByLogin(login.value.toString()))
-                _loginStatus.postValue(true)
-                return userRepository.findByLogin(login.value.toString())
-            } else {
-                // error
-                Log.i("Log", "Bad login")
-                message = "Zlé prihlasovacie údaje"
-                _loginStatus.postValue(false)
-                return null
-            }
-        }
-        return null
     }
 }

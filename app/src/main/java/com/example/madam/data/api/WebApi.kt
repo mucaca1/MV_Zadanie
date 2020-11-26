@@ -1,7 +1,7 @@
 package com.opinyour.android.app.data.api
 
 import com.example.madam.data.api.model.UserExists
-import com.example.madam.data.api.model.UserRegisterResponse
+import com.example.madam.data.api.model.UserResponse
 import com.example.madam.data.api.model.VideoResponse
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
@@ -21,23 +21,23 @@ interface WebApi {
 
     // Registracia
     @POST("service.php")
-    fun register(@Body data: RequestBody): Call<UserRegisterResponse>
+    fun register(@Body data: RequestBody): Call<UserResponse>
 
     // Info
     @POST("service.php")
-    fun info(@Body data: RequestBody): Call<UserRegisterResponse>
+    fun info(@Body data: RequestBody): Call<UserResponse>
 
     // Login
     @POST("service.php")
-    fun login(@Body data: RequestBody): Call<UserRegisterResponse>
+    fun login(@Body data: RequestBody): Call<UserResponse>
 
     // Refresh token
     @POST("service.php")
-    fun refreshToken(@Body data: RequestBody): Call<UserRegisterResponse>
+    fun refreshToken(@Body data: RequestBody): Call<UserResponse>
 
     // Zmena hesla
     @POST("service.php")
-    fun changePassword(@Body data: RequestBody): Call<UserRegisterResponse>
+    fun changePassword(@Body data: RequestBody): Call<UserResponse>
 
     // Pridat profilovku
     @Multipart

@@ -24,4 +24,12 @@ class UserLocalCache(private val userDao: DbUserDao) {
     suspend fun delete(user: UserItem) {
         userDao.delete(user)
     }
+
+    suspend fun getFirstUser(): UserItem? {
+        return userDao.getFirstUser()
+    }
+
+    suspend fun update(userItem: UserItem) {
+        userDao.update(userItem)
+    }
 }

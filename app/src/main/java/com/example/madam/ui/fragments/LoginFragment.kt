@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -45,36 +46,19 @@ class LoginFragment : Fragment() {
             view.findNavController()
                 .navigate(R.id.action_login_to_registration)
         }
-        binding.loginButton.setOnClickListener {
-            login()
-        }
 
 //        userApi = com.opinyour.android.app.data.api.WebUserApi(context)
 
-        return binding.root
-    }
-
-    private fun login() {
-        runBlocking {
-            withContext(Dispatchers.IO) {
-                var user: UserItem? = loginViewModel.login()
-                if (user != null) {
-                    (activity as MainActivity).sessionManager.createLoginSession(
-                        loginViewModel.login.value,
-                        user.email
-                    )
-                    findNavController()
-                        .navigate(R.id.action_login_to_home)
-                }
+        loginViewModel.message.observe(viewLifecycleOwner, Observer {
+            if (it.equals("Login")) {
+                findNavController()
+                    .navigate(R.id.action_login_to_home)
             }
-        }
-        if (loginViewModel.message != "") {
-            Toast.makeText(context, loginViewModel.message, Toast.LENGTH_SHORT).show()
-        }
-    }
+            else if (!it.equals("")) {
+                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            }
+        })
 
-    override fun onStop() {
-        super.onStop()
-//        requestQueue?.cancelAll(TAG)
+        return binding.root
     }
 }

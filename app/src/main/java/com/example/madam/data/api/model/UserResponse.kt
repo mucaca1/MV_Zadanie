@@ -1,6 +1,6 @@
 package com.example.madam.data.api.model
 
-data class UserRegisterResponse(
+data class UserResponse(
     var id: String,
     var username: String,
     var email: String,

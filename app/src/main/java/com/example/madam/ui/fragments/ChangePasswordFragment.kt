@@ -9,16 +9,16 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.example.madam.R
 import com.example.madam.databinding.FragmentChangePasswordBinding
-import com.example.madam.ui.activities.MainActivity
 import com.example.madam.ui.viewModels.ChangePasswordViewModel
 import com.opinyour.android.app.data.utils.Injection
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
 
 
 class ChangePasswordFragment : Fragment() {
@@ -48,6 +48,18 @@ class ChangePasswordFragment : Fragment() {
             changePassword()
         }
 
+        changePasswordViewModel.message.observe(viewLifecycleOwner, Observer {
+            if (!it.equals("")) {
+                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        changePasswordViewModel.goBack.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                goToAccountSettings()
+            }
+        })
+
         return binding.root
     }
 
@@ -57,19 +69,8 @@ class ChangePasswordFragment : Fragment() {
     }
 
     fun changePassword() {
-
-        runBlocking {
-            withContext(Dispatchers.IO) {
-                if (changePasswordViewModel.changePassword(
-                        (activity as MainActivity).sessionManager.getUserDetails()?.get((activity as MainActivity).sessionManager.KEY_NAME)
-                            .toString())) {
-                    findNavController()
-                        .navigate(R.id.action_changePassword_to_profile)
-                }
-            }
-        }
-        if (changePasswordViewModel.message != "") {
-            Toast.makeText(context, changePasswordViewModel.message, Toast.LENGTH_SHORT).show()
+        viewLifecycleOwner.lifecycleScope.launch {
+            changePasswordViewModel.changePassword()
         }
     }
 }

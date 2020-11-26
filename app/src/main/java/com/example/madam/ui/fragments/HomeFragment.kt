@@ -9,7 +9,10 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +22,7 @@ import com.example.madam.ui.activities.MainActivity
 import com.example.madam.ui.adapters.VideoAdapter
 import com.example.madam.ui.viewModels.VideoViewModel
 import com.opinyour.android.app.data.utils.Injection
+import kotlinx.coroutines.launch
 
 
 class HomeFragment : Fragment() {
@@ -38,17 +42,25 @@ class HomeFragment : Fragment() {
                 .get(VideoViewModel::class.java)
         Log.i("Home", "Init constructor")
 
-        if (!(activity as MainActivity).sessionManager.isLoggedIn()) {
-            Log.i("Home", "No user logged")
-            findNavController()
-                .navigate(R.id.action_home_to_login)
-        } else {
-            Log.i(
-                "Home",
-                "User " + ((activity as MainActivity).sessionManager.getUserDetails()
-                    ?.get((activity as MainActivity).sessionManager.KEY_NAME)
-                    ?: "unknown") + " is logged"
-            )
+        viewLifecycleOwner.lifecycleScope.launch {
+            // HARD LOGOUT
+//            videoViewModel.hardLogout()
+
+            if (!videoViewModel.isLogged()) {
+                Log.i("Home", "No user logged")
+                findNavController()
+                    .navigate(R.id.action_home_to_login)
+            } else {
+                Log.i(
+                    "Home",
+                    "User is logged"
+                )
+            }
+        }
+
+        binding.accountButton.setOnClickListener {
+            view?.findNavController()
+                ?.navigate(R.id.action_home_to_profile)
         }
 
         binding.model = videoViewModel
@@ -63,5 +75,9 @@ class HomeFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    suspend fun isUserLogged() {
+
     }
 }

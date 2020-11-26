@@ -22,42 +22,19 @@ class UserRepository private constructor(
 
     suspend fun getUsers(): List<UserItem> = cache.getAll()
 
-    suspend fun insertUser(userItem: UserItem) {
+    suspend fun loginUser(userItem: UserItem) {
         cache.insertAll(userItem)
     }
 
-    suspend fun isPasswordValid(login: String, pwd: String): Boolean {
-        return (cache.findByLogin(login)?.password == pwd)
+    suspend fun getLoggedUser(): UserItem? {
+        return cache.getFirstUser()
     }
 
-    suspend fun findByLogin(login: String): UserItem {
-        return cache.findByLogin(login)
-    }
-
-    suspend fun removeUser(userItem: UserItem) {
+    suspend fun logOutUser(userItem: UserItem) {
         cache.delete(userItem)
     }
 
-    suspend fun register(onError: (error: String) -> Unit) {
-//        try {
-//            val response = api.register()
-//            if (response.isSuccessful) {
-//                response.body()?.let { it: UserResponse ->
-//                    // TODO cast tu user
-////                    cache.insertAll(it)
-//                }
-//            }
-//
-//            onError("Load videos failed. Try again later please.")
-//        } catch (ex: ConnectException) {
-//            onError("Off-line. Check internet connection.")
-//            ex.printStackTrace()
-//            return
-//        } catch (ex: Exception) {
-//            onError("Oops...Change failed. Try again later please.")
-//            ex.printStackTrace()
-//            return
-//        }
+    suspend fun update(userItem: UserItem) {
+        cache.update(userItem)
     }
-
 }

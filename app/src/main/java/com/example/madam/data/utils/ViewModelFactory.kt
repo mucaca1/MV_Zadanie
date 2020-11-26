@@ -4,10 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.madam.data.db.repositories.UserRepository
 import com.example.madam.data.db.repositories.VideoRepository
-import com.example.madam.ui.viewModels.ChangePasswordViewModel
-import com.example.madam.ui.viewModels.LoginViewModel
-import com.example.madam.ui.viewModels.RegistrationViewModel
-import com.example.madam.ui.viewModels.VideoViewModel
+import com.example.madam.ui.viewModels.*
 
 /**
  * Factory for ViewModels
@@ -34,7 +31,12 @@ class ViewModelFactory(private val userRepository: UserRepository,
 
         if (modelClass.isAssignableFrom(VideoViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return VideoViewModel(videoRepository) as T
+            return VideoViewModel(videoRepository, userRepository) as T
+        }
+
+        if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return ProfileViewModel(userRepository) as T
         }
 
         throw IllegalArgumentException("Unknown ViewModel class")
