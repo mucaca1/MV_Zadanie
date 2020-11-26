@@ -27,7 +27,7 @@ class VideoViewModel(private val repository: VideoRepository, private val userRe
 
     suspend fun isLogged(): Boolean {
         var user: UserItem? = userRepository.getLoggedUser()
-        Log.i("User", user?.email.toString() + " " + user?.profile.toString())
+        Log.i("User", user?.email.toString() + " " + user?.profile.toString() + " " + user?.token.toString())
         return user != null
     }
 

@@ -36,10 +36,36 @@
 <!--            app:layout_constraintBottom_toTopOf="@+id/loginName"-->
 <!--            />-->
 
-        <ImageView
+<!--        <android.support.v7.widget.CardView-->
+<!--            android:layout_width="80dp"-->
+<!--            android:layout_height="80dp"-->
+<!--            android:elevation="12dp"-->
+<!--            android:id="@+id/view2"-->
+<!--            app:cardCornerRadius="40dp"-->
+<!--            android:layout_centerHorizontal="true"-->
+<!--            android:innerRadius="0dp"-->
+<!--            android:shape="ring"-->
+<!--            android:thicknessRatio="1.9">-->
+<!--            <ImageView-->
+<!--                android:layout_height="80dp"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:id="@+id/imageView1"-->
+<!--                android:src="@drawable/YOUR_IMAGE"-->
+<!--                android:layout_alignParentTop="true"-->
+<!--                android:layout_centerHorizontal="true">-->
+<!--            </ImageView>-->
+<!--        </android.support.v7.widget.CardView>-->
+
+        <com.mikhaellopez.circularimageview.CircularImageView
             android:id="@+id/profileImage"
-            android:layout_width="96dp"
-            android:layout_height="96dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@{model.picturePath}"
+            app:civ_border_color="#E19628"
+            app:civ_border_width="4dp"
+            app:civ_shadow="false"
+            app:civ_shadow_radius="2dp"
+            app:civ_shadow_color="#F3BD6F"
             app:layout_constraintTop_toBottomOf="@+id/back"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

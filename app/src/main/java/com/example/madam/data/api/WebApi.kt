@@ -1,5 +1,6 @@
 package com.opinyour.android.app.data.api
 
+import com.example.madam.data.api.model.ProfileImageResponse
 import com.example.madam.data.api.model.UserExists
 import com.example.madam.data.api.model.UserResponse
 import com.example.madam.data.api.model.VideoResponse
@@ -42,14 +43,14 @@ interface WebApi {
     // Pridat profilovku
     @Multipart
     @POST("upload.php")
-    fun uploadProfilePicture(@Part image: MultipartBody.Part, @Part("data") data: RequestBody): Call<Boolean>
+    fun uploadProfilePicture(@Part image: MultipartBody.Part, @Part("data") data: RequestBody): Call<ProfileImageResponse>
 
     // Odstanit profilovku
     @POST("service.php")
     fun deleteProfilePicture(@Body data: RequestBody): Call<Boolean>
 
     // Prispevky
-    @POST("upload")
+    @POST("upload.php")
     suspend fun getVideos(): Response<List<VideoResponse>>
 
     // Pridat prispevok
