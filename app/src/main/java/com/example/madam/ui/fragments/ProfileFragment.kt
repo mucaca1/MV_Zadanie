@@ -74,7 +74,15 @@ class ProfileFragment : Fragment() {
                 binding.loginName.text =
                     user.username
 //                profileViewModel.picturePath.postValue(user.profile)
-                binding.profileImage.setImageBitmap(getBitmapFromURL("http://api.mcomputing.eu/mobv/uploads/" + user.profile))
+                val bp: Bitmap? = getBitmapFromURL("http://api.mcomputing.eu/mobv/uploads/" + user.profile)
+                if (bp != null) {
+                    binding.profileImage.setImageBitmap(bp)
+                } else {
+//                    binding.profileImage.setImageBitmap()
+//                    val icon = requireContext().packageManager
+//                        .getmi
+//                    binding.profileImage.setImageDrawable(icon)
+                }
 
 
             } else {
@@ -152,6 +160,7 @@ class ProfileFragment : Fragment() {
                         profileViewModel.updateUser(user)
                     }
                     if (path != null) {
+                        profileViewModel.deleteProfilePic()
                         profileViewModel.uploadProfilePic(path)
                     }
                 }

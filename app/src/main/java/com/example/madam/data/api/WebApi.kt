@@ -1,9 +1,6 @@
 package com.opinyour.android.app.data.api
 
-import com.example.madam.data.api.model.ProfileImageResponse
-import com.example.madam.data.api.model.UserExists
-import com.example.madam.data.api.model.UserResponse
-import com.example.madam.data.api.model.VideoResponse
+import com.example.madam.data.api.model.*
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
@@ -47,7 +44,7 @@ interface WebApi {
 
     // Odstanit profilovku
     @POST("service.php")
-    fun deleteProfilePicture(@Body data: RequestBody): Call<Boolean>
+    fun deleteProfilePicture(@Body data: RequestBody): Call<ClearPhoto>
 
     // Prispevky
     @POST("upload.php")
