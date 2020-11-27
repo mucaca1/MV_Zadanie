@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.madam.R
 import com.example.madam.databinding.FragmentHomeBinding
@@ -19,7 +19,6 @@ import com.example.madam.ui.activities.MainActivity
 import com.example.madam.ui.adapters.VideoAdapter
 import com.example.madam.ui.viewModels.VideoViewModel
 import com.opinyour.android.app.data.utils.Injection
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.launch
 
 
@@ -43,7 +42,7 @@ class HomeFragment : Fragment() {
         binding.model = videoViewModel
 
         binding.videoList.layoutManager =
-            GridLayoutManager(context, 3, RecyclerView.VERTICAL, false)
+            LinearLayoutManager(context, RecyclerView.VERTICAL,false)
 
         val adapter = VideoAdapter()
         binding.videoList.adapter = adapter

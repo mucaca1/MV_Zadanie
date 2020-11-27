@@ -41,7 +41,10 @@ class VideoRepository private constructor(
                     return cache.addVideos(it.map { item ->
                         VideoItem(
                             item.id,
-                            item.src
+                            item.url,
+                            item.userImageUrl,
+                            item.username,
+                            item.creationDate
                         )
                     })
                 }
