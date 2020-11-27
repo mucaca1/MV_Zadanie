@@ -48,16 +48,16 @@ class MainActivity : AppCompatActivity() {
                 goToActivity(LoginActivity::class.java)
             }
         })
+    }
 
+    fun <T> goToActivity(cls: Class<T>) {
+        val myIntent = Intent(this, cls)
+        this.startActivity(myIntent)
+    }
+
+    fun allowImagePermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-            } else {
-                // No explanation needed; request the permission
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 val perm = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 ActivityCompat.requestPermissions(this, perm, 0)
             }
@@ -66,10 +66,5 @@ class MainActivity : AppCompatActivity() {
         val policy =
             StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
-    }
-
-    fun <T> goToActivity(cls: Class<T>) {
-        val myIntent = Intent(this, cls)
-        this.startActivity(myIntent)
     }
 }

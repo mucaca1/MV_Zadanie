@@ -60,6 +60,7 @@ class ProfileFragment : Fragment() {
         }
 
         binding.profileImage.setOnClickListener {
+            (activity as MainActivity).allowImagePermissions()
             takePhoto()
         }
 
