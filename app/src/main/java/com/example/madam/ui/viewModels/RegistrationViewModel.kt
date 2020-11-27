@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.madam.data.api.model.UserExists
 import com.example.madam.data.api.model.UserResponse
 import com.example.madam.data.db.repositories.UserRepository
 import com.example.madam.utils.PasswordUtils
@@ -35,6 +36,11 @@ class RegistrationViewModel(private val userRepository: UserRepository) : ViewMo
 
     fun registration() {
         if (password.value.toString().equals(retypePassword.value.toString())) {
+            if (!checkUsername(login.value.toString())) {
+                message.setValue("Používateľské meno už existuje")
+                return
+            }
+
             val jsonObject = JSONObject()
             jsonObject.put("action", "register")
             jsonObject.put("apikey", WebApi.API_KEY)
@@ -44,7 +50,7 @@ class RegistrationViewModel(private val userRepository: UserRepository) : ViewMo
             val body = jsonObject.toString()
             val data = RequestBody.create(MediaType.parse("application/json"), body)
 
-            var response: Call<UserResponse> = WebApi.create().register(data)
+            val response: Call<UserResponse> = WebApi.create().register(data)
             response.enqueue(object : Callback<UserResponse> {
                 override fun onFailure(call: Call<UserResponse>, t: Throwable) {
                     message.setValue("Používateľské meno už existuje")
@@ -68,5 +74,39 @@ class RegistrationViewModel(private val userRepository: UserRepository) : ViewMo
         } else {
             message.setValue("Heslá sa nezhodujú")
         }
+    }
+
+    fun checkUsername(username: String): Boolean {
+        val jsonObject = JSONObject()
+        jsonObject.put("action", "exists")
+        jsonObject.put("apikey", WebApi.API_KEY)
+        jsonObject.put("username", username)
+
+        val body = jsonObject.toString()
+        val data = RequestBody.create(MediaType.parse("application/json"), body)
+
+        val response: Call<UserExists> = WebApi.create().isUsernameValid(data)
+        var unique: Boolean = false
+        response.enqueue(object : Callback<UserExists> {
+            override fun onFailure(call: Call<UserExists>, t: Throwable) {
+                message.setValue("Používateľské meno už existuje")
+                Log.i("fail", t.message.toString())
+
+            }
+
+            override fun onResponse(
+                call: Call<UserExists>,
+                response: Response<UserExists>
+            ) {
+                if (response.code() == 200) {
+                    unique = response.body()?.exists ?: false
+                } else {
+                    unique = response.body()?.exists ?: false
+                    message.setValue("Používateľské meno už existuje")
+                    Log.i("success", "Username exists")
+                }
+            }
+        })
+        return unique
     }
 }

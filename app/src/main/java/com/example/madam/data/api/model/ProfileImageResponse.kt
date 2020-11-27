@@ -1,4 +1,3 @@
 package com.example.madam.data.api.model
 
-class ProfileImageResponse {
-}
+data class ProfileImageResponse(var column: String, var path: String)
