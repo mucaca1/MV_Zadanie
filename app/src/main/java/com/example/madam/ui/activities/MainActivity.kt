@@ -48,16 +48,10 @@ class MainActivity : AppCompatActivity() {
                 goToActivity(LoginActivity::class.java)
             }
         })
-    }
 
-    fun <T> goToActivity(cls: Class<T>) {
-        val myIntent = Intent(this, cls)
-        this.startActivity(myIntent)
-    }
-
-    fun allowImagePermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 val perm = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 ActivityCompat.requestPermissions(this, perm, 0)
             }
@@ -66,5 +60,15 @@ class MainActivity : AppCompatActivity() {
         val policy =
             StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    fun <T> goToActivity(cls: Class<T>) {
+        val myIntent = Intent(this, cls)
+        this.startActivity(myIntent)
     }
 }
