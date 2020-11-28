@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.example.madam.R
+import com.example.madam.data.db.repositories.model.VideoItem
 import com.example.madam.databinding.FragmentHomeBinding
 import com.example.madam.ui.activities.MainActivity
 import com.example.madam.ui.adapters.VideoAdapter
@@ -43,13 +44,86 @@ class HomeFragment : Fragment() {
 
         binding.model = videoViewModel
 
+        val list = listOf(
+            VideoItem(
+                "1",
+                R.drawable.obrazok.toString(),
+                R.drawable.ic_launcher_foreground.toString(),
+                "Janko Mrkvička",
+                "22.12.2020 15:48"
+            ),
+            VideoItem(
+                "3",
+                R.drawable.obrazok.toString(),
+                R.drawable.ic_launcher_foreground.toString(),
+                "Matej Kováč",
+                "22.12.4565 15:48"
+            ),
+            VideoItem(
+                "2",
+                R.drawable.obrazok.toString(),
+                R.drawable.ic_launcher_foreground.toString(),
+                "Daniel Vaník",
+                "22.12.1199 15:48"
+            ),
+            VideoItem(
+                "2",
+                R.drawable.obrazok.toString(),
+                R.drawable.ic_launcher_foreground.toString(),
+                "Daniel Vaník",
+                "22.12.1199 15:48"
+            ),
+            VideoItem(
+                "2",
+                R.drawable.obrazok.toString(),
+                R.drawable.ic_launcher_foreground.toString(),
+                "Daniel Vaník",
+                "22.12.1199 15:48"
+            ),
+            VideoItem(
+                "2",
+                R.drawable.obrazok.toString(),
+                R.drawable.ic_launcher_foreground.toString(),
+                "Daniel Vaník",
+                "22.12.1199 15:48"
+            ),
+            VideoItem(
+                "2",
+                R.drawable.obrazok.toString(),
+                R.drawable.ic_launcher_foreground.toString(),
+                "Daniel Vaník",
+                "22.12.1199 15:48"
+            ),
+            VideoItem(
+                "2",
+                R.drawable.obrazok.toString(),
+                R.drawable.ic_launcher_foreground.toString(),
+                "Daniel Vaník",
+                "22.12.1199 15:48"
+            ),
+            VideoItem(
+                "2",
+                R.drawable.obrazok.toString(),
+                R.drawable.ic_launcher_foreground.toString(),
+                "Daniel Vaník",
+                "22.12.1199 15:48"
+            ),
+            VideoItem(
+                "2",
+                R.drawable.obrazok.toString(),
+                R.drawable.ic_launcher_foreground.toString(),
+                "Daniel Vaník",
+                "22.12.1199 15:48"
+            )
+        )
+
         binding.videoList.layoutManager =
             LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
         val adapter = VideoAdapter()
         binding.videoList.adapter = adapter
         videoViewModel.videos.observe(viewLifecycleOwner) {
-            adapter.items = it
+            adapter.items = list
         }
 
         binding.videoList.addOnScrollListener(createListener())
@@ -81,7 +155,7 @@ class HomeFragment : Fragment() {
 
                     override fun calculateTimeForScrolling(dx: Int): Int {
                         val proportion: Float = dx.toFloat()
-                        return (2 * proportion).toInt()
+                        return (0.35 * proportion).toInt()
                     }
                 }
 
@@ -90,11 +164,32 @@ class HomeFragment : Fragment() {
                     println("Zastav aktualne video")
                 }
                 if (newState == RecyclerView.SCROLL_STATE_IDLE || newState == RecyclerView.SCROLL_STATE_SETTLING) {
-                    smoothScroller.targetPosition =
-                        (binding.videoList.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                    var positionToScroll = 0
+                    val llm = binding.videoList.layoutManager as LinearLayoutManager
+                    if (SCROLLED_UP != null && SCROLLED_UP == true) {
+                        positionToScroll = llm.findFirstVisibleItemPosition()
+                    } else if (SCROLLED_UP != null && SCROLLED_UP == false) {
+                        positionToScroll = llm.findLastVisibleItemPosition()
+                    }
+                    smoothScroller.targetPosition = positionToScroll
                     binding.videoList.layoutManager?.startSmoothScroll(smoothScroller)
                 }
             }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy > 0) {
+                    println("Scrolled Downwards")
+                    SCROLLED_UP = false
+                } else if (dy < 0) {
+                    println("Scrolled Upwards")
+                    SCROLLED_UP = true
+                }
+            }
         }
+    }
+
+    companion object {
+        private var SCROLLED_UP: Boolean? = null
     }
 }
