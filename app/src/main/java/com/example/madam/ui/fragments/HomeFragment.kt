@@ -12,7 +12,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.example.madam.R
 import com.example.madam.databinding.FragmentHomeBinding
 import com.example.madam.ui.activities.MainActivity
@@ -42,13 +44,15 @@ class HomeFragment : Fragment() {
         binding.model = videoViewModel
 
         binding.videoList.layoutManager =
-            LinearLayoutManager(context, RecyclerView.VERTICAL,false)
+            LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
         val adapter = VideoAdapter()
         binding.videoList.adapter = adapter
         videoViewModel.videos.observe(viewLifecycleOwner) {
             adapter.items = it
         }
+
+        binding.videoList.addOnScrollListener(createListener())
 
         return binding.root
     }
@@ -57,6 +61,40 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewLifecycleOwner.lifecycleScope.launch {
             (activity as MainActivity).isLogged.value = videoViewModel.isLogged()
+        }
+    }
+
+    private fun createListener(): RecyclerView.OnScrollListener {
+        return object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+                val smoothScroller: SmoothScroller = object : LinearSmoothScroller(context) {
+                    override fun getVerticalSnapPreference(): Int {
+                        return SNAP_TO_START
+                    }
+
+                    override fun onStop() {
+                        // TODO: play current video post
+                        println("Spusti nove video")
+                    }
+
+                    override fun calculateTimeForScrolling(dx: Int): Int {
+                        val proportion: Float = dx.toFloat()
+                        return (2 * proportion).toInt()
+                    }
+                }
+
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    // TODO: stop previous video post
+                    println("Zastav aktualne video")
+                }
+                if (newState == RecyclerView.SCROLL_STATE_IDLE || newState == RecyclerView.SCROLL_STATE_SETTLING) {
+                    smoothScroller.targetPosition =
+                        (binding.videoList.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                    binding.videoList.layoutManager?.startSmoothScroll(smoothScroller)
+                }
+            }
         }
     }
 }
