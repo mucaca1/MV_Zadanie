@@ -2,6 +2,7 @@ package com.example.madam.ui.fragments
 
 
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -114,6 +115,76 @@ class HomeFragment : Fragment() {
                 R.drawable.ic_launcher_foreground.toString(),
                 "Daniel Vaník",
                 "22.12.1199 15:48"
+            ),
+            VideoItem(
+                "2",
+                R.drawable.obrazok.toString(),
+                R.drawable.ic_launcher_foreground.toString(),
+                "Daniel Vaník",
+                "22.12.1199 15:48"
+            ),
+            VideoItem(
+                "2",
+                R.drawable.obrazok.toString(),
+                R.drawable.ic_launcher_foreground.toString(),
+                "Daniel Vaník",
+                "22.12.1199 15:48"
+            ),
+            VideoItem(
+                "2",
+                R.drawable.obrazok.toString(),
+                R.drawable.ic_launcher_foreground.toString(),
+                "Daniel Vaník",
+                "22.12.1199 15:48"
+            ),
+            VideoItem(
+                "2",
+                R.drawable.obrazok.toString(),
+                R.drawable.ic_launcher_foreground.toString(),
+                "Daniel Vaník",
+                "22.12.1199 15:48"
+            ),
+            VideoItem(
+                "2",
+                R.drawable.obrazok.toString(),
+                R.drawable.ic_launcher_foreground.toString(),
+                "Daniel Vaník",
+                "22.12.1199 15:48"
+            ),
+            VideoItem(
+                "2",
+                R.drawable.obrazok.toString(),
+                R.drawable.ic_launcher_foreground.toString(),
+                "Daniel Vaník",
+                "22.12.1199 15:48"
+            ),
+            VideoItem(
+                "2",
+                R.drawable.obrazok.toString(),
+                R.drawable.ic_launcher_foreground.toString(),
+                "Daniel Vaník",
+                "22.12.1199 15:48"
+            ),
+            VideoItem(
+                "2",
+                R.drawable.obrazok.toString(),
+                R.drawable.ic_launcher_foreground.toString(),
+                "Daniel Vaník",
+                "22.12.1199 15:48"
+            ),
+            VideoItem(
+                "2",
+                R.drawable.obrazok.toString(),
+                R.drawable.ic_launcher_foreground.toString(),
+                "Daniel Vaník",
+                "22.12.1199 15:48"
+            ),
+            VideoItem(
+                "2",
+                R.drawable.obrazok.toString(),
+                R.drawable.ic_launcher_foreground.toString(),
+                "Daniel Vaník",
+                "22.12.1199 15:48"
             )
         )
 
@@ -133,9 +204,9 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewLifecycleOwner.lifecycleScope.launch {
-            (activity as MainActivity).isLogged.value = videoViewModel.isLogged()
-        }
+//        viewLifecycleOwner.lifecycleScope.launch {
+//            (activity as MainActivity).isLogged.value = videoViewModel.isLogged()
+//        }
     }
 
     private fun createListener(): RecyclerView.OnScrollListener {

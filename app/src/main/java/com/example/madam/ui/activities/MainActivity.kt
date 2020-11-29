@@ -1,13 +1,9 @@
 package com.example.madam.ui.activities
 
-import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.StrictMode
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import com.example.madam.R
 import com.example.madam.ui.adapters.PagerAdapter
@@ -26,7 +22,7 @@ import kotlinx.android.synthetic.main.activity_main.*
  */
 class MainActivity : AppCompatActivity() {
 
-    var pagerAdapter: PagerAdapter = PagerAdapter(supportFragmentManager)
+    var pagerAdapter: PagerAdapter = PagerAdapter(this)
     var isLogged: MutableLiveData<Boolean> = MutableLiveData()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,14 +44,6 @@ class MainActivity : AppCompatActivity() {
                 goToActivity(LoginActivity::class.java)
             }
         })
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                val perm = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                ActivityCompat.requestPermissions(this, perm, 0)
-            }
-        }
 
         val policy =
             StrictMode.ThreadPolicy.Builder().permitAll().build()

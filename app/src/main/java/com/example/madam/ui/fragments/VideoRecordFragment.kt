@@ -1,6 +1,9 @@
 package com.example.madam.ui.fragments
 
 
+import android.Manifest.permission.CAMERA
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -25,6 +28,29 @@ class VideoRecordFragment : Fragment() {
         binding.lifecycleOwner = this
         Log.i("VideoRecord", "Init constructor")
 
+        requestPermissions(
+            arrayOf(CAMERA, WRITE_EXTERNAL_STORAGE),
+            REQUEST_PERMISSIONS_OK_CODE
+        )
+
         return binding.root
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == REQUEST_PERMISSIONS_OK_CODE) {
+            if ((permissions[0] == CAMERA && grantResults[0] == PackageManager.PERMISSION_GRANTED) &&
+                (permissions[1] == WRITE_EXTERNAL_STORAGE && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                // TODO: open camera2
+                println("Povolene od usera response")
+            }
+        }
+    }
+
+    companion object {
+        const val REQUEST_PERMISSIONS_OK_CODE = 101
     }
 }
