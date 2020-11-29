@@ -204,9 +204,9 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            (activity as MainActivity).isLogged.value = videoViewModel.isLogged()
-//        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            (activity as MainActivity).isLogged.value = videoViewModel.isLogged()
+        }
     }
 
     private fun createListener(): RecyclerView.OnScrollListener {
