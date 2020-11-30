@@ -48,140 +48,140 @@ class HomeFragment : Fragment() {
         val list = listOf(
             VideoItem(
                 "1",
-                R.drawable.obrazok.toString(),
+                "",
                 R.drawable.ic_launcher_foreground.toString(),
                 "Janko Mrkvička",
                 "22.12.2020 15:48"
             ),
             VideoItem(
                 "3",
-                R.drawable.obrazok.toString(),
+                "",
                 R.drawable.ic_launcher_foreground.toString(),
                 "Matej Kováč",
                 "22.12.4565 15:48"
             ),
             VideoItem(
                 "2",
-                R.drawable.obrazok.toString(),
+                "",
                 R.drawable.ic_launcher_foreground.toString(),
                 "Daniel Vaník",
                 "22.12.1199 15:48"
             ),
             VideoItem(
                 "2",
-                R.drawable.obrazok.toString(),
+                "",
                 R.drawable.ic_launcher_foreground.toString(),
                 "Daniel Vaník",
                 "22.12.1199 15:48"
             ),
             VideoItem(
                 "2",
-                R.drawable.obrazok.toString(),
+                "",
                 R.drawable.ic_launcher_foreground.toString(),
                 "Daniel Vaník",
                 "22.12.1199 15:48"
             ),
             VideoItem(
                 "2",
-                R.drawable.obrazok.toString(),
+                "",
                 R.drawable.ic_launcher_foreground.toString(),
                 "Daniel Vaník",
                 "22.12.1199 15:48"
             ),
             VideoItem(
                 "2",
-                R.drawable.obrazok.toString(),
+                "",
                 R.drawable.ic_launcher_foreground.toString(),
                 "Daniel Vaník",
                 "22.12.1199 15:48"
             ),
             VideoItem(
                 "2",
-                R.drawable.obrazok.toString(),
+                "",
                 R.drawable.ic_launcher_foreground.toString(),
                 "Daniel Vaník",
                 "22.12.1199 15:48"
             ),
             VideoItem(
                 "2",
-                R.drawable.obrazok.toString(),
+                "",
                 R.drawable.ic_launcher_foreground.toString(),
                 "Daniel Vaník",
                 "22.12.1199 15:48"
             ),
             VideoItem(
                 "2",
-                R.drawable.obrazok.toString(),
+                "",
                 R.drawable.ic_launcher_foreground.toString(),
                 "Daniel Vaník",
                 "22.12.1199 15:48"
             ),
             VideoItem(
                 "2",
-                R.drawable.obrazok.toString(),
+                "",
                 R.drawable.ic_launcher_foreground.toString(),
                 "Daniel Vaník",
                 "22.12.1199 15:48"
             ),
             VideoItem(
                 "2",
-                R.drawable.obrazok.toString(),
+                "",
                 R.drawable.ic_launcher_foreground.toString(),
                 "Daniel Vaník",
                 "22.12.1199 15:48"
             ),
             VideoItem(
                 "2",
-                R.drawable.obrazok.toString(),
+                "",
                 R.drawable.ic_launcher_foreground.toString(),
                 "Daniel Vaník",
                 "22.12.1199 15:48"
             ),
             VideoItem(
                 "2",
-                R.drawable.obrazok.toString(),
+                "",
                 R.drawable.ic_launcher_foreground.toString(),
                 "Daniel Vaník",
                 "22.12.1199 15:48"
             ),
             VideoItem(
                 "2",
-                R.drawable.obrazok.toString(),
+                "",
                 R.drawable.ic_launcher_foreground.toString(),
                 "Daniel Vaník",
                 "22.12.1199 15:48"
             ),
             VideoItem(
                 "2",
-                R.drawable.obrazok.toString(),
+                "",
                 R.drawable.ic_launcher_foreground.toString(),
                 "Daniel Vaník",
                 "22.12.1199 15:48"
             ),
             VideoItem(
                 "2",
-                R.drawable.obrazok.toString(),
+                "",
                 R.drawable.ic_launcher_foreground.toString(),
                 "Daniel Vaník",
                 "22.12.1199 15:48"
             ),
             VideoItem(
                 "2",
-                R.drawable.obrazok.toString(),
+                "",
                 R.drawable.ic_launcher_foreground.toString(),
                 "Daniel Vaník",
                 "22.12.1199 15:48"
             ),
             VideoItem(
                 "2",
-                R.drawable.obrazok.toString(),
+                "",
                 R.drawable.ic_launcher_foreground.toString(),
                 "Daniel Vaník",
                 "22.12.1199 15:48"
             ),
             VideoItem(
                 "2",
-                R.drawable.obrazok.toString(),
+                "",
                 R.drawable.ic_launcher_foreground.toString(),
                 "Daniel Vaník",
                 "22.12.1199 15:48"
