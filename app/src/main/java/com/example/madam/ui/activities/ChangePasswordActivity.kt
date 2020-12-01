@@ -1,5 +1,6 @@
 package com.example.madam.ui.activities
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.madam.R
@@ -15,5 +16,10 @@ class ChangePasswordActivity : AppCompatActivity() {
                 .add(R.id.password_activity, ChangePasswordFragment.newInstance())
                 .commitNow()
         }
+    }
+
+    fun <T> goToActivity(cls: Class<T>) {
+        val myIntent = Intent(this, cls)
+        this.startActivity(myIntent)
     }
 }

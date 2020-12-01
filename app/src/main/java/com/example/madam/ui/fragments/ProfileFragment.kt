@@ -3,13 +3,17 @@ package com.example.madam.ui.fragments
 
 import RealPathUtil
 import android.Manifest
-import android.content.ContentValues
-import android.content.Context
+import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
+import android.content.ClipData
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.icu.text.SimpleDateFormat
+import android.media.MediaScannerConnection
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -17,8 +21,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -32,23 +38,22 @@ import com.example.madam.ui.activities.MainActivity
 import com.example.madam.ui.activities.ShowPhotoDetailActivity
 import com.example.madam.ui.viewModels.ProfileViewModel
 import com.example.madam.utils.CircleTransform
+import com.example.madam.utils.PhotoManager
+import com.google.android.gms.common.wrappers.Wrappers
 import com.opinyour.android.app.data.utils.Injection
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
-import java.io.*
-import java.io.File.separator
-import java.net.HttpURLConnection
-import java.net.URL
-import java.text.SimpleDateFormat
+import java.io.File
+import java.io.IOException
 import java.util.*
 
 
 class ProfileFragment : Fragment() {
     private lateinit var profileViewModel: ProfileViewModel
     private lateinit var binding: FragmentProfileBinding
+    private var photoManager: PhotoManager = PhotoManager()
 
-    private lateinit var imageUri: Uri
-
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -72,16 +77,17 @@ class ProfileFragment : Fragment() {
             changePassword()
         }
 
-        binding.logOut.setOnClickListener {
-            logOut()
-        }
-
         binding.profileImage.setOnClickListener {
             takePhoto()
         }
 
+        profileViewModel.logOutEvent.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            if (it)
+                (activity as MainActivity).isLogged.value = false
+        })
+
         viewLifecycleOwner.lifecycleScope.launch {
-            val user: UserItem? = profileViewModel.getLoggedUser()
+            val user: UserItem? = profileViewModel.userManager.getLoggedUser()
             if (user != null) {
                 binding.emailAddress.text =
                     user.email
@@ -97,38 +103,64 @@ class ProfileFragment : Fragment() {
         return binding.root
     }
 
-    private fun getBitmapFromURL(src: String?): Bitmap? {
-        return try {
-            val url = URL(src)
-            val connection: HttpURLConnection = url
-                .openConnection() as HttpURLConnection
-            connection.doInput = true
-            connection.connect()
-            val input: InputStream = connection.inputStream
-            BitmapFactory.decodeStream(input)
-        } catch (e: IOException) {
-            e.printStackTrace()
-            null
-        }
-    }
-
     private fun changePassword() {
         (activity as MainActivity).goToActivity(ChangePasswordActivity::class.java)
     }
 
-    private fun logOut() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            val user: UserItem? = profileViewModel.getLoggedUser()
-            if (user != null) {
-                profileViewModel.logOut(user)
-                (activity as MainActivity).isLogged.value = false
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun dispatchTakePictureIntent() {
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+            // Ensure that there's a camera activity to handle the intent
+            context?.packageManager?.let {
+                takePictureIntent.resolveActivity(it)?.also {
+                    // Create the File where the photo should go
+                    val photoFile: File? = try {
+                        createImageFile()
+                    } catch (ex: IOException) {
+                        // Error occurred while creating the File
+                        Log.e("save", "BADDD " + ex.message)
+                        null
+                    }
+                    // Continue only if the File was successfully created
+                    photoFile?.also {
+                        val photoURI: Uri? = context?.let { it1 ->
+                            FileProvider.getUriForFile(
+                                it1,
+                                "com.example.madam.provider",
+                                it
+                            )
+                        }
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                        startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE)
+                    }
+                }
             }
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun createImageFile(): File {
+        // Create an image file name
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+
+        val storageDir = context?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+
+        return File.createTempFile(
+            "JPEG_${timeStamp}_", /* prefix */
+            ".jpg", /* suffix */
+            storageDir /* directory */
+        ).apply {
+            // Save a file: path for use with ACTION_VIEW intents
+            photoManager.currentPhotoPath = absolutePath
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun takePhoto() {
         // Option
-        val listItems: Array<String> = arrayOf("Show profile picture", "Open camera", "Open gallery", "Delete photo")
+        val listItems: Array<String> =
+            arrayOf("Show profile picture", "Open camera", "Open gallery", "Delete photo")
         val mBuilder: AlertDialog.Builder = AlertDialog.Builder(activity as MainActivity)
         mBuilder.setTitle("Profile picture")
         mBuilder.setSingleChoiceItems(listItems, -1) { dialogInterface, i ->
@@ -138,14 +170,15 @@ class ProfileFragment : Fragment() {
                     (activity as MainActivity).goToActivity(ShowPhotoDetailActivity::class.java)
                 }
                 1 -> {
-                    Intent(
+                    /*Intent(
                         MediaStore.ACTION_IMAGE_CAPTURE
                     ).also { pickContactIntent ->
                         startActivityForResult(
                             pickContactIntent,
                             CAMERA_REQUEST_CODE
                         )
-                    }
+                    }*/
+                    dispatchTakePictureIntent()
                 }
                 2 -> {
                     Intent(
@@ -187,90 +220,34 @@ class ProfileFragment : Fragment() {
         mDialog.show()
     }
 
-    fun createImageFile(): File {
-        // Create an image file name
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val storageDir: File? = getContext()?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(
-            "JPEG_${timeStamp}_", /* prefix */
-            ".jpg", /* suffix */
-            storageDir /* directory */
-        )
-    }
-
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+//        galleryAddPic()
+        var path: String? = null
+
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == AppCompatActivity.RESULT_OK) {
-            val imageBitmap = data?.extras?.get("data") as Bitmap
-            val file: File = createImageFile()
-
-            val photo = data.extras!!["data"] as Bitmap?
-
-            val tempUri: Uri? = context?.let { photo?.let { it1 -> saveImage(it1, it, "MaDaM") } }
-
-            val path: String? = context?.let {
-                tempUri?.let { it1 ->
-                    RealPathUtil.getRealPath(
-                        it,
-                        it1
-                    )
-                }
-            }
-            viewLifecycleOwner.lifecycleScope.launch {
-                profileViewModel.deleteProfilePic()
-                if (path != null) {
-                    profileViewModel.uploadProfilePic(path)
-                }
-//            imageView.setImageBitmap(imageBitmap)
-            }.invokeOnCompletion {
-                profileViewModel.reloadUser()
-                if (path != null) {
-                    val imgFile = File(path)
-                    if (imgFile.exists()) {
-//                        val myBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
-                        //Drawable d = new BitmapDrawable(getResources(), myBitmap);
-//                        binding.profileImage.setImageBitmap(myBitmap)
-                        Picasso.get()
-                            .load(imgFile)
-                            .resize(200, 200)
-                            .centerCrop().transform(CircleTransform())
-                            .into(binding.profileImage)
-                    }
-                }
-            }
+            path = photoManager.currentPhotoPath
         } else if ((requestCode == SELECT_PHOTO || requestCode == CAMERA_REQUEST_CODE) && resultCode == AppCompatActivity.RESULT_OK) {
             val uri: Uri? = data?.data
             if (uri != null) {
-
-                val path: String? = context?.let { RealPathUtil.getRealPath(it, uri) }
-                if (path != null) {
-                    profileViewModel.picturePath.value = path
-                }
-                viewLifecycleOwner.lifecycleScope.launch {
-                    if (path != null) {
-                        profileViewModel.deleteProfilePic()
-                        profileViewModel.uploadProfilePic(path)
-                    }
-                }.invokeOnCompletion {
-                    profileViewModel.reloadUser()
-
-                    if (path != null) {
-                        val imgFile = File(path)
-                        if (imgFile.exists()) {
-//                            val myBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
-                            //Drawable d = new BitmapDrawable(getResources(), myBitmap);
-//                            binding.profileImage.setImageBitmap(myBitmap)
-                            Picasso.get()
-                                .load(imgFile)
-                                .resize(200, 200)
-                                .centerCrop().transform(CircleTransform())
-                                .into(binding.profileImage)
-                        }
-                    }
-
-                }
+                path = context?.let { RealPathUtil.getRealPath(it, uri) }
             }
         }
+        if (path != null) {
+            profileViewModel.deleteProfilePic()
+            profileViewModel.uploadProfilePic(path)
+            profileViewModel.reloadUser()
+            val imgFile = File(path)
+            if (imgFile.exists()) {
+                Picasso.get()
+                    .load(imgFile)
+                    .resize(200, 200)
+                    .centerCrop().transform(CircleTransform())
+                    .into(binding.profileImage)
+            }
+        }
+
     }
 
     override fun onRequestPermissionsResult(
@@ -286,82 +263,29 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setUserProfile() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            val user: UserItem? = profileViewModel.getLoggedUser()
-            if (user != null) {
-                if (user.profile != "") {
-                    Picasso.get()
-                        .load("http://api.mcomputing.eu/mobv/uploads/" + user.profile)
-                        .resize(200, 200)
-                        .centerCrop().transform(CircleTransform())
-                        .into(binding.profileImage)
-                }
-            } else {
+        val user: UserItem? = profileViewModel.userManager.getLoggedUser()
+        if (user != null) {
+            if (user.profile != "") {
                 Picasso.get()
-                    .load(R.drawable.user)
+                    .load("http://api.mcomputing.eu/mobv/uploads/" + user.profile)
                     .resize(200, 200)
                     .centerCrop().transform(CircleTransform())
                     .into(binding.profileImage)
             }
-        }
-    }
-
-
-    /// @param folderName can be your app's name
-    private fun saveImage(bitmap: Bitmap, context: Context, folderName: String): Uri? {
-        if (android.os.Build.VERSION.SDK_INT >= 29) {
-            val values = contentValues()
-            values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/$folderName")
-            values.put(MediaStore.Images.Media.IS_PENDING, true)
-            // RELATIVE_PATH and IS_PENDING are introduced in API 29.
-
-            val uri: Uri? =
-                context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-            if (uri != null) {
-                saveImageToStream(bitmap, context.contentResolver.openOutputStream(uri))
-                values.put(MediaStore.Images.Media.IS_PENDING, false)
-                context.contentResolver.update(uri, values, null, null)
-                return uri
-            }
         } else {
-            val directory = File(Environment.DIRECTORY_PICTURES + separator + folderName)
-            // getExternalStorageDirectory is deprecated in API 29
-
-            if (!directory.exists()) {
-                directory.mkdirs()
-            }
-            val fileName = System.currentTimeMillis().toString() + ".png"
-            val file = File(directory, fileName)
-            saveImageToStream(bitmap, FileOutputStream(file))
-            if (file.absolutePath != null) {
-                val values = contentValues()
-                values.put(MediaStore.Images.Media.ALBUM, file.absolutePath)
-                // .DATA is deprecated in API 29
-                context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-                return file.toUri()
-            }
+            Picasso.get()
+                .load(R.drawable.user)
+                .resize(200, 200)
+                .centerCrop().transform(CircleTransform())
+                .into(binding.profileImage)
         }
-        return null
+
     }
 
-
-    private fun contentValues(): ContentValues {
-        val values = ContentValues()
-        values.put(MediaStore.Images.Media.MIME_TYPE, "image/png")
-        values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
-        values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis())
-        return values
-    }
-
-    private fun saveImageToStream(bitmap: Bitmap, outputStream: OutputStream?) {
-        if (outputStream != null) {
-            try {
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-                outputStream.close()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
+    fun galleryAddPic() {
+        val file = File(photoManager.currentPhotoPath)
+        MediaScannerConnection.scanFile(context, arrayOf(file.toString()),
+            arrayOf(file.name), null)
     }
 
     companion object {

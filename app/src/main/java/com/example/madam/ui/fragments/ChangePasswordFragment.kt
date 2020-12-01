@@ -11,14 +11,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
-import androidx.navigation.fragment.findNavController
 import com.example.madam.R
 import com.example.madam.databinding.FragmentChangePasswordBinding
+import com.example.madam.ui.activities.ChangePasswordActivity
+import com.example.madam.ui.activities.MainActivity
 import com.example.madam.ui.viewModels.ChangePasswordViewModel
 import com.opinyour.android.app.data.utils.Injection
-import kotlinx.coroutines.launch
 
 
 class ChangePasswordFragment : Fragment() {
@@ -40,14 +38,6 @@ class ChangePasswordFragment : Fragment() {
         binding.model = changePasswordViewModel
         Log.i("ChangePassword", "Init constructor")
 
-        binding.back.setOnClickListener {
-            goToAccountSettings()
-        }
-
-        binding.changePassword.setOnClickListener {
-            changePassword()
-        }
-
         changePasswordViewModel.message.observe(viewLifecycleOwner, Observer {
             if (!it.equals("")) {
                 Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
@@ -64,12 +54,7 @@ class ChangePasswordFragment : Fragment() {
     }
 
     private fun goToAccountSettings() {
-    }
-
-    private fun changePassword() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            changePasswordViewModel.changePassword()
-        }
+        (activity as ChangePasswordActivity).goToActivity(MainActivity::class.java)
     }
 
     companion object {

@@ -53,7 +53,6 @@ class RegistrationViewModel(private val userRepository: UserRepository) : ViewMo
             val response: Call<UserResponse> = WebApi.create().register(data)
             response.enqueue(object : Callback<UserResponse> {
                 override fun onFailure(call: Call<UserResponse>, t: Throwable) {
-                    message.setValue("Používateľské meno už existuje")
                     Log.i("fail", t.message.toString())
                 }
 
@@ -61,8 +60,7 @@ class RegistrationViewModel(private val userRepository: UserRepository) : ViewMo
                     call: Call<UserResponse>,
                     response: Response<UserResponse>
                 ) {
-                    if (response?.code() == 200) {
-//                  todo asi bude treba      message.setValue("")
+                    if (response.code() == 200) {
                         Log.i("success", response.body()?.id.toString())
                     } else {
                         message.setValue("Používateľské meno už existuje")
@@ -91,9 +89,7 @@ class RegistrationViewModel(private val userRepository: UserRepository) : ViewMo
             override fun onFailure(call: Call<UserExists>, t: Throwable) {
                 message.setValue("Používateľské meno už existuje")
                 Log.i("fail", t.message.toString())
-
             }
-
             override fun onResponse(
                 call: Call<UserExists>,
                 response: Response<UserExists>

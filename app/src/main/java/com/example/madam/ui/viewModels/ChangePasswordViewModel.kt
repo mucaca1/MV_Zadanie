@@ -9,6 +9,7 @@ import com.example.madam.data.db.repositories.UserRepository
 import com.example.madam.data.db.repositories.model.UserItem
 
 import com.example.madam.utils.PasswordUtils
+import com.example.madam.utils.UserManager
 import com.opinyour.android.app.data.api.WebApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,6 +24,8 @@ import retrofit2.Response
 
 class ChangePasswordViewModel(private val userRepository: UserRepository) : ViewModel() {
 
+    var userManager: UserManager = UserManager(userRepository)
+
     var message: MutableLiveData<String> = MutableLiveData()
     var goBack: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -34,12 +37,12 @@ class ChangePasswordViewModel(private val userRepository: UserRepository) : View
 
     var passwordUtils: PasswordUtils = PasswordUtils()
 
-    suspend fun changePassword() {
+    fun changePassword() {
         if (newPassword.value.toString().equals(retypeNewPassword.value.toString())) {
             val jsonObject = JSONObject()
             jsonObject.put("action", "password")
             jsonObject.put("apikey", WebApi.API_KEY)
-            jsonObject.put("token", userRepository.getLoggedUser()?.token)
+            jsonObject.put("token", userManager.getLoggedUser()?.token)
             jsonObject.put("oldpassword", passwordUtils.hash(oldPassword.value.toString()))
             jsonObject.put("newpassword", passwordUtils.hash(newPassword.value.toString()))
             val body = jsonObject.toString()
@@ -57,10 +60,7 @@ class ChangePasswordViewModel(private val userRepository: UserRepository) : View
                     response: Response<UserResponse>
                 ) {
                     if (response.code() == 200) {
-
-                        runBlocking {
-                            withContext(Dispatchers.IO) {
-                                userRepository.update(
+                        userManager.updateUser(
                                     UserItem(
                                         response.body()?.username.toString(),
                                         response.body()?.email.toString(),
@@ -69,8 +69,6 @@ class ChangePasswordViewModel(private val userRepository: UserRepository) : View
                                         response.body()?.profile.toString()
                                     )
                                 )
-                            }
-                        }
                         Log.i("success", response.body()?.id.toString())
                         message.postValue("Heslo bolo úspešne zmenené")
                         goBack.postValue(true)

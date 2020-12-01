@@ -1,88 +1,78 @@
 package com.example.madam.ui.viewModels
 
-import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.madam.data.api.model.ClearPhoto
-import com.example.madam.data.api.model.ProfileImageResponse
 import com.example.madam.data.api.model.UserResponse
 import com.example.madam.data.db.repositories.UserRepository
 import com.example.madam.data.db.repositories.model.UserItem
-import com.google.firebase.analytics.FirebaseAnalytics
+import com.example.madam.utils.UserManager
 import com.opinyour.android.app.data.api.WebApi
 import com.opinyour.android.app.data.api.WebApi.Companion.create
-import kotlinx.coroutines.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.json.JSONObject
-import java.io.File
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import kotlin.coroutines.coroutineContext
+import java.io.File
 
 class ProfileViewModel(private val userRepository: UserRepository) : ViewModel() {
 
-    var picturePath: MutableLiveData<String> = MutableLiveData()
+    var logOutEvent: MutableLiveData<Boolean> = MutableLiveData()
+    var userManager: UserManager = UserManager(userRepository)
 
-    suspend fun getLoggedUser(): UserItem? {
-        return userRepository.getLoggedUser()
-    }
-
-    suspend fun updateUser(user: UserItem) {
-        userRepository.update(user)
-    }
-
-    suspend fun logOut(user: UserItem) {
-        return userRepository.logOutUser(user)
+    fun logOut() {
+        userManager.logoutUser()
+        logOutEvent.postValue(true)
     }
 
     fun reloadUser() {
-        GlobalScope.launch {
-            val user: UserItem? = getLoggedUser()
-            if (user != null) {
-                val jsonObject = JSONObject()
-                jsonObject.put("action", "userProfile")
-                jsonObject.put("apikey", WebApi.API_KEY)
-                jsonObject.put("token", user.token)
-                val body = jsonObject.toString()
-                val data = RequestBody.create(MediaType.parse("application/json"), body)
+        val user: UserItem? = userManager.getLoggedUser()
+        if (user != null) {
+            val jsonObject = JSONObject()
+            jsonObject.put("action", "userProfile")
+            jsonObject.put("apikey", WebApi.API_KEY)
+            jsonObject.put("token", user.token)
+            val body = jsonObject.toString()
+            val data = RequestBody.create(MediaType.parse("application/json"), body)
 
-                var response: Call<UserResponse> = WebApi.create().info(data)
-                response.enqueue(object : Callback<UserResponse> {
-                    override fun onFailure(call: Call<UserResponse>, t: Throwable) {
-                        Log.i("fail", t.message.toString())
-                    }
+            var response: Call<UserResponse> = WebApi.create().info(data)
+            response.enqueue(object : Callback<UserResponse> {
+                override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+                    Log.i("fail", t.message.toString())
+                }
 
-                    override fun onResponse(
-                        call: Call<UserResponse>,
-                        response: Response<UserResponse>
-                    ) {
-                        if (response.code() == 200) {
-                            user.profile = response.body()?.profile.toString()
-                            user.token = response.body()?.token.toString()
-                            user.refreshToken = response.body()?.refresh.toString()
-                            GlobalScope.launch {
-                                userRepository.update(user)
-                            }
-                            Log.i("Info", "Info reload success")
-
-                        } else {
-                            Log.i("Info", "Error")
+                override fun onResponse(
+                    call: Call<UserResponse>,
+                    response: Response<UserResponse>
+                ) {
+                    if (response.code() == 200) {
+                        user.profile = response.body()?.profile.toString()
+                        user.token = response.body()?.token.toString()
+                        user.refreshToken = response.body()?.refresh.toString()
+                        GlobalScope.launch {
+                            userRepository.update(user)
                         }
+                        Log.i("Info", "Info reload success")
+
+                    } else {
+                        Log.i("Info", "Error")
                     }
-                })
-            }
+                }
+            })
         }
     }
 
-    suspend fun deleteProfilePic() {
+    fun deleteProfilePic() {
         val jsonObject = JSONObject()
         jsonObject.put("action", "clearPhoto")
         jsonObject.put("apikey", WebApi.API_KEY)
-        jsonObject.put("token", userRepository.getLoggedUser()?.token)
+        jsonObject.put("token", userManager.getLoggedUser()?.token)
         val body = jsonObject.toString()
         val data = RequestBody.create(MediaType.parse("application/json"), body)
 
@@ -91,6 +81,7 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
             override fun onFailure(call: Call<ClearPhoto>, t: Throwable) {
                 Log.i("fail", t.message.toString())
             }
+
             override fun onResponse(
                 call: Call<ClearPhoto>,
                 response: Response<ClearPhoto>
@@ -104,11 +95,11 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
         })
     }
 
-    suspend fun uploadProfilePic(path: String) {
+    fun uploadProfilePic(path: String) {
         val file = File(path)
         val jsonObject = JSONObject()
         jsonObject.put("apikey", WebApi.API_KEY)
-        jsonObject.put("token", userRepository.getLoggedUser()?.token)
+        jsonObject.put("token", userManager.getLoggedUser()?.token)
         val body = jsonObject.toString()
         val data = RequestBody.create(MediaType.parse("application/json"), body)
         val imageRequest = RequestBody.create(MediaType.parse("image/jpeg"), file)
@@ -116,11 +107,11 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
         val response: Call<ClearPhoto> = create().uploadProfilePicture(image, data)
         response.enqueue(object : Callback<ClearPhoto> {
             override fun onFailure(call: Call<ClearPhoto>?, t: Throwable?) {
-                // TODO fail
                 if (t != null) {
                     Log.i("ImgERR", "Error " + t.message)
                 }
             }
+
             override fun onResponse(
                 call: Call<ClearPhoto>?,
                 response: Response<ClearPhoto>?

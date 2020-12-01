@@ -30,8 +30,12 @@ class UserRepository private constructor(
         return cache.getFirstUser()
     }
 
-    suspend fun logOutUser(userItem: UserItem) {
+    suspend fun logoutUser(userItem: UserItem) {
         cache.delete(userItem)
+    }
+
+    suspend fun logoutUser() {
+        cache.delete(cache.getFirstUser()!!)
     }
 
     suspend fun update(userItem: UserItem) {

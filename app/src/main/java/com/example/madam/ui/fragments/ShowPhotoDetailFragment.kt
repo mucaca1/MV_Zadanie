@@ -60,7 +60,7 @@ class ShowPhotoDetailFragment : Fragment() {
         Log.i("Photo detail", "Init constructor")
 
         viewLifecycleOwner.lifecycleScope.launch {
-            val user: UserItem? = profileViewModel.getLoggedUser()
+            val user: UserItem? = profileViewModel.userManager.getLoggedUser()
             if (user != null) {
                 setUserProfile()
             }
@@ -71,7 +71,7 @@ class ShowPhotoDetailFragment : Fragment() {
 
     private fun setUserProfile() {
         viewLifecycleOwner.lifecycleScope.launch {
-            val user: UserItem? = profileViewModel.getLoggedUser()
+            val user: UserItem? = profileViewModel.userManager.getLoggedUser()
             if (user != null) {
                 if (user.profile != "") {
                     Picasso.get()

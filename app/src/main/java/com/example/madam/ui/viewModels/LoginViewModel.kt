@@ -11,6 +11,7 @@ import com.example.madam.data.api.model.UserResponse
 import com.example.madam.data.db.repositories.UserRepository
 import com.example.madam.data.db.repositories.model.UserItem
 import com.example.madam.utils.PasswordUtils
+import com.example.madam.utils.UserManager
 import com.opinyour.android.app.data.api.WebApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -25,6 +26,7 @@ import retrofit2.Response
 class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
 
     var message: MutableLiveData<String> = MutableLiveData()
+    var userManager: UserManager = UserManager(userRepository)
 
     private val _loginStatus: MutableLiveData<Boolean> = MutableLiveData()
     val loginStatus: LiveData<Boolean>
@@ -40,10 +42,8 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
 
     var passwordUtils: PasswordUtils = PasswordUtils()
 
-    suspend fun isLogged(): Boolean {
-        var user: UserItem? = userRepository.getLoggedUser()
-        Log.i("User", user?.email.toString() + " " + user?.profile.toString())
-        return user != null
+    fun isLogged(): Boolean {
+        return userManager.isLogged()
     }
 
     fun login() {
@@ -66,20 +66,16 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
                 response: Response<UserResponse>
             ) {
                 if (response.code() == 200) {
-                    runBlocking {
-                        withContext(Dispatchers.IO) {
-                            userRepository.loginUser(
-                                UserItem(
-                                    response.body()?.username.toString(),
-                                    response.body()?.email.toString(),
-                                    response.body()?.token.toString(),
-                                    response.body()?.refresh.toString(),
-                                    response.body()?.profile.toString()
-                                )
-                            )
-                            message.postValue("Login")
-                        }
-                    }
+                    userManager.loginUser(
+                        UserItem(
+                            response.body()?.username.toString(),
+                            response.body()?.email.toString(),
+                            response.body()?.token.toString(),
+                            response.body()?.refresh.toString(),
+                            response.body()?.profile.toString()
+                        )
+                    )
+                    message.postValue("Login")
                     Log.i("success", response.body()?.id.toString())
                 } else {
                     Log.i("success", "Bad login params")

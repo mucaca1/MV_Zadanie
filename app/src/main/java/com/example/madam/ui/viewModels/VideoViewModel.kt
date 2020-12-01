@@ -10,9 +10,15 @@ import com.example.madam.data.db.repositories.UserRepository
 import com.example.madam.data.db.repositories.VideoRepository
 import com.example.madam.data.db.repositories.model.UserItem
 import com.example.madam.data.db.repositories.model.VideoItem
+import com.example.madam.utils.UserManager
 import kotlinx.coroutines.launch
 
-class VideoViewModel(private val repository: VideoRepository, private val userRepository: UserRepository) : ViewModel() {
+class VideoViewModel(
+    private val repository: VideoRepository,
+    private val userRepository: UserRepository
+) : ViewModel() {
+
+    var userManager: UserManager = UserManager(userRepository)
 
     val error: MutableLiveData<String> = MutableLiveData()
 
@@ -26,14 +32,15 @@ class VideoViewModel(private val repository: VideoRepository, private val userRe
     }
 
     suspend fun isLogged(): Boolean {
-        var user: UserItem? = userRepository.getLoggedUser()
-        Log.i("User", user?.email.toString() + " " + user?.profile.toString() + " " + user?.token.toString())
+        val user: UserItem? = userRepository.getLoggedUser()
+        Log.i(
+            "User",
+            user?.email.toString() + " " + user?.profile.toString() + " " + user?.token.toString()
+        )
         return user != null
     }
 
-    suspend fun hardLogout() {
-        var user: UserItem? = userRepository.getLoggedUser()
-        if (user != null)
-            userRepository.logOutUser(user)
+    fun hardLogout() {
+        userManager.logoutUser()
     }
 }
