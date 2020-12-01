@@ -8,9 +8,10 @@
         <item name="divider">@color/divider</item>
         <item name="icon">@color/icons</item>
         <item name="buttonStyle">@style/ButtonStyle</item>
-
-<!--        <item name="primaryText">@color/primary_text</item>-->
-<!--        <item name="secondaryText">@color/secondary_text</item>-->
+        <item name="android:immersive">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
     <style name="ButtonStyle" parent="Widget.AppCompat.Button">

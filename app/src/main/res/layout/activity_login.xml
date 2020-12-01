@@ -5,9 +5,10 @@
     android:layout_height="match_parent"
     tools:context=".ui.activities.LoginActivity">
 
-    <androidx.viewpager.widget.ViewPager
+    <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_login_pager"
+        android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_weight="1"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

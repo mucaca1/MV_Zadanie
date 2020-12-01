@@ -2,9 +2,11 @@ package com.example.madam.ui.fragments
 
 
 import RealPathUtil
+import android.Manifest
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -48,8 +50,6 @@ class ProfileFragment : Fragment() {
 
     private lateinit var imageUri: Uri
 
-    lateinit var currentPhotoPath: String
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -64,6 +64,11 @@ class ProfileFragment : Fragment() {
         binding.model = profileViewModel
         Log.i("Profile", "Init constructor")
 
+        requestPermissions(
+            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+            REQUEST_PERMISSIONS_OK_CODE
+        )
+
         binding.changePassword.setOnClickListener {
             changePassword()
         }
@@ -75,10 +80,6 @@ class ProfileFragment : Fragment() {
         binding.profileImage.setOnClickListener {
             takePhoto()
         }
-
-        val b: Bundle = Bundle()
-        b.putString("ErrorMessage", "Something wrong.")
-        context?.let { FirebaseAnalytics.getInstance(it).logEvent("ErrorMessage", b) }
 
         viewLifecycleOwner.lifecycleScope.launch {
             val user: UserItem? = profileViewModel.getLoggedUser()
@@ -276,8 +277,21 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == REQUEST_PERMISSIONS_OK_CODE) {
+            if (permissions[0] == Manifest.permission.WRITE_EXTERNAL_STORAGE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                println("Povolene fotky od usera response")
+            }
+        }
+    }
+
     companion object {
         const val SELECT_PHOTO = 1
+        const val REQUEST_PERMISSIONS_OK_CODE = 0
         const val CAMERA_REQUEST_CODE = 1001;
     }
 

@@ -1,14 +1,10 @@
 package com.example.madam.ui.activities
 
-import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.os.StrictMode
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import com.example.madam.R
 import com.example.madam.ui.adapters.PagerAdapter
@@ -28,7 +24,7 @@ import java.io.File
  */
 class MainActivity : AppCompatActivity() {
 
-    var pagerAdapter: PagerAdapter = PagerAdapter(supportFragmentManager)
+    var pagerAdapter: PagerAdapter = PagerAdapter(this)
     var isLogged: MutableLiveData<Boolean> = MutableLiveData()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,8 +32,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         isLogged.value = intent.extras?.getBoolean("login")
-
-//        Integer.decode("ahoj")
 
         if (view_main_pager != null) {
             pagerAdapter.addFragment(ProfileFragment())
@@ -53,22 +47,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
-//            if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
-//                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-//                val perm = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                ActivityCompat.requestPermissions(this, perm, 0)
-//            }
-//        }
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                val perm = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-                ActivityCompat.requestPermissions(this, perm, 0)
-            }
-        }
-
         val policy =
             StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
@@ -82,5 +60,24 @@ class MainActivity : AppCompatActivity() {
     fun <T> goToActivity(cls: Class<T>) {
         val myIntent = Intent(this, cls)
         this.startActivity(myIntent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        view_main_pager.postDelayed({
+            view_main_pager.systemUiVisibility = FLAGS_FULLSCREEN
+        }, IMMERSIVE_FLAG_TIMEOUT)
+    }
+
+    companion object {
+        const val FLAGS_FULLSCREEN =
+            View.SYSTEM_UI_FLAG_LOW_PROFILE or
+                    View.SYSTEM_UI_FLAG_FULLSCREEN or
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+
+        const val ANIMATION_FAST_MILLIS = 50L
+        const val ANIMATION_SLOW_MILLIS = 100L
+        private const val IMMERSIVE_FLAG_TIMEOUT = 500L
     }
 }

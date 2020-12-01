@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
 
-    var pagerAdapter: PagerAdapter = PagerAdapter(supportFragmentManager)
+    var pagerAdapter: PagerAdapter = PagerAdapter(this)
     var isLogged: MutableLiveData<Boolean> = MutableLiveData()
 
     override fun onCreate(savedInstanceState: Bundle?) {
