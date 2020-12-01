@@ -3,6 +3,7 @@ package com.example.madam.ui.activities
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.StrictMode
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,7 @@ import com.example.madam.ui.fragments.HomeFragment
 import com.example.madam.ui.fragments.ProfileFragment
 import com.example.madam.ui.fragments.VideoRecordFragment
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.File
 
 
 /**
@@ -35,6 +37,8 @@ class MainActivity : AppCompatActivity() {
 
         isLogged.value = intent.extras?.getBoolean("login")
 
+//        Integer.decode("ahoj")
+
         if (view_main_pager != null) {
             pagerAdapter.addFragment(ProfileFragment())
             pagerAdapter.addFragment(HomeFragment())
@@ -43,16 +47,24 @@ class MainActivity : AppCompatActivity() {
             view_main_pager.currentItem = 1
         }
 
-        isLogged.observe(this, {
+        isLogged.observe(this, androidx.lifecycle.Observer {
             if (!it) {
                 goToActivity(LoginActivity::class.java)
             }
         })
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
+//            if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
+//                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//                val perm = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                ActivityCompat.requestPermissions(this, perm, 0)
+//            }
+//        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
             if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                val perm = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                val perm = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
                 ActivityCompat.requestPermissions(this, perm, 0)
             }
         }

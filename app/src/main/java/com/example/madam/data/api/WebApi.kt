@@ -40,7 +40,7 @@ interface WebApi {
     // Pridat profilovku
     @Multipart
     @POST("upload.php")
-    fun uploadProfilePicture(@Part image: MultipartBody.Part, @Part("data") data: RequestBody): Call<ProfileImageResponse>
+    fun uploadProfilePicture(@Part image: MultipartBody.Part, @Part("data") data: RequestBody): Call<ClearPhoto>
 
     // Odstanit profilovku
     @POST("service.php")

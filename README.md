@@ -12,13 +12,13 @@
 ---
 
 ## Requirements
-- [ ] Prihlasenie, odhlasenie, registracia - po 1 bode spolu 3 body
-- [ ] Firebase Crashlytics - ukazka aj Firebase konzoly - 2 body
+- [x] Prihlasenie, odhlasenie, registracia - po 1 bode spolu 3 body
+- [x] Firebase Crashlytics - ukazka aj Firebase konzoly - 2 body
 - [ ] Pouzivanie lokalnej databazy, Viewmodel, repozitory - 5 bodov
 - [ ] Nahratie Videa (novy prispevok) - 5 bodov
 - [ ] Upload Videa (novy prispevok) - 5 bodov
-- [ ] Zobrazenie profilu - 2 body
-- [ ] Vyber a upload fotky (zmena profilovej fotky) - 3 + 3 bodov
+- [x] Zobrazenie profilu - 2 body
+- [x] Vyber a upload fotky (zmena profilovej fotky) - 3 + 3 bodov
 - [ ] Skrolovanie prispevkov - 5 bodov (+ 2 bonus body ak sa po uploade novy prispevok zobrazi na zaciatku)
 - [ ] Prehravanie videa ( prehranie, plynulost, prisposobenie velkosti obrazovky ) - 5 bodov
 - [ ] Zobrazovanie profilovej fotky ( zobrazenie, zaokruhlenie, bez deformacie ) - 2 body

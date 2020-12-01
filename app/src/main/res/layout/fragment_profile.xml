@@ -60,7 +60,6 @@
             android:id="@+id/profileImage"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:src="@{model.picturePath}"
             app:civ_border_color="#E19628"
             app:civ_border_width="4dp"
             app:civ_shadow="false"

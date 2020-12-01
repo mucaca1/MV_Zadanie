@@ -9,11 +9,10 @@ import com.example.madam.data.api.model.ProfileImageResponse
 import com.example.madam.data.api.model.UserResponse
 import com.example.madam.data.db.repositories.UserRepository
 import com.example.madam.data.db.repositories.model.UserItem
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.opinyour.android.app.data.api.WebApi
 import com.opinyour.android.app.data.api.WebApi.Companion.create
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -22,6 +21,7 @@ import java.io.File
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.coroutines.coroutineContext
 
 class ProfileViewModel(private val userRepository: UserRepository) : ViewModel() {
 
@@ -37,6 +37,45 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
 
     suspend fun logOut(user: UserItem) {
         return userRepository.logOutUser(user)
+    }
+
+    fun reloadUser() {
+        GlobalScope.launch {
+            val user: UserItem? = getLoggedUser()
+            if (user != null) {
+                val jsonObject = JSONObject()
+                jsonObject.put("action", "userProfile")
+                jsonObject.put("apikey", WebApi.API_KEY)
+                jsonObject.put("token", user.token)
+                val body = jsonObject.toString()
+                val data = RequestBody.create(MediaType.parse("application/json"), body)
+
+                var response: Call<UserResponse> = WebApi.create().info(data)
+                response.enqueue(object : Callback<UserResponse> {
+                    override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+                        Log.i("fail", t.message.toString())
+                    }
+
+                    override fun onResponse(
+                        call: Call<UserResponse>,
+                        response: Response<UserResponse>
+                    ) {
+                        if (response.code() == 200) {
+                            user.profile = response.body()?.profile.toString()
+                            user.token = response.body()?.token.toString()
+                            user.refreshToken = response.body()?.refresh.toString()
+                            GlobalScope.launch {
+                                userRepository.update(user)
+                            }
+                            Log.i("Info", "Info reload success")
+
+                        } else {
+                            Log.i("Info", "Error")
+                        }
+                    }
+                })
+            }
+        }
     }
 
     suspend fun deleteProfilePic() {
@@ -74,22 +113,21 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
         val data = RequestBody.create(MediaType.parse("application/json"), body)
         val imageRequest = RequestBody.create(MediaType.parse("image/jpeg"), file)
         val image = MultipartBody.Part.createFormData("image", file.name, imageRequest)
-        val response: Call<ProfileImageResponse> = create().uploadProfilePicture(image, data)
-        response.enqueue(object : Callback<ProfileImageResponse> {
-            override fun onFailure(call: Call<ProfileImageResponse>?, t: Throwable?) {
+        val response: Call<ClearPhoto> = create().uploadProfilePicture(image, data)
+        response.enqueue(object : Callback<ClearPhoto> {
+            override fun onFailure(call: Call<ClearPhoto>?, t: Throwable?) {
                 // TODO fail
                 if (t != null) {
                     Log.i("ImgERR", "Error " + t.message)
                 }
             }
-
             override fun onResponse(
-                call: Call<ProfileImageResponse>?,
-                response: Response<ProfileImageResponse>?
+                call: Call<ClearPhoto>?,
+                response: Response<ClearPhoto>?
             ) {
                 if (response != null) {
                     if (response.code() == 200) {
-                        Log.i("ImgSucc", response.body()?.path.toString())
+                        Log.i("ImgSucc", response.body()?.status.toString())
                     } else {
                         Log.i("ImgSucc", "Chyba")
                     }
