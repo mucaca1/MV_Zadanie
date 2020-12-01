@@ -32,12 +32,12 @@ class RegistrationViewModel(private val userRepository: UserRepository) : ViewMo
 
     val retypePassword: MutableLiveData<String> = MutableLiveData()
 
-    val passwordUtils: PasswordUtils = PasswordUtils()
+    private val passwordUtils: PasswordUtils = PasswordUtils()
 
     fun registration() {
-        if (password.value.toString().equals(retypePassword.value.toString())) {
+        if (password.value.toString() == retypePassword.value.toString()) {
             if (!checkUsername(login.value.toString())) {
-                message.setValue("Používateľské meno už existuje")
+                message.value = "Používateľské meno už existuje"
                 return
             }
 
@@ -63,7 +63,7 @@ class RegistrationViewModel(private val userRepository: UserRepository) : ViewMo
                     if (response.code() == 200) {
                         Log.i("success", response.body()?.id.toString())
                     } else {
-                        message.setValue("Používateľské meno už existuje")
+                        message.value = "Používateľské meno už existuje"
                         Log.i("success", "Username exists")
                     }
                 }
@@ -74,7 +74,7 @@ class RegistrationViewModel(private val userRepository: UserRepository) : ViewMo
         }
     }
 
-    fun checkUsername(username: String): Boolean {
+    private fun checkUsername(username: String): Boolean {
         val jsonObject = JSONObject()
         jsonObject.put("action", "exists")
         jsonObject.put("apikey", WebApi.API_KEY)
@@ -84,10 +84,10 @@ class RegistrationViewModel(private val userRepository: UserRepository) : ViewMo
         val data = RequestBody.create(MediaType.parse("application/json"), body)
 
         val response: Call<UserExists> = WebApi.create().isUsernameValid(data)
-        var unique: Boolean = false
+        var unique = false
         response.enqueue(object : Callback<UserExists> {
             override fun onFailure(call: Call<UserExists>, t: Throwable) {
-                message.setValue("Používateľské meno už existuje")
+                message.value = "Používateľské meno už existuje"
                 Log.i("fail", t.message.toString())
             }
             override fun onResponse(
@@ -98,7 +98,7 @@ class RegistrationViewModel(private val userRepository: UserRepository) : ViewMo
                     unique = response.body()?.exists ?: false
                 } else {
                     unique = response.body()?.exists ?: false
-                    message.setValue("Používateľské meno už existuje")
+                    message.value = "Používateľské meno už existuje"
                     Log.i("success", "Username exists")
                 }
             }
