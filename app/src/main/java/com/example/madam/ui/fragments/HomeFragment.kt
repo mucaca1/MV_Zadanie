@@ -205,7 +205,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewLifecycleOwner.lifecycleScope.launch {
-            (activity as MainActivity).isLogged.value = videoViewModel.isLogged()
+            (activity as MainActivity).isLogged.value = videoViewModel.userManager.isLogged()
         }
     }
 

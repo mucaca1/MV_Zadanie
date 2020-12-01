@@ -31,15 +31,6 @@ class VideoViewModel(
         }
     }
 
-    suspend fun isLogged(): Boolean {
-        val user: UserItem? = userRepository.getLoggedUser()
-        Log.i(
-            "User",
-            user?.email.toString() + " " + user?.profile.toString() + " " + user?.token.toString()
-        )
-        return user != null
-    }
-
     fun hardLogout() {
         userManager.logoutUser()
     }
