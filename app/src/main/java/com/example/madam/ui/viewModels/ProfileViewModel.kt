@@ -24,6 +24,7 @@ import java.io.File
 class ProfileViewModel(private val userRepository: UserRepository) : ViewModel() {
 
     var logOutEvent: MutableLiveData<Boolean> = MutableLiveData()
+    var reloadedUser: MutableLiveData<UserItem> = MutableLiveData()
     var userManager: UserManager = UserManager(userRepository)
 
     fun logOut() {
@@ -55,9 +56,8 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
                         user.profile = response.body()?.profile.toString()
                         user.token = response.body()?.token.toString()
                         user.refreshToken = response.body()?.refresh.toString()
-                        GlobalScope.launch {
-                            userRepository.update(user)
-                        }
+                        reloadedUser.value = user
+                        userManager.updateUser(user)
                         Log.i("Info", "Info reload success")
 
                     } else {

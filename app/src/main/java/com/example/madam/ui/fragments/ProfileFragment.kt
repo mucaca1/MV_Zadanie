@@ -4,12 +4,8 @@ package com.example.madam.ui.fragments
 import RealPathUtil
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.ActivityNotFoundException
-import android.content.ClipData
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.icu.text.SimpleDateFormat
 import android.media.MediaScannerConnection
 import android.net.Uri
@@ -25,7 +21,6 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
-import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -39,7 +34,6 @@ import com.example.madam.ui.activities.ShowPhotoDetailActivity
 import com.example.madam.ui.viewModels.ProfileViewModel
 import com.example.madam.utils.CircleTransform
 import com.example.madam.utils.PhotoManager
-import com.google.android.gms.common.wrappers.Wrappers
 import com.opinyour.android.app.data.utils.Injection
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
@@ -192,17 +186,14 @@ class ProfileFragment : Fragment() {
                     }
                 }
                 3 -> {
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        profileViewModel.deleteProfilePic()
+                    profileViewModel.deleteProfilePic()
+                    profileViewModel.reloadUser()
+                    Picasso.get()
+                        .load(R.drawable.user)
+                        .resize(200, 200)
+                        .centerCrop().transform(CircleTransform())
+                        .into(binding.profileImage)
 
-                    }.invokeOnCompletion {
-                        profileViewModel.reloadUser()
-                        Picasso.get()
-                            .load(R.drawable.user)
-                            .resize(200, 200)
-                            .centerCrop().transform(CircleTransform())
-                            .into(binding.profileImage)
-                    }
                 }
                 else -> { // Note the block
                     print("x is neither 0 nor 3")
@@ -271,6 +262,12 @@ class ProfileFragment : Fragment() {
                     .resize(200, 200)
                     .centerCrop().transform(CircleTransform())
                     .into(binding.profileImage)
+            } else {
+                Picasso.get()
+                    .load(R.drawable.user)
+                    .resize(200, 200)
+                    .centerCrop().transform(CircleTransform())
+                    .into(binding.profileImage)
             }
         } else {
             Picasso.get()
@@ -284,8 +281,10 @@ class ProfileFragment : Fragment() {
 
     fun galleryAddPic() {
         val file = File(photoManager.currentPhotoPath)
-        MediaScannerConnection.scanFile(context, arrayOf(file.toString()),
-            arrayOf(file.name), null)
+        MediaScannerConnection.scanFile(
+            context, arrayOf(file.toString()),
+            arrayOf(file.name), null
+        )
     }
 
     companion object {
