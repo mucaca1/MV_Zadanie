@@ -25,6 +25,7 @@
         </activity>
         <activity android:name="com.example.madam.ui.activities.MainActivity" />
         <activity android:name="com.example.madam.ui.activities.ChangePasswordActivity" />
+        <activity android:name="com.example.madam.ui.activities.ShowPhotoDetailActivity" />
     </application>
 
 </manifest>

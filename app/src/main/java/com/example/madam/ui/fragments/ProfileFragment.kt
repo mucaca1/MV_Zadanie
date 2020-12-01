@@ -15,7 +15,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
@@ -28,10 +27,12 @@ import com.example.madam.data.db.repositories.model.UserItem
 import com.example.madam.databinding.FragmentProfileBinding
 import com.example.madam.ui.activities.ChangePasswordActivity
 import com.example.madam.ui.activities.MainActivity
+import com.example.madam.ui.activities.ShowPhotoDetailActivity
 import com.example.madam.ui.viewModels.ProfileViewModel
+import com.example.madam.utils.CircleTransform
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.ktx.Firebase
 import com.opinyour.android.app.data.utils.Injection
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
 import java.io.*
 import java.io.File.separator
@@ -127,13 +128,16 @@ class ProfileFragment : Fragment() {
 
     private fun takePhoto() {
         // Option
-        val listItems: Array<String> = arrayOf("Open camera", "Open gallery", "Delete photo")
+        val listItems: Array<String> = arrayOf("Show profile picture", "Open camera", "Open gallery", "Delete photo")
         val mBuilder: AlertDialog.Builder = AlertDialog.Builder(activity as MainActivity)
         mBuilder.setTitle("Profile picture")
         mBuilder.setSingleChoiceItems(listItems, -1) { dialogInterface, i ->
             Log.i("Select", "Index " + i.toString())
             when (i) {
                 0 -> {
+                    (activity as MainActivity).goToActivity(ShowPhotoDetailActivity::class.java)
+                }
+                1 -> {
                     Intent(
                         MediaStore.ACTION_IMAGE_CAPTURE
                     ).also { pickContactIntent ->
@@ -143,7 +147,7 @@ class ProfileFragment : Fragment() {
                         )
                     }
                 }
-                1 -> {
+                2 -> {
                     Intent(
                         Intent.ACTION_PICK,
                         MediaStore.Images.Media.INTERNAL_CONTENT_URI
@@ -154,18 +158,21 @@ class ProfileFragment : Fragment() {
                         )
                     }
                 }
-                2 -> {
+                3 -> {
                     viewLifecycleOwner.lifecycleScope.launch {
                         profileViewModel.deleteProfilePic()
 
                     }.invokeOnCompletion {
                         profileViewModel.reloadUser()
-                        val bp: Bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.user)
-                        binding.profileImage.setImageBitmap(bp)
+                        Picasso.get()
+                            .load(R.drawable.user)
+                            .resize(200, 200)
+                            .centerCrop().transform(CircleTransform())
+                            .into(binding.profileImage)
                     }
                 }
                 else -> { // Note the block
-                    print("x is neither 1 nor 2")
+                    print("x is neither 0 nor 3")
                 }
             }
             dialogInterface.cancel()
@@ -201,8 +208,6 @@ class ProfileFragment : Fragment() {
             val file: File = createImageFile()
 
             val photo = data.extras!!["data"] as Bitmap?
-//            imageView.setImageBitmap(photo)
-//            knop.setVisibility(Button.VISIBLE)
 
             val tempUri: Uri? = context?.let { photo?.let { it1 -> saveImage(it1, it, "MaDaM") } }
 
@@ -225,14 +230,18 @@ class ProfileFragment : Fragment() {
                 if (path != null) {
                     val imgFile = File(path)
                     if (imgFile.exists()) {
-                        val myBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
+//                        val myBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
                         //Drawable d = new BitmapDrawable(getResources(), myBitmap);
-                        binding.profileImage.setImageBitmap(myBitmap)
+//                        binding.profileImage.setImageBitmap(myBitmap)
+                        Picasso.get()
+                            .load(imgFile)
+                            .resize(200, 200)
+                            .centerCrop().transform(CircleTransform())
+                            .into(binding.profileImage)
                     }
                 }
             }
-        }
-        else if ((requestCode == SELECT_PHOTO || requestCode == CAMERA_REQUEST_CODE) && resultCode == AppCompatActivity.RESULT_OK) {
+        } else if ((requestCode == SELECT_PHOTO || requestCode == CAMERA_REQUEST_CODE) && resultCode == AppCompatActivity.RESULT_OK) {
             val uri: Uri? = data?.data
             if (uri != null) {
 
@@ -251,9 +260,14 @@ class ProfileFragment : Fragment() {
                     if (path != null) {
                         val imgFile = File(path)
                         if (imgFile.exists()) {
-                            val myBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
+//                            val myBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
                             //Drawable d = new BitmapDrawable(getResources(), myBitmap);
-                            binding.profileImage.setImageBitmap(myBitmap)
+//                            binding.profileImage.setImageBitmap(myBitmap)
+                            Picasso.get()
+                                .load(imgFile)
+                                .resize(200, 200)
+                                .centerCrop().transform(CircleTransform())
+                                .into(binding.profileImage)
                         }
                     }
 
@@ -272,18 +286,22 @@ class ProfileFragment : Fragment() {
             val user: UserItem? = profileViewModel.getLoggedUser()
             if (user != null) {
                 if (user.profile != "") {
-                    val bp: Bitmap? =
-                        getBitmapFromURL("http://api.mcomputing.eu/mobv/uploads/" + user.profile)
-                    if (bp != null) {
-                        binding.profileImage.setImageBitmap(bp)
-                    }
-                } else {
-                    val bp: Bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.user)
-                    binding.profileImage.setImageBitmap(bp)
+                    Picasso.get()
+                        .load("http://api.mcomputing.eu/mobv/uploads/" + user.profile)
+                        .resize(200, 200)
+                        .centerCrop().transform(CircleTransform())
+                        .into(binding.profileImage)
                 }
+            } else {
+                Picasso.get()
+                    .load(R.drawable.user)
+                    .resize(200, 200)
+                    .centerCrop().transform(CircleTransform())
+                    .into(binding.profileImage)
             }
         }
     }
+
 
     /// @param folderName can be your app's name
     private fun saveImage(bitmap: Bitmap, context: Context, folderName: String): Uri? {
@@ -293,7 +311,8 @@ class ProfileFragment : Fragment() {
             values.put(MediaStore.Images.Media.IS_PENDING, true)
             // RELATIVE_PATH and IS_PENDING are introduced in API 29.
 
-            val uri: Uri? = context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+            val uri: Uri? =
+                context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
             if (uri != null) {
                 saveImageToStream(bitmap, context.contentResolver.openOutputStream(uri))
                 values.put(MediaStore.Images.Media.IS_PENDING, false)
@@ -321,11 +340,12 @@ class ProfileFragment : Fragment() {
         return null
     }
 
-    private fun contentValues() : ContentValues {
+
+    private fun contentValues(): ContentValues {
         val values = ContentValues()
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/png")
-        values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis() / 1000);
-        values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
+        values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
+        values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis())
         return values
     }
 
@@ -340,3 +360,4 @@ class ProfileFragment : Fragment() {
         }
     }
 }
+
