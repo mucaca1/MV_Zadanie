@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.os.SystemClock.sleep
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
@@ -58,7 +59,8 @@ class ShowPhotoDetailFragment : Fragment() {
             .get(ProfileViewModel::class.java)
         binding.lifecycleOwner = this
         Log.i("Photo detail", "Init constructor")
-
+        profileViewModel.reloadUser()
+        sleep(100)
         viewLifecycleOwner.lifecycleScope.launch {
             val user: UserItem? = profileViewModel.userManager.getLoggedUser()
             if (user != null) {
