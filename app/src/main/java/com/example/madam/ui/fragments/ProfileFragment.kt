@@ -32,7 +32,6 @@ import com.example.madam.ui.activities.MainActivity
 import com.example.madam.ui.activities.ShowPhotoDetailActivity
 import com.example.madam.ui.viewModels.ProfileViewModel
 import com.example.madam.utils.CircleTransform
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.opinyour.android.app.data.utils.Injection
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
@@ -103,9 +102,9 @@ class ProfileFragment : Fragment() {
             val url = URL(src)
             val connection: HttpURLConnection = url
                 .openConnection() as HttpURLConnection
-            connection.setDoInput(true)
+            connection.doInput = true
             connection.connect()
-            val input: InputStream = connection.getInputStream()
+            val input: InputStream = connection.inputStream
             BitmapFactory.decodeStream(input)
         } catch (e: IOException) {
             e.printStackTrace()
@@ -133,7 +132,7 @@ class ProfileFragment : Fragment() {
         val mBuilder: AlertDialog.Builder = AlertDialog.Builder(activity as MainActivity)
         mBuilder.setTitle("Profile picture")
         mBuilder.setSingleChoiceItems(listItems, -1) { dialogInterface, i ->
-            Log.i("Select", "Index " + i.toString())
+            Log.i("Select", "Index $i")
             when (i) {
                 0 -> {
                     (activity as MainActivity).goToActivity(ShowPhotoDetailActivity::class.java)
@@ -196,10 +195,7 @@ class ProfileFragment : Fragment() {
             "JPEG_${timeStamp}_", /* prefix */
             ".jpg", /* suffix */
             storageDir /* directory */
-        ).apply {
-            // Save a file: path for use with ACTION_VIEW intents
-            currentPhotoPath = absolutePath
-        }
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -289,12 +285,6 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    companion object {
-        const val SELECT_PHOTO = 1
-        const val REQUEST_PERMISSIONS_OK_CODE = 0
-        const val CAMERA_REQUEST_CODE = 1001;
-    }
-
     private fun setUserProfile() {
         viewLifecycleOwner.lifecycleScope.launch {
             val user: UserItem? = profileViewModel.getLoggedUser()
@@ -321,7 +311,7 @@ class ProfileFragment : Fragment() {
     private fun saveImage(bitmap: Bitmap, context: Context, folderName: String): Uri? {
         if (android.os.Build.VERSION.SDK_INT >= 29) {
             val values = contentValues()
-            values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/" + folderName)
+            values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/$folderName")
             values.put(MediaStore.Images.Media.IS_PENDING, true)
             // RELATIVE_PATH and IS_PENDING are introduced in API 29.
 
@@ -372,6 +362,12 @@ class ProfileFragment : Fragment() {
                 e.printStackTrace()
             }
         }
+    }
+
+    companion object {
+        const val SELECT_PHOTO = 1
+        const val REQUEST_PERMISSIONS_OK_CODE = 0
+        const val CAMERA_REQUEST_CODE = 1001;
     }
 }
 

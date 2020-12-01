@@ -22,7 +22,6 @@ import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.graphics.drawable.toDrawable
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -34,7 +33,6 @@ import com.example.madam.R
 import com.example.madam.databinding.FragmentVideoRecordBinding
 import com.example.madam.ui.activities.MainActivity
 import com.example.madam.ui.views.AutoFitSurfaceView
-import com.example.madam.utils.camera.CameraArgs
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_video_record.*
 import kotlinx.coroutines.Dispatchers
@@ -52,7 +50,6 @@ import kotlin.coroutines.suspendCoroutine
 
 class VideoRecordFragment : Fragment() {
     private lateinit var binding: FragmentVideoRecordBinding
-    private lateinit var args: CameraArgs
 
     private val cameraManager: CameraManager by lazy {
         val context = requireContext().applicationContext
