@@ -75,7 +75,8 @@ class VideoRecordFragment : Fragment() {
     private val cameraHandler = Handler(cameraThread.looper)
     private val animationTask: Runnable by lazy {
         Runnable {
-            recordVideo.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.accent))
+            recordVideo.backgroundTintList =
+                ColorStateList.valueOf(resources.getColor(R.color.accent))
             overlay.setBackgroundResource(R.drawable.recording_background)
         }
     }
@@ -146,13 +147,15 @@ class VideoRecordFragment : Fragment() {
                 holder: SurfaceHolder,
                 format: Int,
                 width: Int,
-                height: Int) = Unit
+                height: Int
+            ) = Unit
 
             override fun surfaceCreated(holder: SurfaceHolder) {
 
                 // Selects appropriate preview size and configures view finder
                 val previewSize = getPreviewOutputSize(
-                    viewFinder.display, characteristics, SurfaceHolder::class.java)
+                    viewFinder.display, characteristics, SurfaceHolder::class.java
+                )
                 Log.d(TAG, "View finder size: ${viewFinder.width} x ${viewFinder.height}")
                 Log.d(TAG, "Selected preview size: $previewSize")
                 viewFinder.setAspectRatio(previewSize.width, previewSize.height)
@@ -164,20 +167,22 @@ class VideoRecordFragment : Fragment() {
 
         // Used to rotate the output media to match device orientation
         relativeOrientation = OrientationLiveData(requireContext(), characteristics).apply {
-            observe(viewLifecycleOwner, Observer {
-                    orientation -> Log.d(TAG, "Orientation changed: $orientation")
+            observe(viewLifecycleOwner, Observer { orientation ->
+                Log.d(TAG, "Orientation changed: $orientation")
             })
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSIONS_REQUEST_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // TODO : open camera
-            } else {
-                Toast.makeText(context, "Permission request denied", Toast.LENGTH_LONG).show()
-            }
+        if (!hasPermissions(requireContext())) {
+            (activity as MainActivity).view_main_pager.currentItem = 1
+            Toast.makeText(context, "Permission request denied", Toast.LENGTH_LONG).show()
+
         }
     }
 
@@ -260,7 +265,8 @@ class VideoRecordFragment : Fragment() {
 
                     // Broadcasts the media file to the rest of the system
                     MediaScannerConnection.scanFile(
-                        view.context, arrayOf(outputFile.absolutePath), null, null)
+                        view.context, arrayOf(outputFile.absolutePath), null, null
+                    )
 
                     // Launch external activity via intent to play video recorded using our provider
                     startActivity(Intent().apply {
@@ -297,7 +303,7 @@ class VideoRecordFragment : Fragment() {
             }
 
             override fun onError(device: CameraDevice, error: Int) {
-                val msg = when(error) {
+                val msg = when (error) {
                     ERROR_CAMERA_DEVICE -> "Fatal (device)"
                     ERROR_CAMERA_DISABLED -> "Device policy"
                     ERROR_CAMERA_IN_USE -> "Camera in use"
@@ -319,7 +325,7 @@ class VideoRecordFragment : Fragment() {
         handler: Handler? = null
     ): CameraCaptureSession = suspendCoroutine { cont ->
 
-        device.createCaptureSession(targets, object: CameraCaptureSession.StateCallback() {
+        device.createCaptureSession(targets, object : CameraCaptureSession.StateCallback() {
 
             override fun onConfigured(session: CameraCaptureSession) = cont.resume(session)
 
@@ -350,7 +356,11 @@ class VideoRecordFragment : Fragment() {
     companion object {
 
         private const val PERMISSIONS_REQUEST_CODE = 10
-        private val PERMISSIONS_REQUIRED = arrayOf(CAMERA, RECORD_AUDIO, WRITE_EXTERNAL_STORAGE)
+        private val PERMISSIONS_REQUIRED = arrayOf(
+            WRITE_EXTERNAL_STORAGE,
+            CAMERA,
+            RECORD_AUDIO
+        )
         private val TAG = VideoRecordFragment::class.java.simpleName
         private const val RECORDER_VIDEO_BITRATE: Int = 10_000_000
         private const val MIN_REQUIRED_RECORDING_TIME_MILLIS: Long = 1000L

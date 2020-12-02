@@ -3,6 +3,7 @@ package com.example.madam.ui.fragments
 
 import RealPathUtil
 import android.Manifest
+import android.Manifest.permission.*
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -69,17 +70,13 @@ class ProfileFragment : Fragment() {
         binding.model = profileViewModel
         Log.i("Profile", "Init constructor")
 
-
-//        requestPermissions(
-//            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-//            REQUEST_PERMISSIONS_OK_CODE
-//        )
         val permissions = arrayOf(
-            "android.permission.WRITE_EXTERNAL_STORAGE",
-            "android.permission.ACCESS_FINE_LOCATION",
-            "android.permission.READ_PHONE_STATE",
-            "android.permission.SYSTEM_ALERT_WINDOW",
-            "android.permission.CAMERA"
+            WRITE_EXTERNAL_STORAGE,
+            ACCESS_FINE_LOCATION,
+            READ_PHONE_STATE,
+            SYSTEM_ALERT_WINDOW,
+            CAMERA,
+            RECORD_AUDIO
         )
         requestPermissions(permissions, REQUEST_PERMISSIONS_OK_CODE)
 
