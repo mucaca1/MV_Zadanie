@@ -87,11 +87,6 @@ class ProfileFragment : Fragment() {
             takePhoto()
         }
 
-//        binding.profileImage.setOnTouchListener { v, event ->
-//            takePhoto()
-//            false
-//        }
-
         profileViewModel.logOutEvent.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it)
                 (activity as MainActivity).isLogged.value = false
@@ -197,7 +192,7 @@ class ProfileFragment : Fragment() {
                     profileViewModel.deleteProfilePic(null)
                     Picasso.get()
                         .load(R.drawable.user)
-                        .resize(200, 200)
+                        .resize(PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE)
                         .centerCrop().transform(CircleTransform())
                         .into(binding.profileImage)
 
@@ -238,7 +233,7 @@ class ProfileFragment : Fragment() {
             if (imgFile.exists()) {
                 Picasso.get()
                     .load(imgFile)
-                    .resize(200, 200)
+                    .resize(PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE)
                     .centerCrop().transform(CircleTransform())
                     .into(binding.profileImage)
             }
@@ -261,7 +256,7 @@ class ProfileFragment : Fragment() {
     private fun setUserProfile(user: UserItem?) {
         Picasso.get()
             .load(R.drawable.user)
-            .resize(200, 200)
+            .resize(PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE)
             .centerCrop().transform(CircleTransform())
             .into(binding.profileImage)
         if (user != null) {
@@ -270,7 +265,7 @@ class ProfileFragment : Fragment() {
                     .load("http://api.mcomputing.eu/mobv/uploads/" + user.profile).memoryPolicy(
                         MemoryPolicy.NO_CACHE )
                     .networkPolicy(NetworkPolicy.NO_CACHE)
-                    .resize(200, 200)
+                    .resize(PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE)
                     .centerCrop().transform(CircleTransform())
                     .into(binding.profileImage)
             }
@@ -289,7 +284,8 @@ class ProfileFragment : Fragment() {
     companion object {
         const val SELECT_PHOTO = 1
         const val REQUEST_PERMISSIONS_OK_CODE = 0
-        const val CAMERA_REQUEST_CODE = 1001;
+        const val CAMERA_REQUEST_CODE = 1001
+        const val PROFILE_IMAGE_SIZE = 300
     }
 }
 

@@ -39,7 +39,7 @@ class ChangePasswordFragment : Fragment() {
         Log.i("ChangePassword", "Init constructor")
 
         changePasswordViewModel.message.observe(viewLifecycleOwner, Observer {
-            if (!it.equals("")) {
+            if (it != "") {
                 Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
             }
         })
@@ -49,6 +49,10 @@ class ChangePasswordFragment : Fragment() {
                 goToAccountSettings()
             }
         })
+
+        binding.back.setOnClickListener {
+            goToAccountSettings()
+        }
 
         changePasswordViewModel.userManager.refreshTokenSuccess.observe(viewLifecycleOwner, Observer {
             if (it)
