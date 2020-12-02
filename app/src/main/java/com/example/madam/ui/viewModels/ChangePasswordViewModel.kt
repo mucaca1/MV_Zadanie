@@ -1,8 +1,11 @@
 package com.example.madam.ui.viewModels
 
 import android.util.Log
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.observe
 import com.example.madam.data.api.model.UserResponse
 import com.example.madam.data.db.repositories.UserRepository
 import com.example.madam.data.db.repositories.model.UserItem
@@ -39,14 +42,14 @@ class ChangePasswordViewModel(private val userRepository: UserRepository) : View
             val jsonObject = JSONObject()
             jsonObject.put("action", "password")
             jsonObject.put("apikey", WebApi.API_KEY)
-//            if (lastApiCallFailed == false) {
-//                jsonObject.put("token", "ahoj")
-//                println("first call with " + userManager.getLoggedUser()?.token)
-//            }
-//            else {
+            if (lastApiCallFailed == false) {
+                jsonObject.put("token", "ahoj")
+                println("first call with " + userManager.getLoggedUser()?.token)
+            }
+            else {
                 jsonObject.put("token", userManager.getLoggedUser()?.token)
-//                println("Second call with " + userManager.getLoggedUser()?.token)
-//            }
+                println("Second call with " + userManager.getLoggedUser()?.token)
+            }
             jsonObject.put("oldpassword", passwordUtils.hash(oldPassword.value.toString()))
             jsonObject.put("newpassword", passwordUtils.hash(newPassword.value.toString()))
             val body = jsonObject.toString()
@@ -84,7 +87,6 @@ class ChangePasswordViewModel(private val userRepository: UserRepository) : View
                             Log.i("success", "Bad login params")
                             message.postValue("Zmena hesla neúspešná")
                             goBack.postValue(false)
-                            changePassword()
                         } else {
                             lastApiCallFailed = false
                         }

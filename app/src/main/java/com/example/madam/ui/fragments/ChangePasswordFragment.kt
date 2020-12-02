@@ -50,6 +50,11 @@ class ChangePasswordFragment : Fragment() {
             }
         })
 
+        changePasswordViewModel.userManager.refreshTokenSuccess.observe(viewLifecycleOwner, Observer {
+            if (it)
+                changePasswordViewModel.changePassword()
+        })
+
         return binding.root
     }
 
