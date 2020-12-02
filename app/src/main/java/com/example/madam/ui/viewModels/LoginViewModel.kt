@@ -76,7 +76,7 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
                         )
                     )
                     message.postValue("Login")
-                    Log.i("success", response.body()?.id.toString())
+                    response.body()?.toString()?.let { Log.i("success", it) }
                 } else {
                     Log.i("success", "Bad login params")
                     message.postValue("Nesprávne prihlasovacie údaje")

@@ -35,6 +35,8 @@ import com.example.madam.ui.viewModels.ProfileViewModel
 import com.example.madam.utils.CircleTransform
 import com.example.madam.utils.PhotoManager
 import com.opinyour.android.app.data.utils.Injection
+import com.squareup.picasso.MemoryPolicy
+import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
 import java.io.File
@@ -47,6 +49,7 @@ class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
     private var photoManager: PhotoManager = PhotoManager()
 
+    @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,10 +65,19 @@ class ProfileFragment : Fragment() {
         binding.model = profileViewModel
         Log.i("Profile", "Init constructor")
 
-        requestPermissions(
-            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-            REQUEST_PERMISSIONS_OK_CODE
+
+//        requestPermissions(
+//            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+//            REQUEST_PERMISSIONS_OK_CODE
+//        )
+        val permissions = arrayOf(
+            "android.permission.WRITE_EXTERNAL_STORAGE",
+            "android.permission.ACCESS_FINE_LOCATION",
+            "android.permission.READ_PHONE_STATE",
+            "android.permission.SYSTEM_ALERT_WINDOW",
+            "android.permission.CAMERA"
         )
+        requestPermissions(permissions, REQUEST_PERMISSIONS_OK_CODE)
 
         binding.changePassword.setOnClickListener {
             changePassword()
@@ -75,25 +87,29 @@ class ProfileFragment : Fragment() {
             takePhoto()
         }
 
+//        binding.profileImage.setOnTouchListener { v, event ->
+//            takePhoto()
+//            false
+//        }
+
         profileViewModel.logOutEvent.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it)
                 (activity as MainActivity).isLogged.value = false
         })
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            val user: UserItem? = profileViewModel.userManager.getLoggedUser()
-            if (user != null) {
-                binding.emailAddress.text =
-                    user.email
-                binding.loginName.text =
-                    user.username
-                setUserProfile()
-            } else {
-                binding.emailAddress.text = "unknown"
-                binding.loginName.text = "unknown"
-            }
+        val user: UserItem? = profileViewModel.userManager.getLoggedUser()
+        if (user != null) {
+            binding.emailAddress.text =
+                user.email
+            binding.loginName.text =
+                user.username
+            setUserProfile(user)
+        } else {
+            binding.emailAddress.text = "unknown"
+            binding.loginName.text = "unknown"
         }
 
+        profileViewModel.reloadUser()
         return binding.root
     }
 
@@ -164,14 +180,6 @@ class ProfileFragment : Fragment() {
                     (activity as MainActivity).goToActivity(ShowPhotoDetailActivity::class.java)
                 }
                 1 -> {
-                    /*Intent(
-                        MediaStore.ACTION_IMAGE_CAPTURE
-                    ).also { pickContactIntent ->
-                        startActivityForResult(
-                            pickContactIntent,
-                            CAMERA_REQUEST_CODE
-                        )
-                    }*/
                     dispatchTakePictureIntent()
                 }
                 2 -> {
@@ -186,8 +194,7 @@ class ProfileFragment : Fragment() {
                     }
                 }
                 3 -> {
-                    profileViewModel.deleteProfilePic()
-                    profileViewModel.reloadUser()
+                    profileViewModel.deleteProfilePic(null)
                     Picasso.get()
                         .load(R.drawable.user)
                         .resize(200, 200)
@@ -226,9 +233,7 @@ class ProfileFragment : Fragment() {
             }
         }
         if (path != null) {
-            profileViewModel.deleteProfilePic()
-            profileViewModel.uploadProfilePic(path)
-            profileViewModel.reloadUser()
+            profileViewModel.deleteProfilePic(path)
             val imgFile = File(path)
             if (imgFile.exists()) {
                 Picasso.get()
@@ -253,28 +258,22 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun setUserProfile() {
-        val user: UserItem? = profileViewModel.userManager.getLoggedUser()
+    private fun setUserProfile(user: UserItem?) {
+        Picasso.get()
+            .load(R.drawable.user)
+            .resize(200, 200)
+            .centerCrop().transform(CircleTransform())
+            .into(binding.profileImage)
         if (user != null) {
             if (user.profile != "") {
                 Picasso.get()
-                    .load("http://api.mcomputing.eu/mobv/uploads/" + user.profile)
-                    .resize(200, 200)
-                    .centerCrop().transform(CircleTransform())
-                    .into(binding.profileImage)
-            } else {
-                Picasso.get()
-                    .load(R.drawable.user)
+                    .load("http://api.mcomputing.eu/mobv/uploads/" + user.profile).memoryPolicy(
+                        MemoryPolicy.NO_CACHE )
+                    .networkPolicy(NetworkPolicy.NO_CACHE)
                     .resize(200, 200)
                     .centerCrop().transform(CircleTransform())
                     .into(binding.profileImage)
             }
-        } else {
-            Picasso.get()
-                .load(R.drawable.user)
-                .resize(200, 200)
-                .centerCrop().transform(CircleTransform())
-                .into(binding.profileImage)
         }
 
     }

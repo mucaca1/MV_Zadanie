@@ -7,4 +7,8 @@ data class UserResponse(
     var token: String,
     var refresh: String,
     var profile: String
-)
+) {
+    override fun toString(): String {
+        return "User [username: $username, email: $email, token: $token, refresh token: $refresh, profile: $profile]"
+    }
+}
