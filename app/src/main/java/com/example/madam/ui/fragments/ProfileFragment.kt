@@ -29,6 +29,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.madam.R
 import com.example.madam.data.db.repositories.model.UserItem
 import com.example.madam.databinding.FragmentProfileBinding
@@ -262,7 +263,7 @@ class ProfileFragment : Fragment() {
         grantResults: IntArray
     ) {
         if (requestCode == REQUEST_PERMISSIONS_OK_CODE) {
-            if (permissions[0] == Manifest.permission.WRITE_EXTERNAL_STORAGE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (permissions[0] == WRITE_EXTERNAL_STORAGE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 println("Povolene fotky od usera response")
             }
         }
@@ -281,6 +282,8 @@ class ProfileFragment : Fragment() {
                     .load("http://api.mcomputing.eu/mobv/uploads/" + user.profile)
                     .override(
                     PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
                     .circleCrop()
                     .into(binding.profileImage)
                 /*Picasso.get()

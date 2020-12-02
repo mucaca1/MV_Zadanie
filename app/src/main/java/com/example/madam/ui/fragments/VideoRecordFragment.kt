@@ -179,9 +179,11 @@ class VideoRecordFragment : Fragment() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (!hasPermissions(requireContext())) {
-            (activity as MainActivity).view_main_pager.currentItem = 1
-            Toast.makeText(context, "Permission request denied", Toast.LENGTH_LONG).show()
+        if (requestCode == PERMISSIONS_REQUEST_CODE) {
+            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                (activity as MainActivity).view_main_pager.currentItem = 1
+                Toast.makeText(context, "Permission request denied", Toast.LENGTH_LONG).show()
+            }
 
         }
     }

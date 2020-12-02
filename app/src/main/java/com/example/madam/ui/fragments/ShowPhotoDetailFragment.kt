@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.madam.R
 import com.example.madam.data.db.repositories.model.UserItem
 import com.example.madam.databinding.FragmentShowPhotoDetailBinding
@@ -62,6 +63,8 @@ class ShowPhotoDetailFragment : Fragment() {
             if (user.profile != "") {
                 Glide.with(this)
                     .load("http://api.mcomputing.eu/mobv/uploads/" + user.profile)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
                     .into(binding.profileImage)
             }
         }
