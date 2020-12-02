@@ -11,7 +11,7 @@ class InternetHelper {
             val connectivityManager =
                 activity.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val activeNetworkInfo = connectivityManager.activeNetwork
-            return activeNetworkInfo != null && connectivityManager.isActiveNetworkMetered
+            return activeNetworkInfo != null && connectivityManager.isDefaultNetworkActive
         }
     }
 

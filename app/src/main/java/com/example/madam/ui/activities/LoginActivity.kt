@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.observe
 import com.example.madam.R
 import com.example.madam.ui.adapters.PagerAdapter
 import com.example.madam.ui.fragments.LoginFragment
@@ -34,13 +35,13 @@ class LoginActivity : AppCompatActivity() {
             view_login_pager.adapter = pagerAdapter
         }
 
-        isLogged.observe(this, {
+        isLogged.observe(this) {
             if (it) {
                 val myIntent = Intent(this, MainActivity::class.java)
                 myIntent.putExtra("login", it)
                 this.startActivity(myIntent)
             }
-        })
+        }
     }
 
     override fun onBackPressed() {
