@@ -33,7 +33,7 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_home, container, false
         )
@@ -41,165 +41,25 @@ class HomeFragment : Fragment() {
         videoViewModel =
             ViewModelProvider(this, Injection.provideViewModelFactory(requireContext()))
                 .get(VideoViewModel::class.java)
-        Log.i("Home", "Init constructor")
 
         binding.model = videoViewModel
-
-        val list = listOf(
-            VideoItem(
-                "1",
-                "",
-                R.drawable.ic_launcher_foreground.toString(),
-                "Janko Mrkvička",
-                "22.12.2020 15:48"
-            ),
-            VideoItem(
-                "3",
-                "",
-                R.drawable.ic_launcher_foreground.toString(),
-                "Matej Kováč",
-                "22.12.4565 15:48"
-            ),
-            VideoItem(
-                "2",
-                "",
-                R.drawable.ic_launcher_foreground.toString(),
-                "Daniel Vaník",
-                "22.12.1199 15:48"
-            ),
-            VideoItem(
-                "2",
-                "",
-                R.drawable.ic_launcher_foreground.toString(),
-                "Daniel Vaník",
-                "22.12.1199 15:48"
-            ),
-            VideoItem(
-                "2",
-                "",
-                R.drawable.ic_launcher_foreground.toString(),
-                "Daniel Vaník",
-                "22.12.1199 15:48"
-            ),
-            VideoItem(
-                "2",
-                "",
-                R.drawable.ic_launcher_foreground.toString(),
-                "Daniel Vaník",
-                "22.12.1199 15:48"
-            ),
-            VideoItem(
-                "2",
-                "",
-                R.drawable.ic_launcher_foreground.toString(),
-                "Daniel Vaník",
-                "22.12.1199 15:48"
-            ),
-            VideoItem(
-                "2",
-                "",
-                R.drawable.ic_launcher_foreground.toString(),
-                "Daniel Vaník",
-                "22.12.1199 15:48"
-            ),
-            VideoItem(
-                "2",
-                "",
-                R.drawable.ic_launcher_foreground.toString(),
-                "Daniel Vaník",
-                "22.12.1199 15:48"
-            ),
-            VideoItem(
-                "2",
-                "",
-                R.drawable.ic_launcher_foreground.toString(),
-                "Daniel Vaník",
-                "22.12.1199 15:48"
-            ),
-            VideoItem(
-                "2",
-                "",
-                R.drawable.ic_launcher_foreground.toString(),
-                "Daniel Vaník",
-                "22.12.1199 15:48"
-            ),
-            VideoItem(
-                "2",
-                "",
-                R.drawable.ic_launcher_foreground.toString(),
-                "Daniel Vaník",
-                "22.12.1199 15:48"
-            ),
-            VideoItem(
-                "2",
-                "",
-                R.drawable.ic_launcher_foreground.toString(),
-                "Daniel Vaník",
-                "22.12.1199 15:48"
-            ),
-            VideoItem(
-                "2",
-                "",
-                R.drawable.ic_launcher_foreground.toString(),
-                "Daniel Vaník",
-                "22.12.1199 15:48"
-            ),
-            VideoItem(
-                "2",
-                "",
-                R.drawable.ic_launcher_foreground.toString(),
-                "Daniel Vaník",
-                "22.12.1199 15:48"
-            ),
-            VideoItem(
-                "2",
-                "",
-                R.drawable.ic_launcher_foreground.toString(),
-                "Daniel Vaník",
-                "22.12.1199 15:48"
-            ),
-            VideoItem(
-                "2",
-                "",
-                R.drawable.ic_launcher_foreground.toString(),
-                "Daniel Vaník",
-                "22.12.1199 15:48"
-            ),
-            VideoItem(
-                "2",
-                "",
-                R.drawable.ic_launcher_foreground.toString(),
-                "Daniel Vaník",
-                "22.12.1199 15:48"
-            ),
-            VideoItem(
-                "2",
-                "",
-                R.drawable.ic_launcher_foreground.toString(),
-                "Daniel Vaník",
-                "22.12.1199 15:48"
-            ),
-            VideoItem(
-                "2",
-                "",
-                R.drawable.ic_launcher_foreground.toString(),
-                "Daniel Vaník",
-                "22.12.1199 15:48"
-            )
-        )
-
-        binding.videoList.layoutManager =
+        binding.recyclerVideoList.layoutManager =
             LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
         val adapter = VideoAdapter()
-        binding.videoList.adapter = adapter
+        binding.recyclerVideoList.adapter = adapter
         videoViewModel.videos.observe(viewLifecycleOwner) {
-            adapter.items = list
+            adapter.items = it
         }
 
-        binding.videoList.addOnScrollListener(createListener())
+        binding.recyclerVideoList.addOnScrollListener(createListener())
 
         return binding.root
+    }
+
+    override fun onPause() {
+        super.onPause()
+        VideoAdapter.pauseAllPlayers()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -213,15 +73,16 @@ class HomeFragment : Fragment() {
         return object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
+                val llm = binding.recyclerVideoList.layoutManager as LinearLayoutManager
 
                 val smoothScroller: SmoothScroller = object : LinearSmoothScroller(context) {
                     override fun getVerticalSnapPreference(): Int {
                         return SNAP_TO_START
                     }
 
+                    //TODO
                     override fun onStop() {
-                        // TODO: play current video post
-                        println("Spusti nove video")
+                        VideoAdapter.startPlayerAt(llm.findFirstVisibleItemPosition())
                     }
 
                     override fun calculateTimeForScrolling(dx: Int): Int {
@@ -230,20 +91,19 @@ class HomeFragment : Fragment() {
                     }
                 }
 
+                //TODO
                 if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    // TODO: stop previous video post
-                    println("Zastav aktualne video")
+                    VideoAdapter.pauseAllPlayers()
                 }
                 if (newState == RecyclerView.SCROLL_STATE_IDLE || newState == RecyclerView.SCROLL_STATE_SETTLING) {
                     var positionToScroll = 0
-                    val llm = binding.videoList.layoutManager as LinearLayoutManager
                     if (SCROLLED_UP != null && SCROLLED_UP == true) {
                         positionToScroll = llm.findFirstVisibleItemPosition()
                     } else if (SCROLLED_UP != null && SCROLLED_UP == false) {
                         positionToScroll = llm.findLastVisibleItemPosition()
                     }
                     smoothScroller.targetPosition = positionToScroll
-                    binding.videoList.layoutManager?.startSmoothScroll(smoothScroller)
+                    binding.recyclerVideoList.layoutManager?.startSmoothScroll(smoothScroller)
                 }
             }
 

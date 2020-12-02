@@ -4,62 +4,62 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
-            name="video"
+            name="videoViewItem"
             type="com.example.madam.data.db.repositories.model.VideoItem" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/video_player_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/video_image_item"
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/player_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@{video.video_src}"/>
+            android:fitsSystemWindows="false"
+            app:playerObject="@{videoViewItem}"
+            app:resize_mode="fill"
+            app:controller_layout_id="@layout/exoplayer_custom_controls" />
 
-        <com.mikhaellopez.circularimageview.CircularImageView
-            android:id="@+id/user_image"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@{video.user_image_src}"
-            app:civ_border_color="@color/primary_dark"
-            app:civ_border_width="3dp"
-            app:civ_shadow="false"
-            app:civ_shadow_color="@color/primary"
-            app:civ_shadow_radius="2dp"
-            tools:ignore="MissingConstraints"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="615dp"
-            />
+        <ImageView
+            android:id="@+id/post_user_picture"
+            android:layout_width="@dimen/post_profile_pic_diameter"
+            android:layout_height="@dimen/post_profile_pic_diameter"
+            android:layout_margin="30dp"
+            app:layout_constraintLeft_toLeftOf="@id/player_view"
+            app:layout_constraintBottom_toBottomOf="@id/player_view"
+            app:ownerPhoto="@{videoViewItem}"
+            android:contentDescription="@string/owner_photo_desc" />
 
         <TextView
-            android:id="@+id/user_name"
+            android:id="@+id/post_username"
             style="@style/H2RobotoFont"
             android:layout_width="281dp"
             android:layout_height="27dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginBottom="36dp"
             android:textSize="21sp"
-            android:text="@{video.user_name}"
+            app:formattedUsername="@{videoViewItem}"
             android:textColor="@color/divider"
-            app:layout_constraintBottom_toBottomOf="@id/user_image"
-            app:layout_constraintStart_toEndOf="@id/user_image" />
+            app:layout_constraintTop_toTopOf="@id/post_user_picture"
+            app:layout_constraintStart_toEndOf="@id/post_user_picture" />
 
         <TextView
-            android:id="@+id/video_creation_date"
+            android:id="@+id/post_created_at"
             style="@style/H2RobotoFont"
             android:layout_width="215dp"
             android:layout_height="24dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="15dp"
             android:layout_marginBottom="36dp"
             android:textSize="14sp"
-            android:text="@{video.creation_date}"
+            app:formattedCreatedAt="@{videoViewItem}"
             android:textColor="@color/divider"
-            app:layout_constraintBottom_toBottomOf="@+id/user_name"
-            app:layout_constraintStart_toEndOf="@id/user_image" />
+            app:layout_constraintTop_toBottomOf="@id/post_username"
+            app:layout_constraintStart_toEndOf="@id/post_user_picture" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
+
+

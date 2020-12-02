@@ -96,6 +96,12 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
+    //video player
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.12.1'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.12.1'
+    //TODO can we omit this one?
+    implementation 'com.google.android.exoplayer:exoplayer-dash:2.12.1'
+
     // EXIF Interface
     implementation 'androidx.exifinterface:exifinterface:1.3.1'
 

@@ -2,4 +2,9 @@
     <string name="app_name">Madam</string>
     <string name="sign_up">Login</string>
     <string name="register"><u>Don\'t have an account yet? Create it</u></string>
+    <string name="owner_photo_desc">Post owner profile picture</string>
+    <string name="rewind_desc">Rewind 10 sec button</string>
+    <string name="forward_desc">Forward 10 sec button</string>
+    <string name="play_desc">Play button</string>
+    <string name="pause_desc">Pause button</string>
 </resources>
