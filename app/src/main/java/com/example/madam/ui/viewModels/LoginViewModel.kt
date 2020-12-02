@@ -55,7 +55,7 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
         val body = jsonObject.toString()
         val data = RequestBody.create(MediaType.parse("application/json"), body)
 
-        var response: Call<UserResponse> = WebApi.create().register(data)
+        var response: Call<UserResponse> = WebApi.create().login(data)
         response.enqueue(object : Callback<UserResponse> {
             override fun onFailure(call: Call<UserResponse>, t: Throwable) {
                 Log.i("fail", t.message.toString())

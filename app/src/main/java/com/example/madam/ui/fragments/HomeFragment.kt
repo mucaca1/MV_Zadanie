@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.size
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -23,6 +24,7 @@ import com.example.madam.ui.activities.MainActivity
 import com.example.madam.ui.adapters.VideoAdapter
 import com.example.madam.ui.viewModels.VideoViewModel
 import com.opinyour.android.app.data.utils.Injection
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.coroutines.launch
 
 
@@ -62,6 +64,11 @@ class HomeFragment : Fragment() {
         VideoAdapter.pauseAllPlayers()
     }
 
+    override fun onResume() {
+        super.onResume()
+        videoViewModel.loadVideos()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewLifecycleOwner.lifecycleScope.launch {
@@ -82,7 +89,12 @@ class HomeFragment : Fragment() {
 
                     //TODO
                     override fun onStop() {
-                        VideoAdapter.startPlayerAt(llm.findFirstVisibleItemPosition())
+                        val currentPlayerPosition = llm.findFirstVisibleItemPosition()
+
+                        Log.i("current players", VideoAdapter.players.size.toString())
+                        Log.i("current recyclers", recycler_video_list.size.toString())
+
+                        if (currentPlayerPosition >= 0) VideoAdapter.startPlayerAt(currentPlayerPosition)
                     }
 
                     override fun calculateTimeForScrolling(dx: Int): Int {
@@ -117,6 +129,7 @@ class HomeFragment : Fragment() {
                     SCROLLED_UP = true
                 }
             }
+
         }
     }
 
