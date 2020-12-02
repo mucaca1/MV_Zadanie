@@ -62,10 +62,15 @@ class RegistrationViewModel(private val userRepository: UserRepository) : ViewMo
                 response: Response<UserExists>
             ) {
                 if (response.code() == 200) {
-                    register()
+                    if (!response.body()?.exists!!)
+                        register()
+                    else {
+                        message.value = "Používateľské meno už existuje"
+                        Log.i("CheckUser", "Username already exists")
+                    }
                 } else {
-                    message.value = "Používateľské meno už existuje"
-                    Log.i("success", "Username exists")
+                    message.value = "Chyba registrácie"
+                    Log.i("CheckUser", "Error")
                 }
             }
         })
@@ -85,6 +90,7 @@ class RegistrationViewModel(private val userRepository: UserRepository) : ViewMo
         response.enqueue(object : Callback<UserResponse> {
             override fun onFailure(call: Call<UserResponse>, t: Throwable) {
                 Log.i("fail", t.message.toString())
+                message.value = "Registrácia neúspešná"
             }
 
             override fun onResponse(
@@ -93,9 +99,10 @@ class RegistrationViewModel(private val userRepository: UserRepository) : ViewMo
             ) {
                 if (response.code() == 200) {
                     Log.i("success", response.body()?.id.toString())
+                    message.value = "Registrácia prebehla úspešne"
                 } else {
-                    message.value = "Používateľské meno už existuje"
-                    Log.i("success", "Username exists")
+                    message.value = "Registrácia neúspešná"
+                    Log.i("Error", "Something wrong")
                 }
             }
         })

@@ -27,6 +27,8 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
     var reloadedUser: MutableLiveData<UserItem> = MutableLiveData()
     var userManager: UserManager = UserManager(userRepository)
 
+    var message : MutableLiveData<String> =  MutableLiveData()
+
     fun logOut() {
         userManager.logoutUser()
         logOutEvent.postValue(true)
@@ -90,6 +92,8 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
                     Log.i("success", "Profile pis was deleted")
                     if (path != null)
                         uploadProfilePic(path)
+                    else
+                        message.value = "Profilová fotka bola zmazaná"
                 } else {
                     Log.i("success", "Bad login params")
                 }
@@ -111,6 +115,7 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
             override fun onFailure(call: Call<ClearPhoto>?, t: Throwable?) {
                 if (t != null) {
                     Log.i("ImgERR", "Error " + t.message)
+                    message.value = "Nepodarilo sa zmeniť profilovú fotku"
                 }
             }
 
@@ -122,8 +127,10 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
                     if (response.code() == 200) {
                         Log.i("ImgSucc", response.body()?.status.toString())
                         reloadUser()
+                        message.value = "Profilová fotka bola zmenená"
                     } else {
                         Log.i("ImgSucc", "Chyba")
+                        message.value = "Nepodarilo sa zmeniť profilovú fotku"
                     }
                 }
             }

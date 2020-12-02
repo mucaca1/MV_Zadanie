@@ -55,10 +55,11 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
         val body = jsonObject.toString()
         val data = RequestBody.create(MediaType.parse("application/json"), body)
 
-        var response: Call<UserResponse> = WebApi.create().login(data)
+        val response: Call<UserResponse> = WebApi.create().login(data)
         response.enqueue(object : Callback<UserResponse> {
             override fun onFailure(call: Call<UserResponse>, t: Throwable) {
                 Log.i("fail", t.message.toString())
+                message.postValue("Nesprávne prihlasovacie údaje")
             }
 
             override fun onResponse(
@@ -78,8 +79,8 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
                     message.postValue("Login")
                     response.body()?.toString()?.let { Log.i("success", it) }
                 } else {
-                    Log.i("success", "Bad login params")
                     message.postValue("Nesprávne prihlasovacie údaje")
+                    Log.i("success", "Bad login params")
                 }
             }
         })
