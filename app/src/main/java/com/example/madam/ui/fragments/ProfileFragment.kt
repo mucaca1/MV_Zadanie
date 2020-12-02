@@ -17,6 +17,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
@@ -92,6 +93,10 @@ class ProfileFragment : Fragment() {
         profileViewModel.logOutEvent.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it)
                 (activity as MainActivity).isLogged.value = false
+        })
+
+        profileViewModel.message.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         })
 
         val user: UserItem? = profileViewModel.userManager.getLoggedUser()
