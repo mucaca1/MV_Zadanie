@@ -1,14 +1,11 @@
 package com.example.madam.ui.fragments
 
-
 import RealPathUtil
-import android.Manifest
 import android.Manifest.permission.*
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.icu.text.SimpleDateFormat
-import android.media.ExifInterface
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
@@ -42,10 +39,7 @@ import com.example.madam.ui.viewModels.ProfileViewModel
 import com.example.madam.utils.CircleTransform
 import com.example.madam.utils.PhotoManager
 import com.opinyour.android.app.data.utils.Injection
-import com.squareup.picasso.MemoryPolicy
-import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -276,7 +270,8 @@ class ProfileFragment : Fragment() {
         Glide.with(this)
             .load(R.drawable.user)
             .override(
-                PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE)
+                PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE
+            )
             .circleCrop()
             .into(binding.profileImage)
         if (user != null) {
@@ -284,7 +279,8 @@ class ProfileFragment : Fragment() {
                 Glide.with(this)
                     .load("http://api.mcomputing.eu/mobv/uploads/" + user.profile)
                     .override(
-                    PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE)
+                        PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE
+                    )
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .skipMemoryCache(true)
                     .circleCrop()
