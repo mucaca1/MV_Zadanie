@@ -5,6 +5,7 @@ import android.Manifest.permission.*
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.icu.text.SimpleDateFormat
 import android.media.MediaScannerConnection
 import android.net.Uri
@@ -27,7 +28,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.example.madam.R
 import com.example.madam.data.db.repositories.model.UserItem
 import com.example.madam.databinding.FragmentProfileBinding
@@ -276,11 +281,34 @@ class ProfileFragment : Fragment() {
             .into(binding.profileImage)
         if (user != null) {
             if (user.profile != "") {
+                binding.loadingPanel.visibility = View.VISIBLE
                 Glide.with(this)
                     .load("http://api.mcomputing.eu/mobv/uploads/" + user.profile)
                     .override(
                         PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE
                     )
+                    .listener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(
+                            p0: GlideException?,
+                            p1: Any?,
+                            target: Target<Drawable>?,
+                            p3: Boolean
+                        ): Boolean {
+                            return false
+                        }
+                        override fun onResourceReady(
+                            p0: Drawable?,
+                            p1: Any?,
+                            target: Target<Drawable>?,
+                            p3: DataSource?,
+                            p4: Boolean
+                        ): Boolean {
+                            Log.d("Succ", "OnResourceReady")
+                            //do something when picture already loaded
+                            binding.loadingPanel.visibility = View.GONE
+                            return false
+                        }
+                    })
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .skipMemoryCache(true)
                     .circleCrop()
