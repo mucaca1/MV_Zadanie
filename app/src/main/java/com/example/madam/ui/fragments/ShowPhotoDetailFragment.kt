@@ -10,6 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import com.example.madam.R
 import com.example.madam.data.db.repositories.model.UserItem
 import com.example.madam.databinding.FragmentShowPhotoDetailBinding
@@ -56,10 +57,12 @@ class ShowPhotoDetailFragment : Fragment() {
             .into(binding.profileImage)
         if (user != null) {
             if (user.profile != "") {
-                Picasso.get()
-                    .load("http://api.mcomputing.eu/mobv/uploads/" + user.profile).memoryPolicy(
-                        MemoryPolicy.NO_CACHE )
-                    .networkPolicy(NetworkPolicy.NO_CACHE)
+                Glide.with(this)
+                    .load("http://api.mcomputing.eu/mobv/uploads/" + user.profile)
+                    .override(
+                        ProfileFragment.PROFILE_IMAGE_SIZE, ProfileFragment.PROFILE_IMAGE_SIZE
+                    )
+                    .circleCrop()
                     .into(binding.profileImage)
             }
         }

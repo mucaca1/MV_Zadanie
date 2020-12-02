@@ -7,6 +7,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.icu.text.SimpleDateFormat
+import android.media.ExifInterface
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
@@ -26,7 +27,7 @@ import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.example.madam.R
 import com.example.madam.data.db.repositories.model.UserItem
 import com.example.madam.databinding.FragmentProfileBinding
@@ -41,7 +42,6 @@ import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -250,7 +250,7 @@ class ProfileFragment : Fragment() {
                 Picasso.get()
                     .load(imgFile)
                     .resize(PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE)
-                    .centerCrop().transform(CircleTransform())
+                    .centerInside().transform(CircleTransform())
                     .into(binding.profileImage)
             }
         }
@@ -277,13 +277,19 @@ class ProfileFragment : Fragment() {
             .into(binding.profileImage)
         if (user != null) {
             if (user.profile != "") {
-                Picasso.get()
+                Glide.with(this)
+                    .load("http://api.mcomputing.eu/mobv/uploads/" + user.profile)
+                    .override(
+                    PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE)
+                    .circleCrop()
+                    .into(binding.profileImage)
+                /*Picasso.get()
                     .load("http://api.mcomputing.eu/mobv/uploads/" + user.profile).memoryPolicy(
                         MemoryPolicy.NO_CACHE )
                     .networkPolicy(NetworkPolicy.NO_CACHE)
                     .resize(PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE)
                     .centerCrop().transform(CircleTransform())
-                    .into(binding.profileImage)
+                    .into(binding.profileImage)*/
             }
         }
 
