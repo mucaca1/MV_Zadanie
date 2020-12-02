@@ -15,6 +15,7 @@ import com.example.madam.databinding.FragmentRegistrationBinding
 import com.example.madam.ui.activities.LoginActivity
 import com.example.madam.ui.viewModels.RegistrationViewModel
 import com.opinyour.android.app.data.utils.Injection
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_login.*
 
 
@@ -44,7 +45,7 @@ class RegistrationFragment : Fragment() {
 
         registrationViewModel.message.observe(viewLifecycleOwner, Observer {
             if (it != "") {
-                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                Toasty.error(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
         })
 

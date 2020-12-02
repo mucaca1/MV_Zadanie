@@ -2,7 +2,9 @@ package com.example.madam.ui.fragments
 
 import android.Manifest.permission.*
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
@@ -27,6 +29,7 @@ import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.android.camera.utils.OrientationLiveData
 import com.example.android.camera.utils.getPreviewOutputSize
@@ -34,7 +37,10 @@ import com.example.madam.BuildConfig
 import com.example.madam.R
 import com.example.madam.databinding.FragmentVideoRecordBinding
 import com.example.madam.ui.activities.MainActivity
+import com.example.madam.ui.viewModels.VideoViewModel
 import com.example.madam.ui.views.AutoFitSurfaceView
+import com.opinyour.android.app.data.utils.Injection
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_video_record.*
 import kotlinx.coroutines.Dispatchers
@@ -52,6 +58,7 @@ import kotlin.coroutines.suspendCoroutine
 
 class VideoRecordFragment : Fragment() {
     private lateinit var binding: FragmentVideoRecordBinding
+    private lateinit var videoViewModel: VideoViewModel
     private lateinit var previewSize: Size
     private var isBackCamera = true
 
@@ -117,8 +124,16 @@ class VideoRecordFragment : Fragment() {
             inflater, R.layout.fragment_video_record, container, false
         )
         binding.lifecycleOwner = this
+        videoViewModel =
+            ViewModelProvider(this, Injection.provideViewModelFactory(requireContext()))
+                .get(VideoViewModel::class.java)
         Log.i("VideoRecord", "Init constructor")
 
+        binding.model = videoViewModel
+
+        videoViewModel.error.observe(viewLifecycleOwner, {
+            Toasty.error(requireContext(), it, Toast.LENGTH_LONG).show()
+        })
         return binding.root
     }
 
@@ -169,9 +184,13 @@ class VideoRecordFragment : Fragment() {
                 binding.flipCamera.setOnClickListener {
                     isBackCamera = !isBackCamera
                     camera.close()
-                    val cameraId = if (isBackCamera) { "0" } else { "1" }
-                    Toast.makeText(requireContext(), cameraId, Toast.LENGTH_LONG).show()
-                    viewFinder.post{ initializeCamera(cameraId) }
+                    val cameraId = if (isBackCamera) {
+                        "0"
+                    } else {
+                        "1"
+                    }
+                    Toasty.info(requireContext(), cameraId, Toast.LENGTH_LONG).show()
+                    viewFinder.post { initializeCamera(cameraId) }
                 }
             }
         })
@@ -205,7 +224,7 @@ class VideoRecordFragment : Fragment() {
         setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
         setOutputFile(outputFile.absolutePath)
         setVideoEncodingBitRate(RECORDER_VIDEO_BITRATE)
-        if (30 > 0) setVideoFrameRate(30)
+        setVideoFrameRate(30)
         setVideoSize(previewSize.width, previewSize.height)
         setVideoEncoder(MediaRecorder.VideoEncoder.H264)
         setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
@@ -270,6 +289,7 @@ class VideoRecordFragment : Fragment() {
 
                     Log.d(TAG, "Recording stopped. Output file: $outputFile")
                     recorder.stop()
+                    recorder.release()
 
                     overlay.post(removeAnimation)
                     // Removes recording animation
@@ -282,7 +302,7 @@ class VideoRecordFragment : Fragment() {
                     )
 
                     // Launch external activity via intent to play video recorded using our provider
-                    startActivity(Intent().apply {
+                    startActivityForResult(Intent().apply {
                         action = Intent.ACTION_VIEW
                         type = MimeTypeMap.getSingleton()
                             .getMimeTypeFromExtension(outputFile.extension)
@@ -290,15 +310,38 @@ class VideoRecordFragment : Fragment() {
                         data = FileProvider.getUriForFile(view.context, authority, outputFile)
                         flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or
                                 Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    })
+                    }, 202)
 
                     delay(MainActivity.ANIMATION_SLOW_MILLIS)
-                    (activity as MainActivity).view_main_pager.currentItem = 1
                 }
             }
 
             true
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode != 202) return
+        val dialogClickListener: DialogInterface.OnClickListener =
+            DialogInterface.OnClickListener { _, which ->
+                when (which) {
+                    DialogInterface.BUTTON_POSITIVE -> {
+                        // TODO: upload video to server
+                        videoViewModel.uploadVideo(outputFile)
+                    }
+                    DialogInterface.BUTTON_NEGATIVE -> {
+                    }
+                }
+            }
+
+        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+        builder
+            .setMessage("Do you want to add a video ?")
+            .setPositiveButton("Yes", dialogClickListener)
+            .setNegativeButton("No", dialogClickListener)
+            .show()
     }
 
     @SuppressLint("MissingPermission")
@@ -368,7 +411,7 @@ class VideoRecordFragment : Fragment() {
 
     companion object {
 
-        private const val PERMISSIONS_REQUEST_CODE = 10
+        private const val PERMISSIONS_REQUEST_CODE = 1
         private val PERMISSIONS_REQUIRED = arrayOf(
             WRITE_EXTERNAL_STORAGE,
             CAMERA,

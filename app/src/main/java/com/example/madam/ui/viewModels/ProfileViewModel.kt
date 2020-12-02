@@ -126,7 +126,7 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
                         reloadUser()
                         message.value = "Profilová fotka bola zmenená"
                     } else {
-                        Log.i("ImgSucc", "Chyba")
+                        Log.i("ImgErr", "Chyba")
                         message.value = "Nepodarilo sa zmeniť profilovú fotku"
                     }
                 }

@@ -1,14 +1,13 @@
 package com.example.madam.ui.viewModels
 
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.example.madam.data.db.repositories.UserRepository
 import com.example.madam.data.db.repositories.VideoRepository
-import com.example.madam.data.db.repositories.model.UserItem
 import com.example.madam.data.db.repositories.model.VideoItem
 import com.example.madam.utils.UserManager
 import kotlinx.coroutines.launch
+import java.io.File
 
 class VideoViewModel(
     private val repository: VideoRepository,
@@ -27,6 +26,16 @@ class VideoViewModel(
     fun loadVideos() {
         viewModelScope.launch {
             repository.loadVideos(userManager.getLoggedUser()!!) { error.postValue(it) }
+        }
+    }
+
+    fun uploadVideo(videoFile: File) {
+        viewModelScope.launch {
+            userManager.getLoggedUser()?.token?.let { token ->
+                repository.addVideo(videoFile,
+                    token
+                ) { error.postValue(it) }
+            }
         }
     }
 

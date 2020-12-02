@@ -52,8 +52,8 @@ interface WebApi {
 
     // Pridat prispevok
     @Multipart
-    @POST("upload.php")
-    fun addPost(@Part image: MultipartBody.Part, @Part("data") data: RequestBody): Call<Boolean>
+    @POST("post.php")
+    fun addPost(@Part video: MultipartBody.Part, @Part("data") data: RequestBody): Response<VideoResponse>
 
     // Existuje username
     @POST("service.php")
