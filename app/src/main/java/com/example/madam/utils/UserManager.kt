@@ -6,7 +6,6 @@ import com.example.madam.data.api.model.UserResponse
 import com.example.madam.data.db.repositories.UserRepository
 import com.example.madam.data.db.repositories.model.UserItem
 import com.opinyour.android.app.data.api.WebApi
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType
 import okhttp3.RequestBody
@@ -59,13 +58,15 @@ class UserManager(private val userRepository: UserRepository) {
                 response: Response<UserResponse>
             ) {
                 if (response.code() == 200) {
-                    updateUser(UserItem(
-                        response.body()?.username.toString(),
-                        response.body()?.email.toString(),
-                        response.body()?.token.toString(),
-                        response.body()?.refresh.toString(),
-                        response.body()?.profile.toString()
-                    ))
+                    updateUser(
+                        UserItem(
+                            response.body()?.username.toString(),
+                            response.body()?.email.toString(),
+                            response.body()?.token.toString(),
+                            response.body()?.refresh.toString(),
+                            response.body()?.profile.toString()
+                        )
+                    )
                     Log.i("success", response.body()?.id.toString())
                     refreshTokenSuccess.value = true
                 } else {

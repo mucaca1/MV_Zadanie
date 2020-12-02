@@ -17,6 +17,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -38,6 +39,7 @@ import com.opinyour.android.app.data.utils.Injection
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
@@ -106,6 +108,15 @@ class ProfileFragment : Fragment() {
 
         profileViewModel.reloadUser()
         return binding.root
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                (activity as MainActivity).view_main_pager.currentItem = 1
+            }
+        })
     }
 
     private fun changePassword() {

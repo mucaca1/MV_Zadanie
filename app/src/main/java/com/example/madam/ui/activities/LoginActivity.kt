@@ -34,7 +34,7 @@ class LoginActivity : AppCompatActivity() {
             view_login_pager.adapter = pagerAdapter
         }
 
-        isLogged.observe(this, androidx.lifecycle.Observer {
+        isLogged.observe(this, {
             if (it) {
                 val myIntent = Intent(this, MainActivity::class.java)
                 myIntent.putExtra("login", it)
