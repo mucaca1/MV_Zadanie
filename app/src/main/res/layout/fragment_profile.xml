@@ -12,55 +12,25 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Späť"
+        <ImageView
+            android:id="@+id/logOut"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:text="@string/logout"
+            android:src="@drawable/logout"
+            android:onClick="@{() -> model.logOut()}"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/profileImage"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
             />
-
-<!--        <de.hdodenhof.circleimageview.CircleImageView-->
-<!--            android:id="@+id/profileImage"-->
-<!--            xmlns:app="http://schemas.android.com/apk/res-auto"-->
-<!--            android:layout_width="96dp"-->
-<!--            android:layout_height="96dp"-->
-<!--            android:src=""-->
-<!--            app:civ_border_width="2dp"-->
-<!--            app:civ_border_color="#FF000000"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/back"-->
-<!--            app:layout_constraintLeft_toLeftOf="parent"-->
-<!--            app:layout_constraintRight_toRightOf="parent"-->
-<!--            app:layout_constraintBottom_toTopOf="@+id/loginName"-->
-<!--            />-->
-
-<!--        <android.support.v7.widget.CardView-->
-<!--            android:layout_width="80dp"-->
-<!--            android:layout_height="80dp"-->
-<!--            android:elevation="12dp"-->
-<!--            android:id="@+id/view2"-->
-<!--            app:cardCornerRadius="40dp"-->
-<!--            android:layout_centerHorizontal="true"-->
-<!--            android:innerRadius="0dp"-->
-<!--            android:shape="ring"-->
-<!--            android:thicknessRatio="1.9">-->
-<!--            <ImageView-->
-<!--                android:layout_height="80dp"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:id="@+id/imageView1"-->
-<!--                android:src="@drawable/YOUR_IMAGE"-->
-<!--                android:layout_alignParentTop="true"-->
-<!--                android:layout_centerHorizontal="true">-->
-<!--            </ImageView>-->
-<!--        </android.support.v7.widget.CardView>-->
 
         <ImageView
             android:id="@+id/profileImage"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            app:layout_constraintTop_toBottomOf="@+id/back"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_marginTop="55dp"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/loginName"
@@ -70,7 +40,9 @@
             android:id="@+id/loginName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Login name"
+            android:text="@string/username"
+            style="@style/H2RobotoFont"
+            android:textColor="@color/primary"
             app:layout_constraintTop_toBottomOf="@id/profileImage"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -81,7 +53,9 @@
             android:id="@+id/emailAddress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Email address"
+            android:text="@string/email"
+            style="@style/H2RobotoFont"
+            android:textColor="@color/primary"
             app:layout_constraintTop_toBottomOf="@id/loginName"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -92,20 +66,9 @@
             android:id="@+id/changePassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Change password"
+            android:text="@string/change_password"
+            android:layout_marginBottom="50dp"
             app:layout_constraintTop_toBottomOf="@id/emailAddress"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/logOut"
-            />
-
-        <Button
-            android:id="@+id/logOut"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Log out"
-            android:onClick="@{() -> model.logOut()}"
-            app:layout_constraintTop_toBottomOf="@id/changePassword"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
