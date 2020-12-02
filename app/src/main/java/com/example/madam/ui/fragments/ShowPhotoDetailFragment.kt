@@ -55,17 +55,13 @@ class ShowPhotoDetailFragment : Fragment() {
     private fun setUserProfile(userI: UserItem?) {
         Log.i("profileP", "Setting profile photo")
         val user: UserItem? = userI ?: profileViewModel.userManager.getLoggedUser()
-        Picasso.get()
+        Glide.with(this)
             .load(R.drawable.user)
             .into(binding.profileImage)
         if (user != null) {
             if (user.profile != "") {
                 Glide.with(this)
                     .load("http://api.mcomputing.eu/mobv/uploads/" + user.profile)
-                    .override(
-                        ProfileFragment.PROFILE_IMAGE_SIZE, ProfileFragment.PROFILE_IMAGE_SIZE
-                    )
-                    .circleCrop()
                     .into(binding.profileImage)
             }
         }

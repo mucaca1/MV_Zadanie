@@ -204,7 +204,7 @@ class ProfileFragment : Fragment() {
                     }
                 }
                 3 -> {
-                    profileViewModel.deleteProfilePic(null)
+                    profileViewModel.deleteProfilePic()
                     Picasso.get()
                         .load(R.drawable.user)
                         .resize(PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE)
@@ -243,7 +243,7 @@ class ProfileFragment : Fragment() {
             }
         }
         if (path != null) {
-            profileViewModel.deleteProfilePic(path)
+            profileViewModel.uploadProfilePic(path)
             val imgFile = File(path)
             if (imgFile.exists()) {
                 Picasso.get()
@@ -269,10 +269,11 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setUserProfile(user: UserItem?) {
-        Picasso.get()
+        Glide.with(this)
             .load(R.drawable.user)
-            .resize(PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE)
-            .centerCrop().transform(CircleTransform())
+            .override(
+                PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE)
+            .circleCrop()
             .into(binding.profileImage)
         if (user != null) {
             if (user.profile != "") {
@@ -306,7 +307,7 @@ class ProfileFragment : Fragment() {
         const val SELECT_PHOTO = 1
         const val REQUEST_PERMISSIONS_OK_CODE = 0
         const val CAMERA_REQUEST_CODE = 1001
-        const val PROFILE_IMAGE_SIZE = 300
+        const val PROFILE_IMAGE_SIZE = 500
     }
 }
 
