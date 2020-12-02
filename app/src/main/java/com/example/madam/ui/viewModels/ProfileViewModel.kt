@@ -70,7 +70,7 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
         }
     }
 
-    fun deleteProfilePic(path: String?) {
+    fun deleteProfilePic() {
         val jsonObject = JSONObject()
         jsonObject.put("action", "clearPhoto")
         jsonObject.put("apikey", WebApi.API_KEY)
@@ -90,10 +90,7 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
             ) {
                 if (response.code() == 200) {
                     Log.i("success", "Profile pis was deleted")
-                    if (path != null)
-                        uploadProfilePic(path)
-                    else
-                        message.value = "Profilová fotka bola zmazaná"
+                    message.value = "Profilová fotka bola zmazaná"
                 } else {
                     Log.i("success", "Bad login params")
                 }
