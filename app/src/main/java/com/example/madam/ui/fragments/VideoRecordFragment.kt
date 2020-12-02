@@ -17,6 +17,7 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.util.Log
 import android.util.Range
+import android.util.Size
 import android.view.*
 import android.webkit.MimeTypeMap
 import android.widget.Toast
@@ -51,6 +52,8 @@ import kotlin.coroutines.suspendCoroutine
 
 class VideoRecordFragment : Fragment() {
     private lateinit var binding: FragmentVideoRecordBinding
+    private lateinit var previewSize: Size
+    private var isBackCamera = true
 
     private val cameraManager: CameraManager by lazy {
         val context = requireContext().applicationContext
@@ -153,7 +156,7 @@ class VideoRecordFragment : Fragment() {
             override fun surfaceCreated(holder: SurfaceHolder) {
 
                 // Selects appropriate preview size and configures view finder
-                val previewSize = getPreviewOutputSize(
+                previewSize = getPreviewOutputSize(
                     viewFinder.display, characteristics, SurfaceHolder::class.java
                 )
                 Log.d(TAG, "View finder size: ${viewFinder.width} x ${viewFinder.height}")
@@ -161,7 +164,15 @@ class VideoRecordFragment : Fragment() {
                 viewFinder.setAspectRatio(previewSize.width, previewSize.height)
 
                 // To ensure that size is set, initialize camera in the view's thread
-                viewFinder.post { initializeCamera() }
+                viewFinder.post { initializeCamera("0") }
+
+                binding.flipCamera.setOnClickListener {
+                    isBackCamera = !isBackCamera
+                    camera.close()
+                    val cameraId = if (isBackCamera) { "0" } else { "1" }
+                    Toast.makeText(requireContext(), cameraId, Toast.LENGTH_LONG).show()
+                    viewFinder.post{ initializeCamera(cameraId) }
+                }
             }
         })
 
@@ -181,7 +192,7 @@ class VideoRecordFragment : Fragment() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSIONS_REQUEST_CODE) {
             if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                (activity as MainActivity).view_main_pager.currentItem = 1
+//                (activity as MainActivity).view_main_pager.currentItem = 1
                 Toast.makeText(context, "Permission request denied", Toast.LENGTH_LONG).show()
             }
 
@@ -195,17 +206,17 @@ class VideoRecordFragment : Fragment() {
         setOutputFile(outputFile.absolutePath)
         setVideoEncodingBitRate(RECORDER_VIDEO_BITRATE)
         if (30 > 0) setVideoFrameRate(30)
-        setVideoSize(1920, 1080)
+        setVideoSize(previewSize.width, previewSize.height)
         setVideoEncoder(MediaRecorder.VideoEncoder.H264)
         setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
         setInputSurface(surface)
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun initializeCamera() = lifecycleScope.launch(Dispatchers.Main) {
+    private fun initializeCamera(cameraId: String) = lifecycleScope.launch(Dispatchers.Main) {
 
         // Open the selected camera
-        camera = openCamera(cameraManager, "0", cameraHandler)
+        camera = openCamera(cameraManager, cameraId, cameraHandler)
 
         // Creates list of Surfaces where the camera will output frames
         val targets = listOf(viewFinder.holder.surface, recorderSurface)
