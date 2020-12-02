@@ -42,14 +42,7 @@ class ChangePasswordViewModel(private val userRepository: UserRepository) : View
             val jsonObject = JSONObject()
             jsonObject.put("action", "password")
             jsonObject.put("apikey", WebApi.API_KEY)
-            if (lastApiCallFailed == false) {
-                jsonObject.put("token", "ahoj")
-                println("first call with " + userManager.getLoggedUser()?.token)
-            }
-            else {
-                jsonObject.put("token", userManager.getLoggedUser()?.token)
-                println("Second call with " + userManager.getLoggedUser()?.token)
-            }
+            jsonObject.put("token", userManager.getLoggedUser()?.token)
             jsonObject.put("oldpassword", passwordUtils.hash(oldPassword.value.toString()))
             jsonObject.put("newpassword", passwordUtils.hash(newPassword.value.toString()))
             val body = jsonObject.toString()
@@ -85,9 +78,8 @@ class ChangePasswordViewModel(private val userRepository: UserRepository) : View
                             userManager.refreshToken()
                             lastApiCallFailed = true
                             Log.i("success", "Bad login params")
-                            message.postValue("Zmena hesla neúspešná")
-                            goBack.postValue(false)
                         } else {
+                            message.postValue("Zmena hesla neúspešná")
                             lastApiCallFailed = false
                         }
                     }

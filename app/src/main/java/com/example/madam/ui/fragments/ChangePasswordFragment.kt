@@ -46,12 +46,12 @@ class ChangePasswordFragment : Fragment() {
 
         changePasswordViewModel.goBack.observe(viewLifecycleOwner, Observer {
             if (it) {
-                goToAccountSettings()
+                (activity as ChangePasswordActivity).onBackPressed()
             }
         })
 
         binding.back.setOnClickListener {
-            goToAccountSettings()
+            (activity as ChangePasswordActivity).onBackPressed()
         }
 
         changePasswordViewModel.userManager.refreshTokenSuccess.observe(viewLifecycleOwner, Observer {
@@ -62,9 +62,6 @@ class ChangePasswordFragment : Fragment() {
         return binding.root
     }
 
-    private fun goToAccountSettings() {
-        (activity as ChangePasswordActivity).goToActivity(MainActivity::class.java)
-    }
 
     companion object {
         fun newInstance() = ChangePasswordFragment()

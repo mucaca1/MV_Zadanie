@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.StrictMode
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import com.example.madam.R
@@ -11,6 +12,7 @@ import com.example.madam.ui.adapters.PagerAdapter
 import com.example.madam.ui.fragments.HomeFragment
 import com.example.madam.ui.fragments.ProfileFragment
 import com.example.madam.ui.fragments.VideoRecordFragment
+import com.example.madam.utils.InternetHelper
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 
@@ -31,7 +33,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        isLogged.value = intent.extras?.getBoolean("login")
+        if (!InternetHelper.isNetworkAvailable(this)) {
+            Toast.makeText(applicationContext, "No internet connection", Toast.LENGTH_SHORT).show()
+        }
 
         if (view_main_pager != null) {
             pagerAdapter.addFragment(ProfileFragment())
@@ -42,11 +46,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         isLogged.observe(this, androidx.lifecycle.Observer {
-            if (!it) {
-                goToActivity(LoginActivity::class.java)
-            }
+                if (!it) {
+                    goToActivity(LoginActivity::class.java)
+                }
         })
-
+        isLogged.value = intent.extras?.getBoolean("login")
         val policy =
             StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)

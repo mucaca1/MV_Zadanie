@@ -1,9 +1,11 @@
 package com.example.madam.ui.activities
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.madam.R
 import com.example.madam.ui.fragments.ShowPhotoDetailFragment
+import com.example.madam.utils.InternetHelper
 
 class ShowPhotoDetailActivity : AppCompatActivity() {
 
@@ -14,6 +16,10 @@ class ShowPhotoDetailActivity : AppCompatActivity() {
             supportFragmentManager.beginTransaction()
                 .add(R.id.show_photo_detail_activity, ShowPhotoDetailFragment.newInstance())
                 .commitNow()
+        }
+
+        if (!InternetHelper.isNetworkAvailable(this)) {
+            Toast.makeText(applicationContext, "No internet connection", Toast.LENGTH_SHORT).show()
         }
     }
 }

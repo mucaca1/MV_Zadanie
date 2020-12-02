@@ -1,13 +1,17 @@
 package com.example.madam.ui.activities
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import com.example.madam.R
 import com.example.madam.ui.adapters.PagerAdapter
 import com.example.madam.ui.fragments.LoginFragment
 import com.example.madam.ui.fragments.RegistrationFragment
+import com.example.madam.utils.InternetHelper
 import kotlinx.android.synthetic.main.activity_login.*
 
 
@@ -19,6 +23,10 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        if (!InternetHelper.isNetworkAvailable(this)) {
+            Toast.makeText(applicationContext, "No internet connection", Toast.LENGTH_SHORT).show()
+        }
 
         if (view_login_pager != null) {
             pagerAdapter.addFragment(LoginFragment())
@@ -37,6 +45,13 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         finish()
+    }
+
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager =
+            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetworkInfo = connectivityManager.activeNetwork
+        return activeNetworkInfo != null && connectivityManager.isActiveNetworkMetered
     }
 
 }
