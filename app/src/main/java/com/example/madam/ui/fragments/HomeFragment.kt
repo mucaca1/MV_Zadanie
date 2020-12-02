@@ -2,11 +2,10 @@ package com.example.madam.ui.fragments
 
 
 import android.os.Bundle
-import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -17,8 +16,8 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.example.madam.R
-import com.example.madam.data.db.repositories.model.VideoItem
 import com.example.madam.databinding.FragmentHomeBinding
+import com.example.madam.ui.activities.LoginActivity
 import com.example.madam.ui.activities.MainActivity
 import com.example.madam.ui.adapters.VideoAdapter
 import com.example.madam.ui.viewModels.VideoViewModel
@@ -67,6 +66,16 @@ class HomeFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             (activity as MainActivity).isLogged.value = videoViewModel.userManager.isLogged()
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                videoViewModel.userManager.logoutUser()
+                (activity as MainActivity).goToActivity(LoginActivity::class.java)
+            }
+        })
     }
 
     private fun createListener(): RecyclerView.OnScrollListener {

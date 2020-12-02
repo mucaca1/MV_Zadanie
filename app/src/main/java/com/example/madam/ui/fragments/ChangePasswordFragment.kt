@@ -51,7 +51,7 @@ class ChangePasswordFragment : Fragment() {
         })
 
         binding.back.setOnClickListener {
-            goToAccountSettings()
+            (activity as ChangePasswordActivity).onBackPressed()
         }
 
         return binding.root

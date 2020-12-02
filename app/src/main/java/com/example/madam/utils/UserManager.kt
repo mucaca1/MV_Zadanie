@@ -1,9 +1,7 @@
 package com.example.madam.utils
 
-import android.util.Log
 import com.example.madam.data.db.repositories.UserRepository
 import com.example.madam.data.db.repositories.model.UserItem
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.runBlocking
 
 class UserManager(private val userRepository: UserRepository) {
