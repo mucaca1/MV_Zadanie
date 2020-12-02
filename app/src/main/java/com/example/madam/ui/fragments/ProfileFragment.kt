@@ -3,6 +3,7 @@ package com.example.madam.ui.fragments
 
 import RealPathUtil
 import android.Manifest
+import android.Manifest.permission.*
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -29,10 +30,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.madam.R
 import com.example.madam.data.db.repositories.model.UserItem
 import com.example.madam.databinding.FragmentProfileBinding
 import com.example.madam.ui.activities.ChangePasswordActivity
+import com.example.madam.ui.activities.LoginActivity
 import com.example.madam.ui.activities.MainActivity
 import com.example.madam.ui.activities.ShowPhotoDetailActivity
 import com.example.madam.ui.viewModels.ProfileViewModel
@@ -69,17 +72,13 @@ class ProfileFragment : Fragment() {
         binding.model = profileViewModel
         Log.i("Profile", "Init constructor")
 
-
-//        requestPermissions(
-//            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-//            REQUEST_PERMISSIONS_OK_CODE
-//        )
         val permissions = arrayOf(
-            "android.permission.WRITE_EXTERNAL_STORAGE",
-            "android.permission.ACCESS_FINE_LOCATION",
-            "android.permission.READ_PHONE_STATE",
-            "android.permission.SYSTEM_ALERT_WINDOW",
-            "android.permission.CAMERA"
+            WRITE_EXTERNAL_STORAGE,
+            ACCESS_FINE_LOCATION,
+            READ_PHONE_STATE,
+            SYSTEM_ALERT_WINDOW,
+            CAMERA,
+            RECORD_AUDIO
         )
         requestPermissions(permissions, REQUEST_PERMISSIONS_OK_CODE)
 
@@ -121,7 +120,8 @@ class ProfileFragment : Fragment() {
         super.onCreate(savedInstanceState)
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                (activity as MainActivity).view_main_pager.currentItem = 1
+                profileViewModel.userManager.logoutUser()
+                (activity as MainActivity).goToActivity(LoginActivity::class.java)
             }
         })
     }
@@ -266,7 +266,7 @@ class ProfileFragment : Fragment() {
         grantResults: IntArray
     ) {
         if (requestCode == REQUEST_PERMISSIONS_OK_CODE) {
-            if (permissions[0] == Manifest.permission.WRITE_EXTERNAL_STORAGE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (permissions[0] == WRITE_EXTERNAL_STORAGE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 println("Povolene fotky od usera response")
             }
         }
@@ -285,6 +285,8 @@ class ProfileFragment : Fragment() {
                     .load("http://api.mcomputing.eu/mobv/uploads/" + user.profile)
                     .override(
                     PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
                     .circleCrop()
                     .into(binding.profileImage)
                 /*Picasso.get()
