@@ -46,6 +46,7 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         finish()
+        super.onBackPressed()
     }
 
     private fun isNetworkAvailable(): Boolean {

@@ -13,13 +13,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.madam.R
 import com.example.madam.data.db.repositories.model.UserItem
 import com.example.madam.databinding.FragmentShowPhotoDetailBinding
+import com.example.madam.ui.activities.ShowPhotoDetailActivity
 import com.example.madam.ui.viewModels.ProfileViewModel
-import com.example.madam.utils.CircleTransform
 import com.opinyour.android.app.data.utils.Injection
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
-import java.lang.Thread.sleep
 
 
 class ShowPhotoDetailFragment : Fragment() {
@@ -42,6 +41,10 @@ class ShowPhotoDetailFragment : Fragment() {
         profileViewModel.reloadedUser.observe(viewLifecycleOwner, Observer {
             setUserProfile(it)
         })
+
+        binding.back.setOnClickListener {
+            (activity as ShowPhotoDetailActivity).onBackPressed()
+        }
 
         profileViewModel.reloadUser()
         return binding.root
