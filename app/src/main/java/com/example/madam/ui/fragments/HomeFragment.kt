@@ -2,12 +2,10 @@ package com.example.madam.ui.fragments
 
 
 import android.os.Bundle
-import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.size
+import androidx.activity.OnBackPressedCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -18,13 +16,12 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.example.madam.R
-import com.example.madam.data.db.repositories.model.VideoItem
 import com.example.madam.databinding.FragmentHomeBinding
+import com.example.madam.ui.activities.LoginActivity
 import com.example.madam.ui.activities.MainActivity
 import com.example.madam.ui.adapters.VideoAdapter
 import com.example.madam.ui.viewModels.VideoViewModel
 import com.opinyour.android.app.data.utils.Injection
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.coroutines.launch
 
 
@@ -76,6 +73,16 @@ class HomeFragment : Fragment() {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                videoViewModel.userManager.logoutUser()
+                (activity as MainActivity).goToActivity(LoginActivity::class.java)
+            }
+        })
+    }
+
     private fun createListener(): RecyclerView.OnScrollListener {
         return object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -89,12 +96,7 @@ class HomeFragment : Fragment() {
 
                     //TODO
                     override fun onStop() {
-                        val currentPlayerPosition = llm.findFirstVisibleItemPosition()
-
-                        Log.i("current players", VideoAdapter.players.size.toString())
-                        Log.i("current recyclers", recycler_video_list.size.toString())
-
-                        if (currentPlayerPosition >= 0) VideoAdapter.startPlayerAt(currentPlayerPosition)
+                        VideoAdapter.startPlayerAt(llm.findFirstVisibleItemPosition())
                     }
 
                     override fun calculateTimeForScrolling(dx: Int): Int {
@@ -129,7 +131,6 @@ class HomeFragment : Fragment() {
                     SCROLLED_UP = true
                 }
             }
-
         }
     }
 

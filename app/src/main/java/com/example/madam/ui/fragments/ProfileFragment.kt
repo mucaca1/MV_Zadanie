@@ -17,6 +17,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -38,6 +39,7 @@ import com.opinyour.android.app.data.utils.Injection
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
@@ -87,11 +89,6 @@ class ProfileFragment : Fragment() {
             takePhoto()
         }
 
-//        binding.profileImage.setOnTouchListener { v, event ->
-//            takePhoto()
-//            false
-//        }
-
         profileViewModel.logOutEvent.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it)
                 (activity as MainActivity).isLogged.value = false
@@ -111,6 +108,15 @@ class ProfileFragment : Fragment() {
 
         profileViewModel.reloadUser()
         return binding.root
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                (activity as MainActivity).view_main_pager.currentItem = 1
+            }
+        })
     }
 
     private fun changePassword() {
@@ -197,7 +203,7 @@ class ProfileFragment : Fragment() {
                     profileViewModel.deleteProfilePic(null)
                     Picasso.get()
                         .load(R.drawable.user)
-                        .resize(200, 200)
+                        .resize(PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE)
                         .centerCrop().transform(CircleTransform())
                         .into(binding.profileImage)
 
@@ -238,7 +244,7 @@ class ProfileFragment : Fragment() {
             if (imgFile.exists()) {
                 Picasso.get()
                     .load(imgFile)
-                    .resize(200, 200)
+                    .resize(PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE)
                     .centerCrop().transform(CircleTransform())
                     .into(binding.profileImage)
             }
@@ -261,7 +267,7 @@ class ProfileFragment : Fragment() {
     private fun setUserProfile(user: UserItem?) {
         Picasso.get()
             .load(R.drawable.user)
-            .resize(200, 200)
+            .resize(PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE)
             .centerCrop().transform(CircleTransform())
             .into(binding.profileImage)
         if (user != null) {
@@ -270,7 +276,7 @@ class ProfileFragment : Fragment() {
                     .load("http://api.mcomputing.eu/mobv/uploads/" + user.profile).memoryPolicy(
                         MemoryPolicy.NO_CACHE )
                     .networkPolicy(NetworkPolicy.NO_CACHE)
-                    .resize(200, 200)
+                    .resize(PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE)
                     .centerCrop().transform(CircleTransform())
                     .into(binding.profileImage)
             }
@@ -289,7 +295,8 @@ class ProfileFragment : Fragment() {
     companion object {
         const val SELECT_PHOTO = 1
         const val REQUEST_PERMISSIONS_OK_CODE = 0
-        const val CAMERA_REQUEST_CODE = 1001;
+        const val CAMERA_REQUEST_CODE = 1001
+        const val PROFILE_IMAGE_SIZE = 300
     }
 }
 

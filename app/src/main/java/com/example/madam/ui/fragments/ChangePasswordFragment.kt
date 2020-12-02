@@ -39,23 +39,29 @@ class ChangePasswordFragment : Fragment() {
         Log.i("ChangePassword", "Init constructor")
 
         changePasswordViewModel.message.observe(viewLifecycleOwner, Observer {
-            if (!it.equals("")) {
+            if (it != "") {
                 Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
             }
         })
 
         changePasswordViewModel.goBack.observe(viewLifecycleOwner, Observer {
             if (it) {
-                goToAccountSettings()
+                (activity as ChangePasswordActivity).onBackPressed()
             }
+        })
+
+        binding.back.setOnClickListener {
+            (activity as ChangePasswordActivity).onBackPressed()
+        }
+
+        changePasswordViewModel.userManager.refreshTokenSuccess.observe(viewLifecycleOwner, Observer {
+            if (it)
+                changePasswordViewModel.changePassword()
         })
 
         return binding.root
     }
 
-    private fun goToAccountSettings() {
-        (activity as ChangePasswordActivity).goToActivity(MainActivity::class.java)
-    }
 
     companion object {
         fun newInstance() = ChangePasswordFragment()

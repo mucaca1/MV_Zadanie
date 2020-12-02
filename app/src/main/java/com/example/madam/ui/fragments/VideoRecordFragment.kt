@@ -20,6 +20,7 @@ import android.util.Range
 import android.view.*
 import android.webkit.MimeTypeMap
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
@@ -125,6 +126,12 @@ class VideoRecordFragment : Fragment() {
         } else {
             requestPermissions(PERMISSIONS_REQUIRED, PERMISSIONS_REQUEST_CODE)
         }
+
+        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                (activity as MainActivity).view_main_pager.currentItem = 1
+            }
+        })
     }
 
     @SuppressLint("MissingPermission")

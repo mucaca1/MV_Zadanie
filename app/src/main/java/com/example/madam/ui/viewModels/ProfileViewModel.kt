@@ -76,7 +76,7 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
         val body = jsonObject.toString()
         val data = RequestBody.create(MediaType.parse("application/json"), body)
 
-        var response: Call<ClearPhoto> = WebApi.create().deleteProfilePicture(data)
+        var response: Call<ClearPhoto> = create().deleteProfilePicture(data)
         response.enqueue(object : Callback<ClearPhoto> {
             override fun onFailure(call: Call<ClearPhoto>, t: Throwable) {
                 Log.i("fail", t.message.toString())
