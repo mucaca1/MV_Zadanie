@@ -2,9 +2,11 @@ package com.example.madam.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.madam.R
 import com.example.madam.ui.fragments.ChangePasswordFragment
+import com.example.madam.utils.InternetHelper
 
 class ChangePasswordActivity : AppCompatActivity() {
 
@@ -15,6 +17,10 @@ class ChangePasswordActivity : AppCompatActivity() {
             supportFragmentManager.beginTransaction()
                 .add(R.id.password_activity, ChangePasswordFragment.newInstance())
                 .commitNow()
+        }
+
+        if (!InternetHelper.isNetworkAvailable(this)) {
+            Toast.makeText(applicationContext, "No internet connection", Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -44,7 +44,7 @@ class LoginFragment : Fragment() {
 
         loginViewModel.message.observe(viewLifecycleOwner, Observer {
             if (it.equals("Login")) {
-                (activity as LoginActivity).isLogged.value = true
+                (activity as LoginActivity).isLogged.value = loginViewModel.userManager.isLogged()
             } else if (!it.equals("")) {
                 Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
             }

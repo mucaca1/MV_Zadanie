@@ -42,7 +42,7 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
             val body = jsonObject.toString()
             val data = RequestBody.create(MediaType.parse("application/json"), body)
 
-            var response: Call<UserResponse> = WebApi.create().info(data)
+            var response: Call<UserResponse> = create().info(data)
             response.enqueue(object : Callback<UserResponse> {
                 override fun onFailure(call: Call<UserResponse>, t: Throwable) {
                     Log.i("fail", t.message.toString())
@@ -58,7 +58,7 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
                         user.refreshToken = response.body()?.refresh.toString()
                         reloadedUser.value = user
                         userManager.updateUser(user)
-                        Log.i("Info", "Info reload success")
+                        Log.i("Info", "Info reload success $user")
 
                     } else {
                         Log.i("Info", "Error")
@@ -68,7 +68,7 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
         }
     }
 
-    fun deleteProfilePic() {
+    fun deleteProfilePic(path: String?) {
         val jsonObject = JSONObject()
         jsonObject.put("action", "clearPhoto")
         jsonObject.put("apikey", WebApi.API_KEY)
@@ -76,7 +76,7 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
         val body = jsonObject.toString()
         val data = RequestBody.create(MediaType.parse("application/json"), body)
 
-        var response: Call<ClearPhoto> = WebApi.create().deleteProfilePicture(data)
+        var response: Call<ClearPhoto> = create().deleteProfilePicture(data)
         response.enqueue(object : Callback<ClearPhoto> {
             override fun onFailure(call: Call<ClearPhoto>, t: Throwable) {
                 Log.i("fail", t.message.toString())
@@ -88,6 +88,8 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
             ) {
                 if (response.code() == 200) {
                     Log.i("success", "Profile pis was deleted")
+                    if (path != null)
+                        uploadProfilePic(path)
                 } else {
                     Log.i("success", "Bad login params")
                 }
@@ -119,6 +121,7 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
                 if (response != null) {
                     if (response.code() == 200) {
                         Log.i("ImgSucc", response.body()?.status.toString())
+                        reloadUser()
                     } else {
                         Log.i("ImgSucc", "Chyba")
                     }

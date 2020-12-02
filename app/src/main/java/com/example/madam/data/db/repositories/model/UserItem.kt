@@ -10,4 +10,8 @@ data class UserItem(
     var token: String?,
     var refreshToken: String?,
     var profile: String?
-)
+) {
+    override fun toString(): String {
+        return "User [username: $username, email: $email, token: $token, refresh token: $refreshToken, profile: $profile]"
+    }
+}

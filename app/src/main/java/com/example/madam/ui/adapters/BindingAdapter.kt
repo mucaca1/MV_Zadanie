@@ -4,6 +4,7 @@ import android.net.Uri
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import com.example.madam.R
 import com.example.madam.data.db.repositories.model.VideoItem
 import com.example.madam.utils.CircleTransform
 import com.google.android.exoplayer2.MediaItem
@@ -22,6 +23,7 @@ fun bindImage(imgView: ImageView, imgUrl: String?) {
         Picasso.get().load(it).into(imgView)
     }
 }
+
 //TODO check this
 @BindingAdapter("playerObject")
 fun PlayerView.setPlayerObject(item: VideoItem) {
@@ -45,8 +47,15 @@ fun PlayerView.setPlayerObject(item: VideoItem) {
 
 @BindingAdapter("ownerPhoto")
 fun ImageView.setPostOwnerPhoto(item: VideoItem) {
+    var imageUri: String =
+        if (item.user_image_url.isEmpty()) {
+            "drawable://" + R.drawable.user
+        } else {
+            item.user_image_url
+        }
+
     Picasso.get()
-        .load(item.user_image_url)
+        .load(imageUri)
         .resize(50, 50)
         .centerCrop().transform(CircleTransform())
         .into(this)

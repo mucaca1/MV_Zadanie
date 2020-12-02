@@ -47,8 +47,8 @@ interface WebApi {
     fun deleteProfilePicture(@Body data: RequestBody): Call<ClearPhoto>
 
     // Prispevky
-    @POST("upload.php")
-    suspend fun getVideos(): Response<List<VideoResponse>>
+    @POST("service.php")
+    suspend fun getVideos(@Body data: RequestBody): Response<List<VideoResponse>>
 
     // Pridat prispevok
     @Multipart

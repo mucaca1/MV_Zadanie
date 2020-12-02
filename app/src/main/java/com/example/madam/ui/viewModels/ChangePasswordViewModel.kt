@@ -1,9 +1,11 @@
 package com.example.madam.ui.viewModels
 
 import android.util.Log
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.observe
 import com.example.madam.data.api.model.UserResponse
 import com.example.madam.data.db.repositories.UserRepository
 import com.example.madam.data.db.repositories.model.UserItem
@@ -11,10 +13,6 @@ import com.example.madam.data.db.repositories.model.UserItem
 import com.example.madam.utils.PasswordUtils
 import com.example.madam.utils.UserManager
 import com.opinyour.android.app.data.api.WebApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.json.JSONObject
@@ -23,6 +21,8 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class ChangePasswordViewModel(private val userRepository: UserRepository) : ViewModel() {
+
+    var lastApiCallFailed: Boolean = false
 
     var userManager: UserManager = UserManager(userRepository)
 
@@ -48,7 +48,7 @@ class ChangePasswordViewModel(private val userRepository: UserRepository) : View
             val body = jsonObject.toString()
             val data = RequestBody.create(MediaType.parse("application/json"), body)
 
-            var response: Call<UserResponse> = WebApi.create().register(data)
+            var response: Call<UserResponse> = WebApi.create().changePassword(data)
             response.enqueue(object : Callback<UserResponse> {
                 override fun onFailure(call: Call<UserResponse>, t: Throwable) {
                     Log.i("fail", t.message.toString())
@@ -60,6 +60,7 @@ class ChangePasswordViewModel(private val userRepository: UserRepository) : View
                     response: Response<UserResponse>
                 ) {
                     if (response.code() == 200) {
+                        lastApiCallFailed = false
                         userManager.updateUser(
                                     UserItem(
                                         response.body()?.username.toString(),
@@ -73,9 +74,14 @@ class ChangePasswordViewModel(private val userRepository: UserRepository) : View
                         message.postValue("Heslo bolo úspešne zmenené")
                         goBack.postValue(true)
                     } else {
-                        Log.i("success", "Bad login params")
-                        message.postValue("Zmena hesla neúspešná")
-                        goBack.postValue(false)
+                        if (!lastApiCallFailed) {
+                            userManager.refreshToken()
+                            lastApiCallFailed = true
+                            Log.i("success", "Bad login params")
+                        } else {
+                            message.postValue("Zmena hesla neúspešná")
+                            lastApiCallFailed = false
+                        }
                     }
                 }
             })

@@ -61,6 +61,11 @@ class HomeFragment : Fragment() {
         VideoAdapter.pauseAllPlayers()
     }
 
+    override fun onResume() {
+        super.onResume()
+        videoViewModel.loadVideos()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewLifecycleOwner.lifecycleScope.launch {

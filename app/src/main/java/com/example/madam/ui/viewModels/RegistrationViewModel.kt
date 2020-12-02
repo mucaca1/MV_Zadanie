@@ -36,45 +36,13 @@ class RegistrationViewModel(private val userRepository: UserRepository) : ViewMo
 
     fun registration() {
         if (password.value.toString() == retypePassword.value.toString()) {
-            if (!checkUsername(login.value.toString())) {
-                message.value = "Používateľské meno už existuje"
-                return
-            }
-
-            val jsonObject = JSONObject()
-            jsonObject.put("action", "register")
-            jsonObject.put("apikey", WebApi.API_KEY)
-            jsonObject.put("email", email.value.toString())
-            jsonObject.put("username", login.value.toString())
-            jsonObject.put("password", passwordUtils.hash(password.value.toString()))
-            val body = jsonObject.toString()
-            val data = RequestBody.create(MediaType.parse("application/json"), body)
-
-            val response: Call<UserResponse> = WebApi.create().register(data)
-            response.enqueue(object : Callback<UserResponse> {
-                override fun onFailure(call: Call<UserResponse>, t: Throwable) {
-                    Log.i("fail", t.message.toString())
-                }
-
-                override fun onResponse(
-                    call: Call<UserResponse>,
-                    response: Response<UserResponse>
-                ) {
-                    if (response.code() == 200) {
-                        Log.i("success", response.body()?.id.toString())
-                    } else {
-                        message.value = "Používateľské meno už existuje"
-                        Log.i("success", "Username exists")
-                    }
-                }
-            })
-
+            checkUsername(login.value.toString())
         } else {
             message.setValue("Heslá sa nezhodujú")
         }
     }
 
-    private fun checkUsername(username: String): Boolean {
+    private fun checkUsername(username: String) {
         val jsonObject = JSONObject()
         jsonObject.put("action", "exists")
         jsonObject.put("apikey", WebApi.API_KEY)
@@ -84,7 +52,6 @@ class RegistrationViewModel(private val userRepository: UserRepository) : ViewMo
         val data = RequestBody.create(MediaType.parse("application/json"), body)
 
         val response: Call<UserExists> = WebApi.create().isUsernameValid(data)
-        var unique = false
         response.enqueue(object : Callback<UserExists> {
             override fun onFailure(call: Call<UserExists>, t: Throwable) {
                 message.value = "Používateľské meno už existuje"
@@ -95,14 +62,42 @@ class RegistrationViewModel(private val userRepository: UserRepository) : ViewMo
                 response: Response<UserExists>
             ) {
                 if (response.code() == 200) {
-                    unique = response.body()?.exists ?: false
+                    register()
                 } else {
-                    unique = response.body()?.exists ?: false
                     message.value = "Používateľské meno už existuje"
                     Log.i("success", "Username exists")
                 }
             }
         })
-        return unique
+    }
+
+    fun register() {
+        val jsonObject = JSONObject()
+        jsonObject.put("action", "register")
+        jsonObject.put("apikey", WebApi.API_KEY)
+        jsonObject.put("email", email.value.toString())
+        jsonObject.put("username", login.value.toString())
+        jsonObject.put("password", passwordUtils.hash(password.value.toString()))
+        val body = jsonObject.toString()
+        val data = RequestBody.create(MediaType.parse("application/json"), body)
+
+        val response: Call<UserResponse> = WebApi.create().register(data)
+        response.enqueue(object : Callback<UserResponse> {
+            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+                Log.i("fail", t.message.toString())
+            }
+
+            override fun onResponse(
+                call: Call<UserResponse>,
+                response: Response<UserResponse>
+            ) {
+                if (response.code() == 200) {
+                    Log.i("success", response.body()?.id.toString())
+                } else {
+                    message.value = "Používateľské meno už existuje"
+                    Log.i("success", "Username exists")
+                }
+            }
+        })
     }
 }

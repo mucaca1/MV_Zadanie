@@ -2,10 +2,7 @@ package com.example.madam.ui.viewModels
 
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.madam.data.db.repositories.UserRepository
 import com.example.madam.data.db.repositories.VideoRepository
 import com.example.madam.data.db.repositories.model.UserItem
@@ -18,20 +15,36 @@ class VideoViewModel(
     private val userRepository: UserRepository
 ) : ViewModel() {
 
+    val apiPrefix = "http://api.mcomputing.eu/mobv/uploads/"
+
     var userManager: UserManager = UserManager(userRepository)
 
     val error: MutableLiveData<String> = MutableLiveData()
 
     val videos: LiveData<List<VideoItem>>
-        get() = repository.getVideos()
+        get() = transform(repository.getVideos())
 
     fun loadVideos() {
         viewModelScope.launch {
-            repository.loadVideos { error.postValue(it) }
+            repository.loadVideos(userManager.getLoggedUser()!!) { error.postValue(it) }
         }
     }
 
     fun hardLogout() {
         userManager.logoutUser()
+    }
+
+    private fun transform(videos: LiveData<List<VideoItem>>): LiveData<List<VideoItem>> {
+        return Transformations.map(videos) { items ->
+            items.map {
+                VideoItem(
+                    id = it.id,
+                    video_url = if (it.video_url.isNotBlank()) { apiPrefix + it.video_url } else { it.video_url },
+                    username = it.username,
+                    created_at = it.created_at,
+                    user_image_url = if (it.user_image_url.isNotBlank()) { apiPrefix + it.user_image_url } else { it.user_image_url }
+                )
+            }
+        }
     }
 }
