@@ -13,6 +13,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.SystemClock.sleep
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
@@ -97,6 +98,7 @@ class ProfileFragment : Fragment() {
 
         profileViewModel.message.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            binding.loadingPanel.visibility = View.GONE
         })
 
         val user: UserItem? = profileViewModel.userManager.getLoggedUser()
@@ -244,6 +246,7 @@ class ProfileFragment : Fragment() {
             }
         }
         if (path != null) {
+            binding.loadingPanel.visibility = View.VISIBLE
             profileViewModel.uploadProfilePic(path)
             val imgFile = File(path)
             if (imgFile.exists()) {
