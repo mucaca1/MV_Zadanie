@@ -310,7 +310,7 @@ class VideoRecordFragment : Fragment() {
                         data = FileProvider.getUriForFile(view.context, authority, outputFile)
                         flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or
                                 Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    }, 202)
+                    }, VIDEO_UPLOAD_REQUEST_CODE)
 
                     delay(MainActivity.ANIMATION_SLOW_MILLIS)
                 }
@@ -323,7 +323,7 @@ class VideoRecordFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode != 202) return
+        if (requestCode != VIDEO_UPLOAD_REQUEST_CODE) return
         val dialogClickListener: DialogInterface.OnClickListener =
             DialogInterface.OnClickListener { _, which ->
                 when (which) {
@@ -411,6 +411,7 @@ class VideoRecordFragment : Fragment() {
     companion object {
 
         private const val PERMISSIONS_REQUEST_CODE = 1
+        private const val VIDEO_UPLOAD_REQUEST_CODE = 202
         private val PERMISSIONS_REQUIRED = arrayOf(
             WRITE_EXTERNAL_STORAGE,
             CAMERA,
