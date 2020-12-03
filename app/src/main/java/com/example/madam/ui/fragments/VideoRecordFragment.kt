@@ -101,7 +101,7 @@ class VideoRecordFragment : Fragment() {
     private lateinit var viewFinder: AutoFitSurfaceView
     private lateinit var overlay: View
     private lateinit var session: CameraCaptureSession
-    private lateinit var camera: CameraDevice
+    private var camera: CameraDevice? = null
     private val previewRequest: CaptureRequest by lazy {
         session.device.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW).apply {
             addTarget(viewFinder.holder.surface)
@@ -184,7 +184,10 @@ class VideoRecordFragment : Fragment() {
 
                 binding.flipCamera.setOnClickListener {
                     isBackCamera = !isBackCamera
-                    camera.close()
+                    if (camera != null) {
+                        camera!!.close()
+                        camera = null
+                    }
                     val cameraId = if (isBackCamera) {
                         "0"
                     } else {
@@ -242,7 +245,7 @@ class VideoRecordFragment : Fragment() {
         val targets = listOf(viewFinder.holder.surface, recorderSurface)
 
         // Start a capture session using our open camera and list of Surfaces where frames will go
-        session = createCaptureSession(camera, targets, cameraHandler)
+        session = createCaptureSession(camera!!, targets, cameraHandler)
 
         // Sends the capture request as frequently as possible until the session is torn down or
         //  session.stopRepeating() is called
@@ -355,6 +358,10 @@ class VideoRecordFragment : Fragment() {
 
             override fun onDisconnected(device: CameraDevice) {
                 Log.w(TAG, "Camera $cameraId has been disconnected")
+                if (camera != null) {
+                    camera!!.close()
+                    camera = null
+                }
                 requireActivity().finish()
             }
 
@@ -396,7 +403,10 @@ class VideoRecordFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         try {
-            camera.close()
+            if (camera != null) {
+                camera!!.close()
+                camera = null
+            }
         } catch (exc: Throwable) {
             Log.e(TAG, "Error closing camera", exc)
         }
