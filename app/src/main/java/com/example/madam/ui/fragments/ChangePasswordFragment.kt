@@ -41,10 +41,10 @@ class ChangePasswordFragment : Fragment() {
 
         changePasswordViewModel.message.observe(viewLifecycleOwner, Observer {
             if (it != "Heslo bolo úspešne zmenené") {
-                context?.let { it1 -> Toasty.success(it1, it, Toast.LENGTH_SHORT).show() }
+                Toasty.success(requireContext(), it, Toast.LENGTH_SHORT)
             }
             else if (it != "") {
-                context?.let { it1 -> Toasty.error(it1, it, Toast.LENGTH_SHORT).show() }
+                Toasty.error(requireContext(), it, Toast.LENGTH_SHORT)
             }
         })
 

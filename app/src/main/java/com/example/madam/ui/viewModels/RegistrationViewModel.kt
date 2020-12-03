@@ -35,6 +35,11 @@ class RegistrationViewModel(private val userRepository: UserRepository) : ViewMo
     private val passwordUtils: PasswordUtils = PasswordUtils()
 
     fun registration() {
+        if (login.value.isNullOrEmpty() || email.value.isNullOrEmpty() ||
+            password.value.isNullOrEmpty() || retypePassword.value.isNullOrEmpty()) {
+            message.value = "Niektoré polia nie sú vyplnené"
+        }
+
         if (password.value.toString() == retypePassword.value.toString()) {
             checkUsername(login.value.toString())
         } else {

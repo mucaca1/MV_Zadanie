@@ -1,6 +1,7 @@
 package com.example.madam.ui.fragments
 
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -24,6 +25,7 @@ class LoginFragment : Fragment() {
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var binding: FragmentLoginBinding
 
+    @SuppressLint("CheckResult")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,10 +47,10 @@ class LoginFragment : Fragment() {
 
         loginViewModel.message.observe(viewLifecycleOwner, Observer {
             if (it == "Login") {
-                context?.let { it1 -> Toasty.success(it1,"Login success", Toasty.LENGTH_SHORT) }
+                Toasty.success(requireContext(), it, Toast.LENGTH_SHORT).show()
                 (activity as LoginActivity).isLogged.value = loginViewModel.userManager.isLogged()
             } else if (it != "") {
-                context?.let { it1 -> Toasty.error(it1, it, Toasty.LENGTH_SHORT) }
+                Toasty.error(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
         })
 

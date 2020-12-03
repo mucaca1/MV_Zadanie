@@ -23,6 +23,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
+import kotlin.math.log
 
 class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
 
@@ -48,6 +49,11 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
     }
 
     fun login() {
+        if (login.value.isNullOrEmpty() || password.value.isNullOrEmpty()) {
+            message.postValue("Niektoré údaje nie sú vyplnené")
+            return
+        }
+
         val jsonObject = JSONObject()
         jsonObject.put("action", "login")
         jsonObject.put("apikey", WebApi.API_KEY)

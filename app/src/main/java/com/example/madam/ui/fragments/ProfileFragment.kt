@@ -97,9 +97,9 @@ class ProfileFragment : Fragment() {
 
         profileViewModel.message.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it == "Profilová fotka bola zmazaná") {
-                context?.let { it1 -> Toasty.success(it1, it, Toasty.LENGTH_SHORT).show() }
+                Toasty.success(requireContext(), it, Toast.LENGTH_SHORT).show()
             } else {
-                context?.let { it1 -> Toasty.error(it1, it, Toasty.LENGTH_SHORT).show() }
+                Toasty.error(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
             binding.loadingPanel.visibility = View.GONE
         })

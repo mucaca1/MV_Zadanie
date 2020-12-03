@@ -4,6 +4,7 @@ import android.net.Uri
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import com.bumptech.glide.Glide
 import com.example.madam.R
 import com.example.madam.data.db.repositories.model.VideoItem
 import com.example.madam.utils.CircleTransform
@@ -54,10 +55,10 @@ fun ImageView.setPostOwnerPhoto(item: VideoItem) {
             item.user_image_url
         }
 
-    Picasso.get()
+    Glide.with(this)
         .load(imageUri)
-        .resize(50, 50)
-        .centerCrop().transform(CircleTransform())
+        .override(80, 80)
+        .circleCrop()
         .into(this)
 }
 
