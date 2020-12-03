@@ -13,6 +13,7 @@ import com.example.madam.ui.adapters.PagerAdapter
 import com.example.madam.ui.fragments.LoginFragment
 import com.example.madam.ui.fragments.RegistrationFragment
 import com.example.madam.utils.InternetHelper
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_login.*
 
 
@@ -26,7 +27,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         if (!InternetHelper.isNetworkAvailable(this)) {
-            Toast.makeText(applicationContext, "No internet connection", Toast.LENGTH_SHORT).show()
+            Toasty.warning(applicationContext, "No internet connection", Toast.LENGTH_SHORT).show()
         }
 
         if (view_login_pager != null) {

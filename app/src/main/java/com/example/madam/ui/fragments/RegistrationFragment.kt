@@ -44,7 +44,10 @@ class RegistrationFragment : Fragment() {
         }
 
         registrationViewModel.message.observe(viewLifecycleOwner, Observer {
-            if (it != "") {
+            if (it == "Registrácia prebehla úspešne") {
+                Toasty.success(requireContext(), it, Toast.LENGTH_SHORT).show()
+            }
+            else if (it != "") {
                 Toasty.error(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
         })

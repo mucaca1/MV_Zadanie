@@ -49,7 +49,7 @@ class UserManager(private val userRepository: UserRepository) {
         var response: Call<UserResponse> = WebApi.create().changePassword(data)
         response.enqueue(object : Callback<UserResponse> {
             override fun onFailure(call: Call<UserResponse>, t: Throwable) {
-                Log.i("fail", t.message.toString())
+                Log.e("fail", t.message.toString())
                 refreshTokenSuccess.value = false
             }
 

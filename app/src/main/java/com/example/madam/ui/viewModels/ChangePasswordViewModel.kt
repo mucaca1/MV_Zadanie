@@ -51,7 +51,7 @@ class ChangePasswordViewModel(private val userRepository: UserRepository) : View
             var response: Call<UserResponse> = WebApi.create().changePassword(data)
             response.enqueue(object : Callback<UserResponse> {
                 override fun onFailure(call: Call<UserResponse>, t: Throwable) {
-                    Log.i("fail", t.message.toString())
+                    Log.e("fail", t.message.toString())
                     goBack.postValue(false)
                 }
 

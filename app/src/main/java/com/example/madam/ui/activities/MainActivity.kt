@@ -13,6 +13,7 @@ import com.example.madam.ui.fragments.HomeFragment
 import com.example.madam.ui.fragments.ProfileFragment
 import com.example.madam.ui.fragments.VideoRecordFragment
 import com.example.madam.utils.InternetHelper
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         if (!InternetHelper.isNetworkAvailable(this)) {
-            Toast.makeText(applicationContext, "No internet connection", Toast.LENGTH_SHORT).show()
+            Toasty.warning(applicationContext, "No internet connection", Toast.LENGTH_SHORT).show()
         }
 
         if (view_main_pager != null) {

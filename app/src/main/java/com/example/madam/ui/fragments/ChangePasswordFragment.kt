@@ -17,6 +17,7 @@ import com.example.madam.ui.activities.ChangePasswordActivity
 import com.example.madam.ui.activities.MainActivity
 import com.example.madam.ui.viewModels.ChangePasswordViewModel
 import com.opinyour.android.app.data.utils.Injection
+import es.dmoral.toasty.Toasty
 
 
 class ChangePasswordFragment : Fragment() {
@@ -39,8 +40,11 @@ class ChangePasswordFragment : Fragment() {
         Log.i("ChangePassword", "Init constructor")
 
         changePasswordViewModel.message.observe(viewLifecycleOwner, Observer {
-            if (it != "") {
-                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            if (it != "Heslo bolo úspešne zmenené") {
+                context?.let { it1 -> Toasty.success(it1, it, Toast.LENGTH_SHORT).show() }
+            }
+            else if (it != "") {
+                context?.let { it1 -> Toasty.error(it1, it, Toast.LENGTH_SHORT).show() }
             }
         })
 

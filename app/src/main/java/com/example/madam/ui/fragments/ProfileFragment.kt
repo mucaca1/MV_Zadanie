@@ -45,6 +45,7 @@ import com.example.madam.utils.CircleTransform
 import com.example.madam.utils.PhotoManager
 import com.opinyour.android.app.data.utils.Injection
 import com.squareup.picasso.Picasso
+import es.dmoral.toasty.Toasty
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -95,7 +96,11 @@ class ProfileFragment : Fragment() {
         })
 
         profileViewModel.message.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            if (it == "Profilová fotka bola zmazaná") {
+                context?.let { it1 -> Toasty.success(it1, it, Toasty.LENGTH_SHORT).show() }
+            } else {
+                context?.let { it1 -> Toasty.error(it1, it, Toasty.LENGTH_SHORT).show() }
+            }
             binding.loadingPanel.visibility = View.GONE
         })
 

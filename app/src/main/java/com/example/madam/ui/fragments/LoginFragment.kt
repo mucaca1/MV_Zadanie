@@ -16,6 +16,7 @@ import com.example.madam.databinding.FragmentLoginBinding
 import com.example.madam.ui.activities.LoginActivity
 import com.example.madam.ui.viewModels.LoginViewModel
 import com.opinyour.android.app.data.utils.Injection
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_login.*
 
 
@@ -43,10 +44,11 @@ class LoginFragment : Fragment() {
         }
 
         loginViewModel.message.observe(viewLifecycleOwner, Observer {
-            if (it.equals("Login")) {
+            if (it == "Login") {
+                context?.let { it1 -> Toasty.success(it1,"Login success", Toasty.LENGTH_SHORT) }
                 (activity as LoginActivity).isLogged.value = loginViewModel.userManager.isLogged()
-            } else if (!it.equals("")) {
-                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            } else if (it != "") {
+                context?.let { it1 -> Toasty.error(it1, it, Toasty.LENGTH_SHORT) }
             }
         })
 

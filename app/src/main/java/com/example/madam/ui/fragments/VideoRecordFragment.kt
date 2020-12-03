@@ -31,6 +31,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.observe
 import com.example.android.camera.utils.OrientationLiveData
 import com.example.android.camera.utils.getPreviewOutputSize
 import com.example.madam.BuildConfig
@@ -131,9 +132,9 @@ class VideoRecordFragment : Fragment() {
 
         binding.model = videoViewModel
 
-        videoViewModel.error.observe(viewLifecycleOwner, {
+        videoViewModel.error.observe(viewLifecycleOwner) {
             Toasty.error(requireContext(), it, Toast.LENGTH_LONG).show()
-        })
+        }
         return binding.root
     }
 

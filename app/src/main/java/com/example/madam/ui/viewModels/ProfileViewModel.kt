@@ -79,7 +79,7 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
         var response: Call<StatusResponse> = create().deleteProfilePicture(data)
         response.enqueue(object : Callback<StatusResponse> {
             override fun onFailure(call: Call<StatusResponse>, t: Throwable) {
-                Log.i("fail", t.message.toString())
+                Log.e("fail", t.message.toString())
             }
 
             override fun onResponse(

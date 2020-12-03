@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.madam.R
 import com.example.madam.ui.fragments.ShowPhotoDetailFragment
 import com.example.madam.utils.InternetHelper
+import es.dmoral.toasty.Toasty
 
 class ShowPhotoDetailActivity : AppCompatActivity() {
 
@@ -19,7 +20,7 @@ class ShowPhotoDetailActivity : AppCompatActivity() {
         }
 
         if (!InternetHelper.isNetworkAvailable(this)) {
-            Toast.makeText(applicationContext, "No internet connection", Toast.LENGTH_SHORT).show()
+            Toasty.warning(applicationContext, "No internet connection", Toast.LENGTH_SHORT).show()
         }
     }
 }
