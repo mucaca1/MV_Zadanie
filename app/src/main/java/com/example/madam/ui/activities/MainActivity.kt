@@ -1,11 +1,13 @@
 package com.example.madam.ui.activities
 
+import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.os.StrictMode
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.MutableLiveData
 import com.example.madam.R
 import com.example.madam.ui.adapters.PagerAdapter
@@ -15,7 +17,6 @@ import com.example.madam.ui.fragments.VideoRecordFragment
 import com.example.madam.utils.InternetHelper
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_main.*
-import java.io.File
 
 
 /**
@@ -47,11 +48,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         isLogged.observe(this, androidx.lifecycle.Observer {
-                if (!it) {
-                    goToActivity(LoginActivity::class.java)
-                }
+            if (!it) {
+                goToActivity(LoginActivity::class.java)
+            }
         })
         isLogged.value = intent.extras?.getBoolean("login")
+
+        ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSIONS_OK_CODE)
+
         val policy =
             StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
@@ -84,5 +88,14 @@ class MainActivity : AppCompatActivity() {
         const val ANIMATION_FAST_MILLIS = 50L
         const val ANIMATION_SLOW_MILLIS = 100L
         private const val IMMERSIVE_FLAG_TIMEOUT = 500L
+        const val REQUEST_PERMISSIONS_OK_CODE = 0
+        val permissions = arrayOf(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.SYSTEM_ALERT_WINDOW,
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO
+        )
     }
 }

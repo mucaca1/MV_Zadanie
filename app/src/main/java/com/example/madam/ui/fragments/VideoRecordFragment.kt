@@ -140,12 +140,7 @@ class VideoRecordFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        if (hasPermissions(requireContext())) {
-            // TODO : open camera
-        } else {
-            requestPermissions(PERMISSIONS_REQUIRED, PERMISSIONS_REQUEST_CODE)
-        }
+        requestPermissions(PERMISSIONS_REQUIRED, MainActivity.REQUEST_PERMISSIONS_OK_CODE)
 
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -204,21 +199,6 @@ class VideoRecordFragment : Fragment() {
             observe(viewLifecycleOwner, Observer { orientation ->
                 Log.d(TAG, "Orientation changed: $orientation")
             })
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSIONS_REQUEST_CODE) {
-            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-//                (activity as MainActivity).view_main_pager.currentItem = 1
-                Toast.makeText(context, "Permission request denied", Toast.LENGTH_LONG).show()
-            }
-
         }
     }
 
@@ -420,8 +400,6 @@ class VideoRecordFragment : Fragment() {
     }
 
     companion object {
-
-        private const val PERMISSIONS_REQUEST_CODE = 1
         private const val VIDEO_UPLOAD_REQUEST_CODE = 202
         private val PERMISSIONS_REQUIRED = arrayOf(
             WRITE_EXTERNAL_STORAGE,

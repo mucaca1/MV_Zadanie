@@ -1,7 +1,6 @@
 package com.example.madam.ui.fragments
 
 import RealPathUtil
-import android.Manifest.permission.*
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -12,7 +11,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.os.SystemClock.sleep
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
@@ -71,16 +69,6 @@ class ProfileFragment : Fragment() {
                 .get(ProfileViewModel::class.java)
         binding.model = profileViewModel
         Log.i("Profile", "Init constructor")
-
-        val permissions = arrayOf(
-            WRITE_EXTERNAL_STORAGE,
-            ACCESS_FINE_LOCATION,
-            READ_PHONE_STATE,
-            SYSTEM_ALERT_WINDOW,
-            CAMERA,
-            RECORD_AUDIO
-        )
-        requestPermissions(permissions, REQUEST_PERMISSIONS_OK_CODE)
 
         binding.changePassword.setOnClickListener {
             changePassword()
@@ -269,9 +257,18 @@ class ProfileFragment : Fragment() {
         permissions: Array<String>,
         grantResults: IntArray
     ) {
-        if (requestCode == REQUEST_PERMISSIONS_OK_CODE) {
-            if (permissions[0] == WRITE_EXTERNAL_STORAGE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                println("Povolene fotky od usera response")
+        when (requestCode) {
+            MainActivity.REQUEST_PERMISSIONS_OK_CODE -> {
+                if ((grantResults.isNotEmpty() &&
+                            grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                ) {
+                } else {
+                    profileViewModel.logOut()
+                    (activity as MainActivity).goToActivity(LoginActivity::class.java)
+                }
+                return
+            }
+            else -> {
             }
         }
     }
@@ -301,6 +298,7 @@ class ProfileFragment : Fragment() {
                         ): Boolean {
                             return false
                         }
+
                         override fun onResourceReady(
                             p0: Drawable?,
                             p1: Any?,
@@ -340,7 +338,6 @@ class ProfileFragment : Fragment() {
 
     companion object {
         const val SELECT_PHOTO = 1
-        const val REQUEST_PERMISSIONS_OK_CODE = 0
         const val CAMERA_REQUEST_CODE = 1001
         const val PROFILE_IMAGE_SIZE = 500
     }
