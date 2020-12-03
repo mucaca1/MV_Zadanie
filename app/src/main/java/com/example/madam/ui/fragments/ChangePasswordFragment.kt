@@ -40,7 +40,7 @@ class ChangePasswordFragment : Fragment() {
         Log.i("ChangePassword", "Init constructor")
 
         changePasswordViewModel.message.observe(viewLifecycleOwner, Observer {
-            if (it != "Heslo bolo úspešne zmenené") {
+            if (it == "Heslo bolo úspešne zmenené") {
                 Toasty.success(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
             else if (it != "") {
