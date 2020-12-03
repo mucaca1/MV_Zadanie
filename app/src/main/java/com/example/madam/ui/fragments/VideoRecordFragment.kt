@@ -328,7 +328,6 @@ class VideoRecordFragment : Fragment() {
             DialogInterface.OnClickListener { _, which ->
                 when (which) {
                     DialogInterface.BUTTON_POSITIVE -> {
-                        // TODO: upload video to server
                         videoViewModel.uploadVideo(outputFile)
                     }
                     DialogInterface.BUTTON_NEGATIVE -> {

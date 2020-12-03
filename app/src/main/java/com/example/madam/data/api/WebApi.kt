@@ -40,11 +40,11 @@ interface WebApi {
     // Pridat profilovku
     @Multipart
     @POST("upload.php")
-    fun uploadProfilePicture(@Part image: MultipartBody.Part, @Part("data") data: RequestBody): Call<ClearPhoto>
+    fun uploadProfilePicture(@Part image: MultipartBody.Part, @Part("data") data: RequestBody): Call<StatusResponse>
 
     // Odstanit profilovku
     @POST("service.php")
-    fun deleteProfilePicture(@Body data: RequestBody): Call<ClearPhoto>
+    fun deleteProfilePicture(@Body data: RequestBody): Call<StatusResponse>
 
     // Prispevky
     @POST("service.php")
@@ -53,7 +53,7 @@ interface WebApi {
     // Pridat prispevok
     @Multipart
     @POST("post.php")
-    fun addPost(@Part video: MultipartBody.Part, @Part("data") data: RequestBody): Response<VideoResponse>
+    suspend fun addPost(@Part video: MultipartBody.Part, @Part("data") data: RequestBody): Call<StatusResponse>
 
     // Existuje username
     @POST("service.php")

@@ -3,15 +3,13 @@ package com.example.madam.ui.viewModels
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.madam.data.api.model.ClearPhoto
+import com.example.madam.data.api.model.StatusResponse
 import com.example.madam.data.api.model.UserResponse
 import com.example.madam.data.db.repositories.UserRepository
 import com.example.madam.data.db.repositories.model.UserItem
 import com.example.madam.utils.UserManager
 import com.opinyour.android.app.data.api.WebApi
 import com.opinyour.android.app.data.api.WebApi.Companion.create
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -78,15 +76,15 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
         val body = jsonObject.toString()
         val data = RequestBody.create(MediaType.parse("application/json"), body)
 
-        var response: Call<ClearPhoto> = create().deleteProfilePicture(data)
-        response.enqueue(object : Callback<ClearPhoto> {
-            override fun onFailure(call: Call<ClearPhoto>, t: Throwable) {
+        var response: Call<StatusResponse> = create().deleteProfilePicture(data)
+        response.enqueue(object : Callback<StatusResponse> {
+            override fun onFailure(call: Call<StatusResponse>, t: Throwable) {
                 Log.i("fail", t.message.toString())
             }
 
             override fun onResponse(
-                call: Call<ClearPhoto>,
-                response: Response<ClearPhoto>
+                call: Call<StatusResponse>,
+                response: Response<StatusResponse>
             ) {
                 if (response.code() == 200) {
                     Log.i("success", "Profile pis was deleted")
@@ -107,9 +105,9 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
         val data = RequestBody.create(MediaType.parse("application/json"), body)
         val imageRequest = RequestBody.create(MediaType.parse("image/jpeg"), file)
         val image = MultipartBody.Part.createFormData("image", file.name, imageRequest)
-        val response: Call<ClearPhoto> = create().uploadProfilePicture(image, data)
-        response.enqueue(object : Callback<ClearPhoto> {
-            override fun onFailure(call: Call<ClearPhoto>?, t: Throwable?) {
+        val response: Call<StatusResponse> = create().uploadProfilePicture(image, data)
+        response.enqueue(object : Callback<StatusResponse> {
+            override fun onFailure(call: Call<StatusResponse>?, t: Throwable?) {
                 if (t != null) {
                     Log.i("ImgERR", "Error " + t.message)
                     message.value = "Nepodarilo sa zmeniť profilovú fotku"
@@ -117,8 +115,8 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
             }
 
             override fun onResponse(
-                call: Call<ClearPhoto>?,
-                response: Response<ClearPhoto>?
+                call: Call<StatusResponse>?,
+                response: Response<StatusResponse>?
             ) {
                 if (response != null) {
                     if (response.code() == 200) {
