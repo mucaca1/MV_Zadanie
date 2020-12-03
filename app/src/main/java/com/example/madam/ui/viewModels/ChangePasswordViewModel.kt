@@ -38,6 +38,12 @@ class ChangePasswordViewModel(private val userRepository: UserRepository) : View
     var passwordUtils: PasswordUtils = PasswordUtils()
 
     fun changePassword() {
+        if (oldPassword.value.isNullOrEmpty() || newPassword.value.isNullOrEmpty() ||
+                retypeNewPassword.value.isNullOrEmpty()) {
+            message.postValue("Niektoré hodnoty nie sú vyplnené")
+            return
+        }
+
         if (newPassword.value.toString().equals(retypeNewPassword.value.toString())) {
             val jsonObject = JSONObject()
             jsonObject.put("action", "password")
