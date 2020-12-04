@@ -86,6 +86,9 @@ class ProfileFragment : Fragment() {
         profileViewModel.message.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it == "Profilová fotka bola zmazaná") {
                 Toasty.success(requireContext(), it, Toast.LENGTH_SHORT).show()
+            } else if (it == "Profilová fotka bola zmenená") {
+                Toasty.success(requireContext(), it, Toast.LENGTH_SHORT).show()
+                setUserProfile(profileViewModel.userManager.getLoggedUser())
             } else {
                 Toasty.error(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
@@ -228,6 +231,7 @@ class ProfileFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
 //        galleryAddPic()
         var path: String? = null
+        Glide.with(this).load("").into(binding.profileImage)
 
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == AppCompatActivity.RESULT_OK) {
             path = photoManager.currentPhotoPath
@@ -240,14 +244,6 @@ class ProfileFragment : Fragment() {
         if (path != null) {
             binding.loadingPanel.visibility = View.VISIBLE
             profileViewModel.uploadProfilePic(path)
-            val imgFile = File(path)
-            if (imgFile.exists()) {
-                Picasso.get()
-                    .load(imgFile)
-                    .resize(PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE)
-                    .centerInside().transform(CircleTransform())
-                    .into(binding.profileImage)
-            }
         }
 
     }
@@ -274,13 +270,6 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setUserProfile(user: UserItem?) {
-        Glide.with(this)
-            .load(R.drawable.user)
-            .override(
-                PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE
-            )
-            .circleCrop()
-            .into(binding.profileImage)
         if (user != null) {
             if (user.profile != "") {
                 binding.loadingPanel.visibility = View.VISIBLE
@@ -323,6 +312,14 @@ class ProfileFragment : Fragment() {
                     .resize(PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE)
                     .centerCrop().transform(CircleTransform())
                     .into(binding.profileImage)*/
+            } else {
+                Glide.with(this)
+                    .load(R.drawable.user)
+                    .override(
+                        PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE
+                    )
+                    .circleCrop()
+                    .into(binding.profileImage)
             }
         }
 
