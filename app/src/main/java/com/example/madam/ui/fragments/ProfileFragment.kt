@@ -95,6 +95,27 @@ class ProfileFragment : Fragment() {
             binding.loadingPanel.visibility = View.GONE
         })
 
+        profileViewModel.userManager.refreshTokenSuccess.observe(
+            viewLifecycleOwner,
+            androidx.lifecycle.Observer {
+                if (it) {
+                    when (profileViewModel.function) {
+                        "reloadUser" -> {
+                            profileViewModel.reloadUser()
+                        }
+                        "deleteProfilePic" -> {
+                            profileViewModel.deleteProfilePic()
+                        }
+                        "uploadProfilePic" -> {
+                            profileViewModel.uploadProfilePic(profileViewModel.pathMem)
+                        }
+                        else -> {
+
+                        }
+                    }
+                }
+            })
+
         val user: UserItem? = profileViewModel.userManager.getLoggedUser()
         if (user != null) {
             binding.emailAddress.text =

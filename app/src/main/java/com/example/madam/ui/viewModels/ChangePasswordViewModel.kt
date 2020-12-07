@@ -79,15 +79,19 @@ class ChangePasswordViewModel(private val userRepository: UserRepository) : View
                         Log.i("success", response.body()?.id.toString())
                         message.postValue("Heslo bolo úspešne zmenené")
                         goBack.postValue(true)
-                    } else {
+                    } else if (response.code() == 401) {
+                        // invalid token
                         if (!lastApiCallFailed) {
                             userManager.refreshToken()
                             lastApiCallFailed = true
-                            Log.i("success", "Bad login params")
+                            Log.i("success", "Bad token")
                         } else {
                             message.postValue("Zmena hesla neúspešná")
                             lastApiCallFailed = false
                         }
+                    } else {
+                        message.postValue("Zmena hesla neúspešná")
+                        lastApiCallFailed = false
                     }
                 }
             })

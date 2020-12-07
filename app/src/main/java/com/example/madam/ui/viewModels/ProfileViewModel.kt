@@ -27,6 +27,10 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
 
     var message : MutableLiveData<String> =  MutableLiveData()
 
+    var lastApiCallFailed: Boolean = false
+    var function: String = ""
+    var pathMem: String = ""
+
     fun logOut() {
         userManager.logoutUser()
         logOutEvent.postValue(true)
@@ -60,6 +64,17 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
                         userManager.updateUser(user)
                         Log.i("Info", "Info reload success $user")
 
+                    } else if (response.code() == 401) {
+                        // invalid token
+                        if (!lastApiCallFailed) {
+                            userManager.refreshToken()
+                            function = "reloadUser"
+                            lastApiCallFailed = true
+                            Log.i("success", "Bad token")
+                        } else {
+                            message.postValue("Zmena hesla neúspešná")
+                            lastApiCallFailed = false
+                        }
                     } else {
                         Log.i("Info", "Error")
                     }
@@ -89,6 +104,17 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
                 if (response.code() == 200) {
                     Log.i("success", "Profile pis was deleted")
                     message.value = "Profilová fotka bola zmazaná"
+                } else if (response.code() == 401) {
+                    // invalid token
+                    if (!lastApiCallFailed) {
+                        userManager.refreshToken()
+                        function = "deleteProfilePic"
+                        lastApiCallFailed = true
+                        Log.i("success", "Bad token")
+                    } else {
+                        message.postValue("Zmena hesla neúspešná")
+                        lastApiCallFailed = false
+                    }
                 } else {
                     Log.i("success", "Bad login params")
                 }
@@ -97,6 +123,7 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
     }
 
     fun uploadProfilePic(path: String) {
+        pathMem = path
         val file = File(path)
         val jsonObject = JSONObject()
         jsonObject.put("apikey", WebApi.API_KEY)
@@ -123,6 +150,17 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
                         Log.i("ImgSucc", response.body()?.status.toString())
                         reloadUser()
                         message.value = "Profilová fotka bola zmenená"
+                    } else if (response.code() == 401) {
+                        // invalid token
+                        if (!lastApiCallFailed) {
+                            userManager.refreshToken()
+                            function = "uploadProfilePic"
+                            lastApiCallFailed = true
+                            Log.i("success", "Bad token")
+                        } else {
+                            message.postValue("Zmena hesla neúspešná")
+                            lastApiCallFailed = false
+                        }
                     } else {
                         Log.i("ImgErr", "Chyba")
                         message.value = "Nepodarilo sa zmeniť profilovú fotku"

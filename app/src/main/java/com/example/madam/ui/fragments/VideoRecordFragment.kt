@@ -48,6 +48,7 @@ import java.util.*
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
+import kotlin.jvm.Throws
 
 /*
     USED RESOURCE : https://github.com/googlearchive/android-Camera2Video/tree/master/kotlinApp
