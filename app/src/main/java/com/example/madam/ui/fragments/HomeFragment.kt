@@ -47,7 +47,7 @@ class HomeFragment : Fragment() {
 
         val adapter = VideoAdapter()
         binding.recyclerVideoList.adapter = adapter
-        videoViewModel.videos.observe(viewLifecycleOwner) {videos ->
+        videoViewModel.videos.observe(viewLifecycleOwner) { videos ->
             adapter.items = videos.sortedByDescending { it.created_at }
         }
 
