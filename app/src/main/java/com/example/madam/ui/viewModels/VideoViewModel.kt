@@ -19,6 +19,7 @@ class VideoViewModel(
     var userManager: UserManager = UserManager(userRepository)
 
     val error: MutableLiveData<String> = MutableLiveData()
+    val success: MutableLiveData<String> = MutableLiveData()
 
     val videos: LiveData<List<VideoItem>>
         get() = transform(repository.getVideos())
@@ -32,9 +33,12 @@ class VideoViewModel(
     fun uploadVideo(videoFile: File) {
         viewModelScope.launch {
             userManager.getLoggedUser()?.token?.let { token ->
-                repository.addVideo(videoFile,
-                    token
-                ) { error.postValue(it) }
+                repository.addVideo(
+                    videoFile,
+                    token,
+                    { success.postValue(it) },
+                    { error.postValue(it) }
+                )
             }
         }
     }
@@ -48,10 +52,18 @@ class VideoViewModel(
             items.map {
                 VideoItem(
                     id = it.id,
-                    video_url = if (it.video_url.isNotBlank()) { apiPrefix + it.video_url } else { it.video_url },
+                    video_url = if (it.video_url.isNotBlank()) {
+                        apiPrefix + it.video_url
+                    } else {
+                        it.video_url
+                    },
                     username = it.username,
                     created_at = it.created_at,
-                    user_image_url = if (it.user_image_url.isNotBlank()) { apiPrefix + it.user_image_url } else { it.user_image_url }
+                    user_image_url = if (it.user_image_url.isNotBlank()) {
+                        apiPrefix + it.user_image_url
+                    } else {
+                        it.user_image_url
+                    }
                 )
             }
         }

@@ -148,6 +148,10 @@ class VideoRecordFragment : Fragment(), View.OnClickListener, View.OnTouchListen
         videoViewModel.error.observe(viewLifecycleOwner) {
             Toasty.error(requireContext(), it, LENGTH_LONG).show()
         }
+
+        videoViewModel.success.observe(viewLifecycleOwner) {
+            Toasty.success(requireContext(), it, LENGTH_LONG).show()
+        }
         return binding.root
     }
 

@@ -53,7 +53,7 @@ interface WebApi {
     // Pridat prispevok
     @Multipart
     @POST("post.php")
-    suspend fun addPost(@Part video: MultipartBody.Part, @Part("data") data: RequestBody): Call<StatusResponse>
+    suspend fun addPost(@Part video: MultipartBody.Part, @Part("data") data: RequestBody): Response<StatusResponse>
 
     // Existuje username
     @POST("service.php")
