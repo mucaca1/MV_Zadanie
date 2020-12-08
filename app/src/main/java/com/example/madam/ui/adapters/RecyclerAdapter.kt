@@ -20,7 +20,12 @@ class RecyclerAdapter(val user: UserItem, val onRemoveButtonClickListener: (Vide
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.video_item, parent, false)
+            DataBindingUtil.inflate(
+                LayoutInflater.from(parent.context),
+                R.layout.video_item,
+                parent,
+                false
+            )
         )
     }
 
@@ -28,20 +33,31 @@ class RecyclerAdapter(val user: UserItem, val onRemoveButtonClickListener: (Vide
         (holder as ViewHolder).bind(items[position])
     }
 
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        val position = holder.adapterPosition
+        VideoPlayerBindingAdapter.releaseRecycledPlayers(position)
+        super.onViewRecycled(holder)
+    }
+
     override fun getItemCount(): Int {
         return items.size
     }
 
-    inner class ViewHolder(private var binding: VideoItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private var binding: VideoItemBinding): RecyclerView.ViewHolder(binding.root) {
+        val player = binding.playerView.player
 
         fun bind(item: VideoItem) {
+            val player = binding.playerView.player
             binding.videoViewItem = item
             binding.index = adapterPosition
-            binding.playerView.setOnClickListener { VideoPlayerBindingAdapter.togglePlayingState(adapterPosition) }
-            binding.removePostButton.setOnClickListener { onRemoveButtonClickListener(item) }
+            binding.playerView.setOnClickListener { VideoPlayerBindingAdapter.togglePlayingState(player!!) }
+            binding.removePostButton.setOnClickListener {
+                VideoPlayerBindingAdapter.removeFromPlayers(player!!)
+                onRemoveButtonClickListener(item)
+            }
 
             if (belongsToCurrentUser(item)) binding.removePostButton.visibility = View.VISIBLE
+            else binding.removePostButton.visibility = View.GONE
 
             binding.executePendingBindings()
         }

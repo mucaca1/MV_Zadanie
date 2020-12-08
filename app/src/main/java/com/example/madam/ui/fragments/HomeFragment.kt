@@ -44,7 +44,9 @@ class HomeFragment : Fragment() {
         binding.recyclerVideoList.layoutManager =
             LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
-        val adapter = RecyclerAdapter(videoViewModel.userManager.getLoggedUser()!!) { item -> videoViewModel.deleteVideo(item) }
+        val adapter = RecyclerAdapter(videoViewModel.userManager.getLoggedUser()!!) { item ->
+            videoViewModel.deleteVideo(item)
+        }
         binding.recyclerVideoList.adapter = adapter
 
         videoViewModel.videos.observe(viewLifecycleOwner) { videos ->

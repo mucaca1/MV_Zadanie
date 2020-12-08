@@ -1,8 +1,10 @@
 package com.example.madam.ui.adapters
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.databinding.BindingAdapter
 import com.example.madam.data.db.repositories.model.VideoItem
+import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -23,6 +25,10 @@ class VideoPlayerBindingAdapter {
             }
         }
 
+        fun releaseRecycledPlayers(index: Int){
+            playersMap[index]?.release()
+        }
+
         fun playIndexThenPausePreviousPlayer(index: Int){
             if (playersMap.get(index)?.playWhenReady == false) {
                 pauseCurrentPlayingVideo()
@@ -31,18 +37,23 @@ class VideoPlayerBindingAdapter {
             }
         }
 
-        fun togglePlayingState(index: Int) {
+        fun togglePlayingState(player: Player) {
             if (currentPlayingVideo != null) {
                 if (currentPlayingVideo!!.second.playWhenReady) {
                     currentPlayingVideo!!.second.playWhenReady = false
                 } else {
-                    playIndexThenPausePreviousPlayer(index)
+                    playIndexThenPausePreviousPlayer(playersMap.values.indexOf(player))
                 }
             }
         }
 
         fun releaseAll() {
             playersMap.map { it.value.release() }
+        }
+
+        fun removeFromPlayers(player: Player) {
+            val key = playersMap.entries.first { e -> e.value == player }.key
+            playersMap.remove(key)
         }
 
         @JvmStatic
@@ -67,7 +78,16 @@ class VideoPlayerBindingAdapter {
             if (item_index != null)
                 playersMap[item_index] = player
 
-
+            this.player!!.addListener(object : Player.EventListener {
+                override fun onPlayerError(error: ExoPlaybackException) {
+                    super.onPlayerError(error)
+                    Toast.makeText(
+                        this@setPlayerObject.context,
+                        "Whoops! Your stone age phone does not carry this much load at once.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
         }
     }
 }
