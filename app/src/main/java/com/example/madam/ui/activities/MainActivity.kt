@@ -4,10 +4,10 @@ import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.os.StrictMode
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.lifecycle.MutableLiveData
 import com.example.madam.R
 import com.example.madam.ui.adapters.PagerAdapter
@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
 
     var pagerAdapter: PagerAdapter = PagerAdapter(this)
     var isLogged: MutableLiveData<Boolean> = MutableLiveData()
+    var permissionStatus: MutableLiveData<Boolean> = MutableLiveData()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         })
         isLogged.value = intent.extras?.getBoolean("login")
 
-        ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSIONS_OK_CODE)
+        requestPermissions(permissions, REQUEST_PERMISSIONS_OK_CODE)
 
         val policy =
             StrictMode.ThreadPolicy.Builder().permitAll().build()
@@ -98,4 +99,27 @@ class MainActivity : AppCompatActivity() {
             Manifest.permission.RECORD_AUDIO
         )
     }
+
+    @Override
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String?>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_PERMISSIONS_OK_CODE && permissions.isNotEmpty()) {
+            if (grantResults[0] == -1 && grantResults[1] == -1 && grantResults[2] == -1 &&
+                grantResults[3] == -1 && grantResults[4] == 0 && grantResults[5] == 0
+            ) {
+                // ok
+                Log.i("Perm", "Success")
+                permissionStatus.value = true
+            } else {
+                // bad
+                Log.i("Perm", "Error")
+                permissionStatus.value = false
+            }
+        }
+    }
+
 }

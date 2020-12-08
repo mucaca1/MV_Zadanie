@@ -30,6 +30,9 @@ class VideoViewModel(
 
     fun loadVideos() {
         viewModelScope.launch {
+            if (userManager.getLoggedUser() == null) {
+                return@launch
+            }
             repository.loadVideos(userManager.getLoggedUser()!!) {
                 if (!lastCallFailed) {
                     lastCallFailed = true

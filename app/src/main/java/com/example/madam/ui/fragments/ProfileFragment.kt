@@ -25,6 +25,7 @@ import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -60,6 +61,14 @@ class ProfileFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        (activity as MainActivity).permissionStatus.observe(viewLifecycleOwner) {
+            if (!it) {
+                profileViewModel.userManager.logoutUser()
+                Toasty.warning(requireContext(), "Some permissions don't allow", Toast.LENGTH_SHORT).show()
+                (activity as MainActivity).goToActivity(LoginActivity::class.java)
+            }
+        }
+
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_profile, container, false
         )
@@ -255,7 +264,9 @@ class ProfileFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
 //        galleryAddPic()
         var path: String? = null
-        Glide.with(this).load("").into(binding.profileImage)
+
+        if (resultCode == AppCompatActivity.RESULT_OK)
+            Glide.with(this).load("").into(binding.profileImage)
 
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == AppCompatActivity.RESULT_OK) {
             path = photoManager.currentPhotoPath
