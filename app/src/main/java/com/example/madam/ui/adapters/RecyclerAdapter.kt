@@ -32,12 +32,14 @@ class RecyclerAdapter(val user: UserItem, val onRemoveButtonClickListener: (Vide
         return items.size
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return position
-    }
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
+//    override fun getItemViewType(position: Int): Int {
+//        return position
+//    }
+//    override fun getItemId(position: Int): Long {
+//        return position.toLong()
+//    }
+
+
 
     fun removeItem(item: VideoItem) {
 
@@ -53,7 +55,8 @@ class RecyclerAdapter(val user: UserItem, val onRemoveButtonClickListener: (Vide
             binding.playerView.setOnClickListener { VideoPlayerBindingAdapter.togglePlayingState(adapterPosition) }
             binding.removePostButton.setOnClickListener { onRemoveButtonClickListener(item) }
 
-            if (belongsToCurrentUser(item)) binding.removePostButton.visibility = View.VISIBLE
+            if (belongsToCurrentUser(item)) { binding.removePostButton.visibility = View.VISIBLE }
+            else { binding.removePostButton.visibility = View.GONE }
 
             binding.executePendingBindings()
         }
