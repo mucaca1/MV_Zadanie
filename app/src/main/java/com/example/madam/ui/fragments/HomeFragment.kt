@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -16,7 +15,6 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.example.madam.R
-import com.example.madam.data.db.repositories.model.VideoItem
 import com.example.madam.databinding.FragmentHomeBinding
 import com.example.madam.ui.activities.LoginActivity
 import com.example.madam.ui.activities.MainActivity
@@ -97,7 +95,7 @@ class HomeFragment : Fragment() {
                     }
 
                     override fun onStop() {
-                        VideoPlayerBindingAdapter.startPlayingByIndex(llm.findFirstVisibleItemPosition())
+                        VideoPlayerBindingAdapter.playIndexThenPausePreviousPlayer(llm.findFirstVisibleItemPosition())
                     }
 
                     override fun calculateTimeForScrolling(dx: Int): Int {
@@ -107,7 +105,7 @@ class HomeFragment : Fragment() {
                 }
 
                 if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                   VideoPlayerBindingAdapter.pauseCurrentlyPlaying()
+                   VideoPlayerBindingAdapter.pauseCurrentPlayingVideo()
                 }
                 if (newState == RecyclerView.SCROLL_STATE_IDLE || newState == RecyclerView.SCROLL_STATE_SETTLING) {
                     var positionToScroll = 0

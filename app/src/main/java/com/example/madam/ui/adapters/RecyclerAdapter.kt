@@ -3,21 +3,13 @@ package com.example.madam.ui.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.madam.R
 import com.example.madam.data.db.repositories.model.UserItem
 import com.example.madam.data.db.repositories.model.VideoItem
 import com.example.madam.databinding.VideoItemBinding
-import com.example.madam.generated.callback.OnClickListener
-import com.example.madam.ui.fragments.ProfileFragment
-import com.example.madam.utils.CircleTransform
 import com.example.madam.utils.autoNotify
-import com.google.android.exoplayer2.Player
-import com.squareup.picasso.Picasso
-import java.io.File
 import kotlin.properties.Delegates
 
 class RecyclerAdapter(val user: UserItem, val onRemoveButtonClickListener: (VideoItem) -> Unit): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -36,13 +28,6 @@ class RecyclerAdapter(val user: UserItem, val onRemoveButtonClickListener: (Vide
         (holder as ViewHolder).bind(items[position])
     }
 
-//    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
-//        val position = holder.adapterPosition
-//        VideoPlayerBindingAdapter.releaseRecycledPlayers(position)
-//        super.onViewRecycled(holder)
-//    }
-
-
     override fun getItemCount(): Int {
         return items.size
     }
@@ -52,7 +37,8 @@ class RecyclerAdapter(val user: UserItem, val onRemoveButtonClickListener: (Vide
 
         fun bind(item: VideoItem) {
             binding.videoViewItem = item
-            binding.playerView.setOnClickListener { VideoPlayerBindingAdapter.togglePlayingState(this.adapterPosition) }
+            binding.index = adapterPosition
+            binding.playerView.setOnClickListener { VideoPlayerBindingAdapter.togglePlayingState(adapterPosition) }
             binding.removePostButton.setOnClickListener { onRemoveButtonClickListener(item) }
 
             if (belongsToCurrentUser(item)) binding.removePostButton.visibility = View.VISIBLE
