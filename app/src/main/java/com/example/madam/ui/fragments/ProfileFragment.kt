@@ -236,10 +236,12 @@ class ProfileFragment : Fragment() {
                 }
                 3 -> {
                     profileViewModel.deleteProfilePic()
-                    Picasso.get()
+                    Glide.with(this)
                         .load(R.drawable.user)
-                        .resize(PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE)
-                        .centerCrop().transform(CircleTransform())
+                        .override(
+                            PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE
+                        )
+                        .circleCrop()
                         .into(binding.profileImage)
 
                 }
