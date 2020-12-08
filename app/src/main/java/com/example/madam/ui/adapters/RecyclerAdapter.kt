@@ -19,16 +19,9 @@ class RecyclerAdapter(val user: UserItem, val onRemoveButtonClickListener: (Vide
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val holder = ViewHolder(
-            DataBindingUtil.inflate(
-                LayoutInflater.from(parent.context),
-                R.layout.video_item,
-                parent,
-                false
-            )
+        return ViewHolder(
+            DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.video_item, parent, false)
         )
-        holder.setIsRecyclable(false)
-        return holder
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -37,6 +30,13 @@ class RecyclerAdapter(val user: UserItem, val onRemoveButtonClickListener: (Vide
 
     override fun getItemCount(): Int {
         return items.size
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
     }
 
     fun removeItem(item: VideoItem) {
