@@ -342,13 +342,6 @@ class ProfileFragment : Fragment() {
                     .skipMemoryCache(true)
                     .circleCrop()
                     .into(binding.profileImage)
-                /*Picasso.get()
-                    .load("http://api.mcomputing.eu/mobv/uploads/" + user.profile).memoryPolicy(
-                        MemoryPolicy.NO_CACHE )
-                    .networkPolicy(NetworkPolicy.NO_CACHE)
-                    .resize(PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE)
-                    .centerCrop().transform(CircleTransform())
-                    .into(binding.profileImage)*/
             } else {
                 Glide.with(this)
                     .load(R.drawable.user)
