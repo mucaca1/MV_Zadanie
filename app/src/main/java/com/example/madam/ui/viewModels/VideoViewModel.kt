@@ -6,6 +6,7 @@ import com.example.madam.data.db.repositories.UserRepository
 import com.example.madam.data.db.repositories.VideoRepository
 import com.example.madam.data.db.repositories.model.VideoItem
 import com.example.madam.utils.UserManager
+import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -24,6 +25,7 @@ class VideoViewModel(
     private var lastCallFailed = false
     var apiCallFunctionFailed: String = ""
     var videoFile: File? = null
+    var lastItem: VideoItem? = null
 
     val videos: LiveData<List<VideoItem>>
         get() = transform(repository.getVideos())
@@ -77,8 +79,16 @@ class VideoViewModel(
     }
 
     fun deleteVideo(item: VideoItem) {
+        lastItem = item
         viewModelScope.launch {
-            repository.deleteVideo(item, userManager.getLoggedUser()!!)
+            repository.deleteVideo(item, userManager.getLoggedUser()!!, {
+                if (it == "Wrong token") {
+                    userManager.refreshToken()
+                    apiCallFunctionFailed = "deleteVideo"
+                }},
+                {
+                  success.postValue(it)
+                })
         }
     }
 

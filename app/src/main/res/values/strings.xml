@@ -29,4 +29,9 @@
     <string name="play_desc">Play button</string>
     <string name="pause_desc">Pause button</string>
     <string name="remove_post_button_description">Remove current post button</string>
+    <string name="old_password">Old password</string>
+    <string name="new_password">New password</string>
+    <string name="retype_new_password">Retype new password</string>
+    <string name="type_your_nickname">Type your nickname</string>
+    <string name="your_e_mail_address">Your e-mail address</string>
 </resources>

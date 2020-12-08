@@ -32,6 +32,7 @@
             android:layout_width="@dimen/remove_button_size"
             android:layout_height="@dimen/remove_button_size"
             android:layout_margin="@dimen/layout_margin"
+            style="@style/ButtonStyle"
             android:contentDescription="@string/remove_post_button_description"
             android:visibility="gone"
             app:layout_constraintRight_toRightOf="@id/player_view"

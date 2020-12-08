@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -22,6 +23,7 @@ import com.example.madam.ui.adapters.RecyclerAdapter
 import com.example.madam.ui.adapters.VideoPlayerBindingAdapter
 import com.example.madam.ui.viewModels.VideoViewModel
 import com.opinyour.android.app.data.utils.Injection
+import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
@@ -49,6 +51,21 @@ class HomeFragment : Fragment() {
 
         videoViewModel.videos.observe(viewLifecycleOwner) { videos ->
             adapter.items = videos.sortedByDescending { it.created_at }
+        }
+
+        videoViewModel.success.observe(viewLifecycleOwner) {
+            Toasty.success(requireContext(), it, Toast.LENGTH_LONG).show()
+            videoViewModel.loadVideos()
+        }
+
+        videoViewModel.userManager.refreshTokenSuccess.observe(viewLifecycleOwner) {
+            if (it) {
+                if (videoViewModel.lastItem != null) {
+                    videoViewModel.deleteVideo(videoViewModel.lastItem!!)
+                }
+            } else {
+                videoViewModel.userManager.logoutUser()
+            }
         }
 
         binding.recyclerVideoList.addOnScrollListener(createListener())

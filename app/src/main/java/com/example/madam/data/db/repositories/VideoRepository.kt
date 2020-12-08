@@ -115,7 +115,7 @@ class VideoRepository private constructor(
         }
     }
 
-    fun deleteVideo(video: VideoItem, user: UserItem) {
+    fun deleteVideo(video: VideoItem, user: UserItem, onError: (error: String) -> Unit, onSuccess: (info: String) -> Unit) {
         val jsonObject = JSONObject()
         jsonObject.put("action", "deletePost")
         jsonObject.put("apikey", WebApi.API_KEY)
@@ -137,8 +137,14 @@ class VideoRepository private constructor(
                 if (response.code() == 200) {
                     cache.deleteVideo(video)
                     Log.i("success", "Post deleted successfully")
+                    onSuccess("Post deleted successfully")
+                } else if (response.code() == 401) {
+                    // Bad token
+                    Log.i("error", "Wrong token")
+                    onError("Wrong token")
                 } else {
                     Log.i("error", "Error")
+                    onError("Error")
                 }
             }
         })
