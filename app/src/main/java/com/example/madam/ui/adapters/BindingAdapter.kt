@@ -7,7 +7,6 @@ import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.example.madam.R
 import com.example.madam.data.db.repositories.model.VideoItem
-import com.example.madam.utils.CircleTransform
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -48,18 +47,19 @@ fun PlayerView.setPlayerObject(item: VideoItem) {
 
 @BindingAdapter("ownerPhoto")
 fun ImageView.setPostOwnerPhoto(item: VideoItem) {
-    var imageUri: String =
-        if (item.user_image_url.isEmpty()) {
-            "drawable://" + R.drawable.user
-        } else {
-            item.user_image_url
-        }
-
-    Glide.with(this)
-        .load(imageUri)
-        .override(80, 80)
-        .circleCrop()
-        .into(this)
+    if (item.user_image_url.isEmpty() || item.user_image_url == "") {
+        Glide.with(this)
+            .load(R.drawable.user)
+            .override(80, 80)
+            .circleCrop()
+            .into(this)
+    } else {
+        Glide.with(this)
+            .load(item.user_image_url)
+            .override(80, 80)
+            .circleCrop()
+            .into(this)
+    }
 }
 
 // TODO this is a stub - data should be saved in DB as DateTime and the conversion happens here
