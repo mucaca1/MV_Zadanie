@@ -76,11 +76,6 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
-    override fun onPause() {
-        super.onPause()
-        VideoPlayerBindingAdapter.releaseAll()
-    }
-
     override fun onResume() {
         super.onResume()
         videoViewModel.loadVideos()
