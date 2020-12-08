@@ -7,6 +7,10 @@
         <variable
             name="videoViewItem"
             type="com.example.madam.data.db.repositories.model.VideoItem" />
+
+        <variable
+            name="index"
+            type="int"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,9 +23,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="false"
+            app:item_index="@{index}"
             app:playerObject="@{videoViewItem}"
-            app:resize_mode="fill"
-            app:controller_layout_id="@layout/exoplayer_custom_controls" />
+            app:resize_mode="fill" />
 
         <ImageButton
             android:id="@+id/remove_post_button"

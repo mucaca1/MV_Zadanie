@@ -11,42 +11,6 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
 
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_left"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="left"
-        app:constraint_referenced_ids="exo_pause,exo_play" />
-
-    <ImageButton
-        android:id="@+id/exo_rew"
-        style="@style/ExoMediaButton.Rewind"
-        android:layout_marginEnd="@dimen/player_buttons_distance"
-        android:src="@drawable/ic_exo_icon_rewind"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@id/exo_play"
-        app:layout_constraintRight_toLeftOf="@+id/barrier_left"
-        app:layout_constraintTop_toTopOf="@id/exo_play"
-        android:contentDescription="@string/rewind_desc" />
-
-    <ImageButton
-        android:id="@+id/exo_ffwd"
-        style="@style/ExoMediaButton.FastForward"
-        android:layout_marginStart="@dimen/player_buttons_distance"
-        android:src="@drawable/ic_exo_icon_fastforward"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@id/exo_play"
-        app:layout_constraintLeft_toRightOf="@+id/barrier_right"
-        app:layout_constraintTop_toTopOf="@id/exo_play"
-        android:contentDescription="@string/forward_desc" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_right"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="right"
-        app:constraint_referenced_ids="exo_pause,exo_play" />
-
     <ImageButton
         android:id="@+id/exo_play"
         style="@style/ExoMediaButton.Play"
