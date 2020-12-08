@@ -61,7 +61,7 @@ interface WebApi {
 
     // Vymazat prispevok
     @POST("service.php")
-    fun deletePost(@Body data: RequestBody): Call<Boolean>
+    fun deletePost(@Body data: RequestBody): Call<StatusResponse>
 
     companion object {
         private const val BASE_URL =

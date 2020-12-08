@@ -32,7 +32,7 @@ class VideoViewModel(
 
     fun uploadVideo(videoFile: File) {
         viewModelScope.launch {
-            userManager.getLoggedUser()?.token?.let { token ->
+            userManager.getLoggedUser()!!.token!!.let { token ->
                 repository.addVideo(
                     videoFile,
                     token,
@@ -40,6 +40,12 @@ class VideoViewModel(
                     { error.postValue(it) }
                 )
             }
+        }
+    }
+
+    fun deleteVideo(item: VideoItem) {
+        viewModelScope.launch {
+            repository.deleteVideo(item, userManager.getLoggedUser()!!)
         }
     }
 

@@ -23,11 +23,22 @@
             app:resize_mode="fill"
             app:controller_layout_id="@layout/exoplayer_custom_controls" />
 
+        <ImageButton
+            android:id="@+id/remove_post_button"
+            android:layout_width="@dimen/remove_button_size"
+            android:layout_height="@dimen/remove_button_size"
+            android:layout_margin="@dimen/layout_margin"
+            android:contentDescription="@string/remove_post_button_description"
+            android:visibility="gone"
+            app:layout_constraintRight_toRightOf="@id/player_view"
+            app:layout_constraintTop_toTopOf="@id/player_view"
+            android:src="@drawable/delete_post" />
+
         <ImageView
             android:id="@+id/post_user_picture"
             android:layout_width="@dimen/post_profile_pic_diameter"
             android:layout_height="@dimen/post_profile_pic_diameter"
-            android:layout_margin="30dp"
+            android:layout_margin="@dimen/layout_margin"
             app:layout_constraintLeft_toLeftOf="@id/player_view"
             app:layout_constraintBottom_toBottomOf="@id/player_view"
             app:ownerPhoto="@{videoViewItem}"

@@ -1,6 +1,8 @@
 package com.example.madam.data.db.repositories
 
+import android.util.Log
 import androidx.lifecycle.LiveData
+import com.example.madam.data.api.model.StatusResponse
 import com.example.madam.data.db.repositories.model.UserItem
 import com.example.madam.data.db.repositories.model.VideoItem
 import com.example.madam.data.localCaches.VideoLocalCache
@@ -9,6 +11,9 @@ import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.File
 import java.net.ConnectException
 
@@ -30,7 +35,6 @@ class VideoRepository private constructor(
             }
     }
 
-    //    // TODO overriden for testing purposes
     fun getVideos(): LiveData<List<VideoItem>> = cache.getVideos()
 
     suspend fun addVideo(
@@ -71,7 +75,6 @@ class VideoRepository private constructor(
     fun getVideo(id: String): LiveData<VideoItem> = cache.getVideo(id)
 
     suspend fun loadVideos(user: UserItem, onError: (error: String) -> Unit) {
-
         try {
             val jsonObject = JSONObject()
             jsonObject.put("action", "posts")
@@ -106,4 +109,36 @@ class VideoRepository private constructor(
             return
         }
     }
+
+    fun deleteVideo(video: VideoItem, user: UserItem) {
+        val jsonObject = JSONObject()
+        jsonObject.put("action", "deletePost")
+        jsonObject.put("apikey", WebApi.API_KEY)
+        jsonObject.put("token", user.token)
+        jsonObject.put("id", video.id)
+        val body = jsonObject.toString()
+        val data = RequestBody.create(MediaType.parse("application/json"), body)
+        val response: Call<StatusResponse> = api.deletePost(data)
+
+        response.enqueue(object : Callback<StatusResponse> {
+            override fun onFailure(call: Call<StatusResponse>, t: Throwable) {
+                Log.e("fail", t.message.toString())
+            }
+
+            override fun onResponse(
+                call: Call<StatusResponse>,
+                response: Response<StatusResponse>
+            ) {
+                if (response.code() == 200) {
+                    cache.deleteVideo(video)
+                    Log.i("success", "Post deleted successfully")
+                } else {
+                    Log.i("error", "Error")
+                }
+            }
+        })
+    }
 }
+
+
+
