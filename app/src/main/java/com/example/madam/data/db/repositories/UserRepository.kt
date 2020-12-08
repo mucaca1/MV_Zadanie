@@ -27,7 +27,6 @@ class UserRepository private constructor(
     }
 
     suspend fun getLoggedUser(): UserItem? {
-        println(cache.getFirstUser()?.token)
         return cache.getFirstUser()
     }
 
