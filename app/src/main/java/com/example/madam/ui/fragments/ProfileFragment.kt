@@ -113,6 +113,9 @@ class ProfileFragment : Fragment() {
 
                         }
                     }
+                } else {
+                    profileViewModel.userManager.logoutUser()
+                    (activity as MainActivity).goToActivity(LoginActivity::class.java)
                 }
             })
 

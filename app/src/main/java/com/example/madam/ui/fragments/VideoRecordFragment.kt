@@ -34,6 +34,7 @@ import androidx.lifecycle.observe
 import com.example.madam.BuildConfig
 import com.example.madam.R
 import com.example.madam.databinding.FragmentVideoRecordBinding
+import com.example.madam.ui.activities.LoginActivity
 import com.example.madam.ui.activities.MainActivity
 import com.example.madam.ui.viewModels.VideoViewModel
 import com.example.madam.ui.views.AutoFitTextureView
@@ -152,6 +153,19 @@ class VideoRecordFragment : Fragment(), View.OnClickListener, View.OnTouchListen
 
         videoViewModel.success.observe(viewLifecycleOwner) {
             Toasty.success(requireContext(), it, LENGTH_LONG).show()
+        }
+
+        videoViewModel.userManager.refreshTokenSuccess.observe(viewLifecycleOwner) {
+            if (it) {
+                when(videoViewModel.apiCallFunctionFailed) {
+                    "loadVideos" -> {videoViewModel.loadVideos()}
+                    "uploadVideo" -> {videoViewModel.uploadVideo(videoViewModel.videoFile!!)}
+                    else -> {}
+                }
+            } else {
+                videoViewModel.userManager.logoutUser()
+                (activity as MainActivity).goToActivity(LoginActivity::class.java)
+            }
         }
         return binding.root
     }

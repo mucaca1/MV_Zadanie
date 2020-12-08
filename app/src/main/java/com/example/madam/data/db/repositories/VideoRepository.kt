@@ -56,7 +56,12 @@ class VideoRepository private constructor(
                     }
                 }
             }
-            onError("Upload video failed")
+            if (response.code() == 401) {
+                onError("Bad request token")
+            } else {
+                onError("Upload video failed")
+            }
+
         } catch (ex: ConnectException) {
             onError("Check internet connection")
             ex.printStackTrace()

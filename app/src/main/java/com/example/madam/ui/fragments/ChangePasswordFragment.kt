@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.madam.R
 import com.example.madam.databinding.FragmentChangePasswordBinding
 import com.example.madam.ui.activities.ChangePasswordActivity
+import com.example.madam.ui.activities.LoginActivity
 import com.example.madam.ui.activities.MainActivity
 import com.example.madam.ui.viewModels.ChangePasswordViewModel
 import com.opinyour.android.app.data.utils.Injection
@@ -61,6 +62,10 @@ class ChangePasswordFragment : Fragment() {
         changePasswordViewModel.userManager.refreshTokenSuccess.observe(viewLifecycleOwner, Observer {
             if (it)
                 changePasswordViewModel.changePassword()
+            else {
+                changePasswordViewModel.userManager.logoutUser()
+                (activity as MainActivity).goToActivity(LoginActivity::class.java)
+            }
         })
 
         return binding.root

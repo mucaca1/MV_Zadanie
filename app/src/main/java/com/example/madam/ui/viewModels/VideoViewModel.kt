@@ -21,23 +21,53 @@ class VideoViewModel(
     val error: MutableLiveData<String> = MutableLiveData()
     val success: MutableLiveData<String> = MutableLiveData()
 
+    private var lastCallFailed = false
+    var apiCallFunctionFailed: String = ""
+    var videoFile: File? = null
+
     val videos: LiveData<List<VideoItem>>
         get() = transform(repository.getVideos())
 
     fun loadVideos() {
         viewModelScope.launch {
-            repository.loadVideos(userManager.getLoggedUser()!!) { error.postValue(it) }
+            repository.loadVideos(userManager.getLoggedUser()!!) {
+                if (!lastCallFailed) {
+                    lastCallFailed = true
+                }
+                if (lastCallFailed && it == "Bad request token") {
+                    userManager.refreshToken()
+                    apiCallFunctionFailed = "loadVideos"
+                }
+                else {
+                    error.postValue(it)
+                }
+            }
         }
     }
 
     fun uploadVideo(videoFile: File) {
+        this.videoFile = videoFile
         viewModelScope.launch {
             userManager.getLoggedUser()?.token?.let { token ->
                 repository.addVideo(
                     videoFile,
                     token,
-                    { success.postValue(it) },
-                    { error.postValue(it) }
+                    {
+                        success.postValue(it)
+                        lastCallFailed = false
+                    },
+                    {
+                        if (!lastCallFailed) {
+                            lastCallFailed = true
+                        }
+                        if (lastCallFailed && it == "Bad request token") {
+                            userManager.refreshToken()
+                            apiCallFunctionFailed = "uploadVideo"
+                        }
+                        else {
+                            error.postValue(it)
+                        }
+                    }
                 )
             }
         }

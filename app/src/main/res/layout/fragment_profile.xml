@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="model"
             type="com.example.madam.ui.viewModels.ProfileViewModel" />
@@ -16,63 +17,82 @@
             android:id="@+id/logOut"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:text="@string/logout"
-            android:src="@drawable/logout"
-            android:onClick="@{() -> model.logOut()}"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
-            />
+            android:onClick="@{() -> model.logOut()}"
+            android:src="@drawable/logout"
+            android:text="@string/logout"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/profileImage"
             android:layout_width="300dp"
             android:layout_height="300dp"
             android:layout_marginTop="55dp"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/loginName"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/loginName"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <ImageView
+            android:id="@+id/personIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_person_50"
+            android:layout_marginStart="50dp"
+            app:layout_constraintBottom_toTopOf="@+id/emailIcon"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/loginName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profileImage" />
 
         <TextView
             android:id="@+id/loginName"
+            style="@style/H2RobotoFont"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/username"
-            style="@style/H2RobotoFont"
             android:textColor="@color/primary"
-            app:layout_constraintTop_toBottomOf="@id/profileImage"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginStart="20dp"
             app:layout_constraintBottom_toTopOf="@+id/emailAddress"
-            />
+            app:layout_constraintLeft_toRightOf="@+id/personIcon"
+            app:layout_constraintTop_toBottomOf="@id/profileImage" />
+
+        <ImageView
+            android:id="@+id/emailIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_mail_outline_50"
+            android:layout_marginStart="50dp"
+            app:layout_constraintBottom_toTopOf="@+id/changePassword"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/emailAddress"
+            app:layout_constraintTop_toBottomOf="@+id/personIcon" />
 
         <TextView
             android:id="@+id/emailAddress"
+            style="@style/H2RobotoFont"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/email"
-            style="@style/H2RobotoFont"
             android:textColor="@color/primary"
-            app:layout_constraintTop_toBottomOf="@id/loginName"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginStart="20dp"
             app:layout_constraintBottom_toTopOf="@+id/changePassword"
-            />
+            app:layout_constraintLeft_toRightOf="@+id/emailIcon"
+            app:layout_constraintTop_toBottomOf="@id/loginName" />
 
         <Button
             android:id="@+id/changePassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/change_password"
             android:layout_marginBottom="50dp"
-            app:layout_constraintTop_toBottomOf="@id/emailAddress"
+            android:text="@string/change_password"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />
+            app:layout_constraintTop_toBottomOf="@id/emailAddress" />
 
         <RelativeLayout
             android:id="@+id/loadingPanel"
