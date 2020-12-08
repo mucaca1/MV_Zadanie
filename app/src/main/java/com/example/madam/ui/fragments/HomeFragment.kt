@@ -1,10 +1,10 @@
 package com.example.madam.ui.fragments
 
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -16,14 +16,15 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.example.madam.R
+import com.example.madam.data.db.repositories.model.VideoItem
 import com.example.madam.databinding.FragmentHomeBinding
 import com.example.madam.ui.activities.LoginActivity
 import com.example.madam.ui.activities.MainActivity
-import com.example.madam.ui.adapters.VideoAdapter
+import com.example.madam.ui.adapters.RecyclerAdapter
+import com.example.madam.ui.adapters.VideoPlayerBindingAdapter
 import com.example.madam.ui.viewModels.VideoViewModel
 import com.opinyour.android.app.data.utils.Injection
 import kotlinx.coroutines.launch
-
 
 class HomeFragment : Fragment() {
     private lateinit var videoViewModel: VideoViewModel
@@ -45,8 +46,9 @@ class HomeFragment : Fragment() {
         binding.recyclerVideoList.layoutManager =
             LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
-        val adapter = VideoAdapter()
+        val adapter = RecyclerAdapter(videoViewModel.userManager.getLoggedUser()!!) { item -> videoViewModel.deleteVideo(item) }
         binding.recyclerVideoList.adapter = adapter
+
         videoViewModel.videos.observe(viewLifecycleOwner) { videos ->
             adapter.items = videos.sortedByDescending { it.created_at }
         }
@@ -58,7 +60,7 @@ class HomeFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        VideoAdapter.pauseAllPlayers()
+        VideoPlayerBindingAdapter.releaseAll()
     }
 
     override fun onResume() {
@@ -94,9 +96,8 @@ class HomeFragment : Fragment() {
                         return SNAP_TO_START
                     }
 
-                    //TODO
                     override fun onStop() {
-                        VideoAdapter.startPlayerAt(llm.findFirstVisibleItemPosition())
+                        VideoPlayerBindingAdapter.startPlayingByIndex(llm.findFirstVisibleItemPosition())
                     }
 
                     override fun calculateTimeForScrolling(dx: Int): Int {
@@ -105,9 +106,8 @@ class HomeFragment : Fragment() {
                     }
                 }
 
-                //TODO
                 if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    VideoAdapter.pauseAllPlayers()
+                   VideoPlayerBindingAdapter.pauseCurrentlyPlaying()
                 }
                 if (newState == RecyclerView.SCROLL_STATE_IDLE || newState == RecyclerView.SCROLL_STATE_SETTLING) {
                     var positionToScroll = 0

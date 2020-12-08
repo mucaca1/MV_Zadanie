@@ -28,4 +28,5 @@
     <string name="forward_desc">Forward 10 sec button</string>
     <string name="play_desc">Play button</string>
     <string name="pause_desc">Pause button</string>
+    <string name="remove_post_button_description">Remove current post button</string>
 </resources>
