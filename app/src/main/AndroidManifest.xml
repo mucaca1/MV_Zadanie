@@ -39,7 +39,8 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning"
-        tools:targetApi="q">
+        tools:targetApi="q"
+        android:largeHeap="true">
         <activity
             android:name="com.example.madam.ui.activities.LoginActivity"
             android:screenOrientation="portrait">
