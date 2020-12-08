@@ -1,6 +1,7 @@
 package com.example.madam.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,7 +59,6 @@ class HomeFragment : Fragment() {
 
         videoViewModel.success.observe(viewLifecycleOwner) {
             Toasty.success(requireContext(), it, Toast.LENGTH_LONG).show()
-            adapter.removeItem(videoViewModel.lastItem!!)
         }
 
         videoViewModel.userManager.refreshTokenSuccess.observe(viewLifecycleOwner) {

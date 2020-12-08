@@ -41,11 +41,6 @@ class RecyclerAdapter(val user: UserItem, val onRemoveButtonClickListener: (Vide
 
 
 
-    fun removeItem(item: VideoItem) {
-
-        items = items.filter { videoItem -> videoItem.id != item.id }
-    }
-
     inner class ViewHolder(private var binding: VideoItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
