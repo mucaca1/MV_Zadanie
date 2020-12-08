@@ -24,6 +24,7 @@ import com.example.madam.ui.adapters.VideoPlayerBindingAdapter
 import com.example.madam.ui.viewModels.VideoViewModel
 import com.opinyour.android.app.data.utils.Injection
 import es.dmoral.toasty.Toasty
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
@@ -46,7 +47,9 @@ class HomeFragment : Fragment() {
         binding.recyclerVideoList.layoutManager =
             LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
-        val adapter = RecyclerAdapter(videoViewModel.userManager.getLoggedUser()!!) { item -> videoViewModel.deleteVideo(item) }
+        val adapter = RecyclerAdapter(videoViewModel.userManager.getLoggedUser()!!) { item ->
+            videoViewModel.deleteVideo(item)
+        }
         binding.recyclerVideoList.adapter = adapter
 
         videoViewModel.videos.observe(viewLifecycleOwner) { videos ->
@@ -55,7 +58,7 @@ class HomeFragment : Fragment() {
 
         videoViewModel.success.observe(viewLifecycleOwner) {
             Toasty.success(requireContext(), it, Toast.LENGTH_LONG).show()
-            videoViewModel.loadVideos()
+            adapter.removeItem(videoViewModel.lastItem!!)
         }
 
         videoViewModel.userManager.refreshTokenSuccess.observe(viewLifecycleOwner) {
